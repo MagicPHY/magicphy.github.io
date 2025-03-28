@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凌昊说游的小窝</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --background-color: #f9f9f9;
+            --text-color: #333;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)),
+                        url('https://picsum.photos/1920/1080?blur=2') center/cover fixed;
+            color: var(--text-color);
+            min-height: 100vh;
+            position: relative;
+            animation: backgroundFade 15s infinite;
+        }
+
+        @keyframes backgroundFade {
+            0%, 100% { background-color: rgba(255,255,255,0.7); }
+            50% { background-color: rgba(245,245,245,0.7); }
+            }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: slideIn 1s ease-out;
+            }
+
+        h1 {
+            font-size: 3.5em;
+            color: var(--primary-color); 
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: textGlow 2s infinite alternate;
+            }
+
+        @keyframes textGlow {
+            0% { text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+            100% { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-color); } 
+            }
+
+        .card {
+            background: rgba(255,255,255,0.1); 
+            backdrop-filter: blur(1px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(8px);
+            margin-bottom: 30px;
+            }
+
+        .card:hover {
+            transform: translateY(-5px);
+            }
+
+        .blog-link {
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--primary-color); 
+            color: white !important;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: background 0.3s ease, transform 0.3s ease;
+            margin-top: 20px;
+            margin-right: 10px;
+            animation: buttonPulse 2s infinite;
+            }
+
+        .blog-link:hover {
+            background: #357ABD;
+            transform: scale(1.1);
+            }
+
+        @keyframes buttonPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            }
+
+        .particle {
+            position: absolute;
+            background: rgba(74,144,226,0.08);
+            border-radius: 50%;
+            animation: float 25s infinite linear;
+            }
+
+        @keyframes float {
+            from { transform: translateY(0) rotate(0deg); }
+            to { transform: translateY(-100vh) rotate(360deg); }
+            }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1>凌昊说游</h1>
+            <div class="card">
+                <h2>个人主页</h2>
+                <a href="https://www.kuaishou.com/profile/3xkjyuvv76citsw" 
+                   class="blog-link" 
+                   target="_blank" 
+                   rel="noopener noreferrer">
+                    访问我的快手主页
+             </a>
+            </div>
+        </header>
+
+        <div class="card">
+            <h2>关于我</h2>
+            <p>绿洲启元共创地图推荐，本人v（hhlhao201812）</p>
+        </div>
+
+        <div class="card">
+            <h2>我的朋友</h2>
+            <a href="https://magicphy.github.io" 
+                   class="blog-link" 
+                   target="_blank" 
+                   rel="noopener noreferrer">
+                   PHY
+           </a>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 20 + 10 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particles.appendChild(particle);
+            }
+        }
+        createParticles();
+    </script>
+</body>
+</html>
