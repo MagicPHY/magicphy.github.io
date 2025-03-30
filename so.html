@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百度一下</title>
+    <link rel="icon" href="https://www.baidu.com/favicon.ico" type="image/jpg">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --background-color: #f9f9f9;
+            --text-color: #333;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)),
+                        url('https://picsum.photos/1920/1080?blur=2') center/cover fixed;
+            color: var(--text-color);
+            min-height: 100vh;
+            position: relative;
+            animation: backgroundFade 15s infinite;
+        }
+
+        @keyframes backgroundFade {
+            0%, 100% { background-color: rgba(255,255,255,0.7); }
+            50% { background-color: rgba(245,245,245,0.7); }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: slideIn 1s ease-out;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            color: var(--primary-color); 
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: textGlow 2s infinite alternate;
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+            100% { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-color); } 
+        }
+
+        .search-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-input {
+            width: 300px;
+            padding: 12px 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .search-input:focus {
+            border-color: #357ABD;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+        }
+
+        .search-button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, var(--primary-color), #357ABD);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            background: linear-gradient(135deg, #357ABD, var(--primary-color));
+            transform: scale(1.05);
+        }
+
+        .search-button:active {
+            transform: scale(0.95);
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(74,144,226,0.08);
+            border-radius: 50%;
+            animation: float 25s infinite linear;
+        }
+
+        @keyframes float {
+            from { transform: translateY(0) rotate(0deg); }
+            to { transform: translateY(-100vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>百度搜索</h1>
+            <form id="searchForm" class="search-form">
+                <input type="text" id="searchQuery" class="search-input" placeholder="输入搜索内容" required>
+                <button type="submit" class="search-button">搜索</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var query = document.getElementById('searchQuery').value;
+            if (query) {
+                window.location.href = 'https://www.baidu.com/s?wd=' + encodeURIComponent(query);
+            }
+        });
+    </script>
+</body>
+</html>
