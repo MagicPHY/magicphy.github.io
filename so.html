@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PHY网址导航</title>
-    <link rel="icon" href="https://magicphy.github.io/PHY.png" type="image/jpg">
+    <link rel="icon" href="https://www.baidu.com/favicon.ico" type="image/jpg">
     <style>
         :root {
             --primary-color: #4a90e2;
@@ -113,41 +113,39 @@
             border-radius: 50%;
             animation: float 25s infinite linear;
         }
-        .card {
-            background: rgba(255,255,255,0.0); 
-            backdrop-filter: blur(1px);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease;
-            backdrop-filter: blur(8px);
-            margin-bottom: 30px;
-            }
-
-        .card:hover {
-            transform: translateY(-5px);
-            }
-        .blog-link {
-            display: inline-block;
-            padding: 12px 25px;
-            background: var(--primary-color); 
-            color: white !important;
-            border-radius: 25px;
-            text-decoration: none;
-            transition: background 0.3s ease, transform 0.3s ease;
-            margin-top: 20px;
-            margin-right: 10px;
-            animation: buttonPulse 2s infinite;
-            }
-
-        .blog-link:hover {
-            background: #357ABD;
-            transform: scale(1.1);
-            }
 
         @keyframes float {
             from { transform: translateY(0) rotate(0deg); }
             to { transform: translateY(-100vh) rotate(360deg); }
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .quick-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 16px;
+            padding: 15px 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            text-align: center;
+        }
+
+        .quick-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .quick-link:active {
+            transform: scale(0.95);
         }
     </style>
 </head>
@@ -160,18 +158,16 @@
                 <button type="submit" class="search-button">搜索</button>
             </form>
         </div>
+        <div class="quick-links">
+            <a href="https://www.2345.com/?k2368019579" class="quick-link">2345网址导航</a>
+            <a href="https://www.n.cn" class="quick-link">纳米AI搜索</a>
+            <a href="https://bot.n.cn" class="quick-link">纳米AI大模型</a>
+            <a href="https://chat.deepseek.com" class="quick-link">DeepSeek</a>
+            <a href="https://kimi.moonshot.cn" class="quick-link">Kimi</a>
+            <a href="https://yiyan.baidu.com" class="quick-link">文心一言</a>
+        </div>
     </div>
 
-        <div class="card">
-            <h2>快捷方式</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
-                <a href="https://www.2345.com/?k2368019579" class="blog-link" target="_blank" rel="noopener noreferrer">2345网址导航</a>
-                <a href="https://www.n.cn" class="blog-link" target="_blank" rel="noopener noreferrer">纳米AI搜索</a>
-                <a href="https://bot.n.cn" class="blog-link" target="_blank" rel="noopener noreferrer">纳米AI—大模型</a>
-                <a href="https://chat.deepseek.com/" class="blog-link" target="_blank" rel="noopener noreferrer">Deepseek</a>
-                <a href="https://kimi.moonshot.cn/" class="blog-link" target="_blank" rel="noopener noreferrer">Kimi</a>
-                <a href="https://yiyan.baidu.com" class="blog-link" target="_blank" rel="noopener noreferrer">文心一言</a>
-            </div>
     <script>
         document.getElementById('searchForm').addEventListener('submit', function(event) {
             event.preventDefault();
