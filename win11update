@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 11 系统重装指南</title>
+    <link href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-100-M/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://s2.ssl.qhres2.com/static/56662140ef7d5d03.css" rel="stylesheet">
+    <script src="https://s2.ssl.qhres2.com/!2dd0bbf7/echats.js"></script>
+    <style>
+        :root {
+            --primary-dark: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #dd6b20;
+            --accent-light: #ed8936;
+            --bg-light: #f7fafc;
+            --text-dark: #2d3748;
+            --text-light: #4a5568;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .method-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: white;
+            border: 2px solid var(--primary-dark);
+            color: var(--primary-dark);
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-dark);
+            color: white;
+        }
+
+        .method-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .method-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent), var(--accent-light));
+        }
+
+        h2 {
+            color: var(--primary-dark);
+            margin-top: 0;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        h2 i {
+            margin-right: 0.75rem;
+            color: var(--accent);
+        }
+
+        .step {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            border-left: 3px solid var(--primary-light);
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            left: -1.5rem;
+            top: 0;
+            background-color: var(--primary-dark);
+            color: white;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-title i {
+            margin-right: 0.5rem;
+            color: var(--accent);
+        }
+
+        .step-content {
+            color: var(--text-dark);
+        }
+
+        .note {
+            background-color: rgba(221, 107, 32, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+
+        .note-title {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .note-title i {
+            margin-right: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            background-color: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .resource-links {
+            margin-top: 2rem;
+        }
+
+        .resource-links h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .resource-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .resource-item {
+            margin-bottom: 0.75rem;
+        }
+
+        .resource-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .resource-link:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        .resource-link i {
+            margin-right: 0.5rem;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .method-tabs {
+                flex-direction: column;
+            }
+            
+            .method-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Windows 11 系统重装指南</h1>
+            <p class="subtitle">两种简单方法助您轻松完成系统重装，确保操作前备份重要数据</p>
+        </header>
+
+        <div class="method-tabs">
+            <button class="tab-btn active" onclick="showMethod(1)">方法一：系统内置重置</button>
+            <button class="tab-btn" onclick="showMethod(2)">方法二：ISO映像安装</button>
+        </div>
+
+        <div id="method1" class="method-content">
+            <h2><i class="fas fa-cog"></i> 方法一：使用系统设置重置</h2>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title"><i class="fas fa-keyboard"></i> 打开设置</div>
+                <div class="step-content">按下键盘上的 <code>Win</code> 键打开"开始菜单"，点击左下角的 <strong>设置</strong> 图标（齿轮形状）</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title"><i class="fas fa-sliders-h"></i> 进入恢复选项</div>
+                <div class="step-content">在设置窗口中，选择左侧的 <strong>系统</strong> 选项，然后点击右侧的 <strong>恢复</strong></div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title"><i class="fas fa-redo"></i> 重置此电脑</div>
+                <div class="step-content">在恢复选项下，找到 <strong>重置此电脑</strong> 并点击右侧的 <strong>开始</strong> 按钮</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-title"><i class="fas fa-archive"></i> 选择重置选项</div>
+                <div class="step-content">系统会询问您是否保留个人文件，选择 <strong>保留我的文件</strong> 或 <strong>删除所有内容</strong>（后者会彻底清除所有数据）</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-title"><i class="fas fa-hourglass-half"></i> 完成重置</div>
+                <div class="step-content">根据屏幕提示完成后续操作，系统将自动开始重置过程，这可能需要一些时间，请耐心等待</div>
+            </div>
+            
+            <div class="note">
+                <div class="note-title"><i class="fas fa-exclamation-triangle"></i> 重要提示</div>
+                <p>在执行重置操作前，请确保已备份所有重要文件和数据。虽然"保留我的文件"选项会尝试保留您的个人文件，但仍有数据丢失的风险。</p>
+            </div>
+        </div>
+
+        <div id="method2" class="method-content" style="display: none;">
+            <h2><i class="fas fa-download"></i> 方法二：使用官方ISO映像文件安装</h2>
+            
+            <h3 style="color: var(--primary-light); margin-top: 1.5rem;">第一步：下载官方ISO镜像文件</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title"><i class="fas fa-globe"></i> 访问微软官网</div>
+                <div class="step-content">打开浏览器，访问 <a href="https://www.microsoft.com/" class="resource-link" target="_blank">微软官网</a> 或直接前往 <a href="https://www.microsoft.com/software-download/windows11" class="resource-link" target="_blank">Windows 11下载页面</a></div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title"><i class="fas fa-search"></i> 查找ISO文件</div>
+                <div class="step-content">在搜索框中输入 <strong>Windows 11 ISO</strong> 或直接点击下载链接</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title"><i class="fas fa-tools"></i> 下载工具</div>
+                <div class="step-content">点击 <strong>立即下载工具</strong> 按钮，下载微软官方的媒体创建工具</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-title"><i class="fas fa-compact-disc"></i> 创建ISO文件</div>
+                <div class="step-content">运行下载的工具，选择 <strong>创建安装介质（USB闪存驱动器、DVD或ISO文件）</strong> 选项</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-title"><i class="fas fa-language"></i> 选择语言和版本</div>
+                <div class="step-content">选择您需要的语言、Windows版本和体系结构（通常选择64位）</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-title"><i class="fas fa-save"></i> 保存ISO文件</div>
+                <div class="step-content">选择 <strong>ISO文件</strong> 选项，设置保存路径后点击 <strong>保存</strong> 按钮</div>
+            </div>
+            
+            <h3 style="color: var(--primary-light); margin-top: 2rem;">第二步：制作启动U盘</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title"><i class="fas fa-usb"></i> 准备U盘</div>
+                <div class="step-content">准备一个容量至少8GB的空U盘（制作启动盘会清除U盘所有数据）</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title"><i class="fas fa-burn"></i> 制作启动盘</div>
+                <div class="step-content">使用Rufus或其他工具将下载的ISO文件写入U盘，制作可启动的USB驱动器</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title"><i class="fas fa-check-circle"></i> 完成制作</div>
+                <div class="step-content">等待制作过程完成，安全移除U盘</div>
+            </div>
+            
+            <h3 style="color: var(--primary-light); margin-top: 2rem;">第三步：设置BIOS并安装系统</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title"><i class="fas fa-plug"></i> 插入启动U盘</div>
+                <div class="step-content">将制作好的启动U盘插入需要安装系统的电脑</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title"><i class="fas fa-power-off"></i> 进入BIOS设置</div>
+                <div class="step-content">重启电脑，在启动时按下特定键（通常是F2、F12、DEL或ESC，具体取决于主板品牌）进入BIOS设置界面</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title"><i class="fas fa-list-ol"></i> 调整启动顺序</div>
+                <div class="step-content">找到 <strong>Boot</strong> 选项，将U盘设为第一启动项，保存设置并退出</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-title"><i class="fas fa-play"></i> 启动安装程序</div>
+                <div class="step-content">电脑将从U盘启动，进入Windows安装界面</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-title"><i class="fas fa-cogs"></i> 安装设置</div>
+                <div class="step-content">选择语言、时间和货币格式、键盘输入法，点击 <strong>下一步</strong> 然后点击 <strong>安装现在</strong></div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-title"><i class="fas fa-key"></i> 产品密钥</div>
+                <div class="step-content">输入产品密钥或选择"我没有产品密钥"跳过此步骤（可在安装后激活）</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">7</div>
+                <div class="step-title"><i class="fas fa-file-signature"></i> 许可条款</div>
+                <div class="step-content">阅读并接受许可条款，点击 <strong>下一步</strong></div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">8</div>
+                <div class="step-title"><i class="fas fa-hdd"></i> 安装类型</div>
+                <div class="step-content">选择 <strong>自定义：仅安装Windows（高级）</strong></div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">9</div>
+                <div class="step-title"><i class="fas fa-trash-alt"></i> 分区管理</div>
+                <div class="step-content">删除原有分区或选择新建分区，选择要安装系统的分区后点击 <strong>下一步</strong></div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">10</div>
+                <div class="step-title"><i class="fas fa-spinner"></i> 开始安装</div>
+                <div class="step-content">系统将开始安装过程，这可能需要一些时间，安装完成后电脑会自动重启</div>
+            </div>
+            
+            <div class="note">
+                <div class="note-title"><i class="fas fa-battery-three-quarters"></i> 安装注意事项</div>
+                <p>安装过程中请确保电脑连接电源，避免因电量不足导致安装中断。安装时间取决于硬件配置，通常需要20-40分钟。</p>
+            </div>
+        </div>
+
+        <div class="resource-links">
+            <h3><i class="fas fa-link"></i> 相关资源链接</h3>
+            <ul class="resource-list">
+                <li class="resource-item">
+                    <a href="https://www.microsoft.com/" class="resource-link" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> 微软官网
+                    </a>
+                </li>
+                <li class="resource-item">
+                    <a href="https://www.microsoft.com/software-download/windows11" class="resource-link" target="_blank">
+                        <i class="fas fa-download"></i> Windows 11 直接下载链接
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function showMethod(methodNumber) {
+            // 更新标签按钮状态
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 显示选中的方法内容
+            document.getElementById('method1').style.display = 'none';
+            document.getElementById('method2').style.display = 'none';
+            document.getElementById('method' + methodNumber).style.display = 'block';
+        }
+
+        // 初始化粒子动画
+        document.addEventListener('DOMContentLoaded', function() {
+            // 这里可以添加粒子动画的初始化代码
+            // 实际实现可能需要引入专门的粒子库如particles.js
+        });
+    </script>
+</body>
+</html>
