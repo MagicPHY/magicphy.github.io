@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MagicPHY随机学号生成器</title>
+    <link rel="icon" href="https://magicphy.github.io/PHY.png" type="image/jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #e6f7ff 0%, #c2e9fb 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #2c3e50;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 100, 200, 0.15);
+            width: 100%;
+            max-width: 900px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+        
+        .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 5px rgba(52, 152, 219, 0.2);
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #3498db;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+        
+        .settings-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .settings-btn:hover {
+            transform: rotate(45deg);
+            background: #2980b9;
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .result-container {
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            border-radius: 20px;
+            padding: 40px 20px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.5), 0 10px 25px rgba(0, 100, 200, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+        }
+        
+        #result {
+            font-size: 8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 3px 10px rgba(44, 62, 80, 0.2);
+        }
+        
+        .button-container {
+            margin: 30px 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        #random-btn {
+            background: linear-gradient(135deg, #3498db 0%, #1a5d9e 100%);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding: 18px 60px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            outline: none;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+        
+        #random-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(52, 152, 219, 0.5);
+            background: linear-gradient(135deg, #3da5e0 0%, #1f6ab4 100%);
+        }
+        
+        #random-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        #random-btn::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        
+        #random-btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .fa-random {
+            margin-right: 12px;
+            animation: spin 6s infinite linear;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .settings-indicator {
+            background: rgba(52, 152, 219, 0.15);
+            border-radius: 10px;
+            padding: 10px 20px;
+            display: inline-block;
+            margin-top: 20px;
+            font-weight: 500;
+            color: #2c3e50;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+        
+        .history-container {
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+        
+        .history-title {
+            color: #3498db;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            text-align: center;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .history-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #a1c4fd);
+            border-radius: 3px;
+        }
+        
+        .history-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 12px;
+        }
+        
+        .history-item {
+            background: linear-gradient(135deg, #3498db 0%, #1a5d9e 100%);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .history-item:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
+        }
+        
+        .history-counter {
+            margin-top: 15px;
+            color: #3498db;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        .info {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+        
+        .info h3 {
+            color: #3498db;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .info p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            z-index: 0;
+            animation: bubbleAnim linear infinite;
+        }
+        
+        @keyframes bubbleAnim {
+            to {
+                transform: translateY(-100px) scale(0.8);
+                opacity: 0;
+            }
+        }
+        
+        .settings-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .settings-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0, 100, 200, 0.3);
+            position: relative;
+            transform: translateY(30px);
+            transition: transform 0.4s ease;
+        }
+        
+        .settings-modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .modal-header h2 {
+            font-size: 2.2rem;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        
+        .modal-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .setting-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .setting-option:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-option label {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #bdc3c7;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #3498db;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .modal-btn {
+            background: linear-gradient(135deg, #3498db 0%, #1a5d9e 100%);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1rem;
+            padding: 12px 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .modal-btn:hover {
+            background: linear-gradient(135deg, #3da5e0 0%, #1f6ab4 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #95a5a6;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            color: #e74c3c;
+            transform: rotate(90deg);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 30px;
+            }
+            
+            #result {
+                font-size: 6rem;
+            }
+            
+            #random-btn {
+                font-size: 1.3rem;
+                padding: 16px 50px;
+            }
+            
+            .history-item {
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 15px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .result-container {
+                padding: 30px 15px;
+            }
+            
+            #result {
+                font-size: 5rem;
+            }
+            
+            .history-item {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .modal-content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 设置按钮 -->
+        <div class="settings-btn">
+            <i class="fas fa-cog"></i>
+        </div>
+        
+        <!-- 气泡背景 -->
+        <div id="bubbles"></div>
+        
+        <!-- 主标题 -->
+        <h1 class="title">MagicPHY——随机学号</h1>
+        
+        <!-- 结果展示区域 -->
+        <div class="result-container">
+            <div id="result" class="floating">?</div>
+        </div>
+        
+        <!-- 当前设置指示器 -->
+        <div class="settings-indicator">
+            <i class="fas fa-info-circle"></i> 当前设置: <span id="current-settings">允许重复抽取</span>
+        </div>
+        
+        <!-- 按钮容器 -->
+        <div class="button-container">
+            <button id="random-btn">
+                <i class="fas fa-random"></i>生成随机学号
+            </button>
+        </div>
+        
+        <!-- 历史记录区域 -->
+        <div class="history-container">
+            <div class="history-title">历史记录</div>
+            <div class="history-items" id="history-items"></div>
+            <div class="history-counter">已记录: <span id="history-count">0</span>/10</div>
+        </div>
+        
+        <!-- 信息区域 -->
+        <div class="info">
+            <h3><i class="fas fa-star"></i> 使用说明</h3>
+            <p>• 点击"生成随机学号"按钮随机获得1-51之间的学号</p>
+            <p>• 右上角设置按钮可修改抽取选项，记得点击保存。</p>
+            <p>• 历史记录最多保存10条，达到后自动清空</p>
+            <p>• 响应式设计</p>
+        </div>
+    </div>
+    
+    <!-- 设置弹窗 -->
+    <div class="settings-modal active" id="settings-modal">
+        <div class="modal-content">
+            <div class="close-btn" id="close-modal">
+                <i class="fas fa-times"></i>
+            </div>
+            
+            <div class="modal-header">
+                <h2><i class="fas fa-cog"></i> 抽取设置</h2>
+                <p>配置随机学号生成选项</p>
+            </div>
+            
+            <div class="setting-option">
+                <label for="allow-duplicates">允许重复抽取</label>
+                <label class="switch">
+                    <input type="checkbox" id="allow-duplicates" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn" id="save-settings">保存设置</button>
+                <button class="modal-btn" id="reset-history">重置历史</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 当页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const resultElement = document.getElementById('result');
+            const randomButton = document.getElementById('random-btn');
+            const bubblesContainer = document.getElementById('bubbles');
+            const settingsButton = document.querySelector('.settings-btn');
+            const settingsModal = document.getElementById('settings-modal');
+            const closeModalButton = document.getElementById('close-modal');
+            const saveSettingsButton = document.getElementById('save-settings');
+            const resetHistoryButton = document.getElementById('reset-history');
+            const allowDuplicatesCheckbox = document.getElementById('allow-duplicates');
+            const currentSettingsElement = document.getElementById('current-settings');
+            const historyItemsContainer = document.getElementById('history-items');
+            const historyCountElement = document.getElementById('history-count');
+            
+            // 初始化设置
+            let settings = {
+                allowDuplicates: true
+            };
+            
+            // 历史记录（最多10条）
+            let history = [];
+            
+            // 创建气泡背景
+            function createBubbles() {
+                // 清除现有气泡
+                bubblesContainer.innerHTML = '';
+                
+                // 创建30个气泡
+                for (let i = 0; i < 30; i++) {
+                    const bubble = document.createElement('div');
+                    bubble.classList.add('bubble');
+                    
+                    // 随机设置气泡大小 (20-80px)
+                    const size = Math.random() * 60 + 20;
+                    bubble.style.width = `${size}px`;
+                    bubble.style.height = `${size}px`;
+                    
+                    // 随机设置气泡位置
+                    bubble.style.left = `${Math.random() * 100}%`;
+                    bubble.style.top = `${Math.random() * 100 + 100}%`;
+                    
+                    // 随机设置动画时长 (10-30秒)
+                    const duration = Math.random() * 20 + 10;
+                    bubble.style.animationDuration = `${duration}s`;
+                    
+                    // 随机设置动画延迟
+                    bubble.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    // 随机设置透明度
+                    bubble.style.opacity = Math.random() * 0.4 + 0.3;
+                    
+                    // 添加到气泡容器
+                    bubblesContainer.appendChild(bubble);
+                }
+            }
+            
+            // 生成随机学号函数（排除27）
+            function generateRandomNumber() {
+                let randomNum;
+                // 循环直到生成的数字不是27
+                do {
+                    // 生成1-51之间的随机整数
+                    randomNum = Math.floor(Math.random() * 51) + 1;
+                } while (randomNum === 27); // 排除27
+                
+                return randomNum;
+            }
+            
+            // 显示随机学号（带动画效果）
+            function displayRandomNumber() {
+                // 移除浮动动画
+                resultElement.classList.remove('floating');
+                
+                // 添加缩小动画效果
+                resultElement.style.transform = 'scale(0.7)';
+                resultElement.style.opacity = '0.2';
+                
+                // 0.3秒后显示新数字
+                setTimeout(() => {
+                    // 生成新随机数
+                    let randomNum;
+                    
+                    if (!settings.allowDuplicates) {
+                        // 不允许重复的情况下，确保生成新数字
+                        let attempts = 0;
+                        do {
+                            randomNum = generateRandomNumber();
+                            attempts++;
+                            
+                            // 如果尝试次数过多（理论上不可能，但以防万一）
+                            if (attempts > 100) {
+                                // 重置历史记录
+                                history = [];
+                                break;
+                            }
+                        } while (history.includes(randomNum));
+                    } else {
+                        randomNum = generateRandomNumber();
+                    }
+                    
+                    // 检查历史记录是否达到10条
+                    if (history.length >= 10) {
+                        history = []; // 清空历史记录
+                    }
+                    
+                    // 添加到历史记录
+                    history.push(randomNum);
+                    
+                    // 更新历史记录显示
+                    updateHistoryDisplay();
+                    
+                    // 更新显示的数字
+                    resultElement.textContent = randomNum;
+                    
+                    // 恢复动画效果
+                    resultElement.style.transform = 'scale(1)';
+                    resultElement.style.opacity = '1';
+                    resultElement.classList.add('floating');
+                    
+                    // 添加背景闪光效果
+                    flashBackground();
+                }, 300);
+            }
+            
+            // 更新历史记录显示
+            function updateHistoryDisplay() {
+                historyItemsContainer.innerHTML = '';
+                
+                // 显示最多10条历史记录
+                history.forEach(num => {
+                    const item = document.createElement('div');
+                    item.classList.add('history-item');
+                    item.textContent = num;
+                    historyItemsContainer.appendChild(item);
+                });
+                
+                // 更新历史记录计数
+                historyCountElement.textContent = history.length;
+            }
+            
+            // 背景闪光效果
+            function flashBackground() {
+                // 获取结果容器
+                const container = document.querySelector('.result-container');
+                
+                // 添加闪光效果
+                container.style.background = 'linear-gradient(135deg, #74b9ff 0%, #a1c4fd 100%)';
+                
+                // 0.5秒后恢复原背景
+                setTimeout(() => {
+                    container.style.background = 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)';
+                }, 500);
+            }
+            
+            // 更新设置显示
+            function updateSettingsDisplay() {
+                currentSettingsElement.textContent = settings.allowDuplicates ? 
+                    "允许重复抽取" : "不允许重复抽取";
+            }
+            
+            // 按钮点击事件 - 生成随机学号
+            randomButton.addEventListener('click', displayRandomNumber);
+            
+            // 设置按钮点击事件
+            settingsButton.addEventListener('click', function() {
+                // 更新设置弹窗中的值
+                allowDuplicatesCheckbox.checked = settings.allowDuplicates;
+                settingsModal.classList.add('active');
+            });
+            
+            // 关闭设置弹窗
+            closeModalButton.addEventListener('click', function() {
+                settingsModal.classList.remove('active');
+            });
+            
+            // 保存设置
+            saveSettingsButton.addEventListener('click', function() {
+                settings.allowDuplicates = allowDuplicatesCheckbox.checked;
+                updateSettingsDisplay();
+                settingsModal.classList.remove('active');
+            });
+            
+            // 重置历史记录
+            resetHistoryButton.addEventListener('click', function() {
+                history = [];
+                updateHistoryDisplay();
+                settingsModal.classList.remove('active');
+            });
+            
+            // 页面加载时创建气泡背景
+            createBubbles();
+            
+            // 页面加载时显示初始值
+            displayRandomNumber();
+            
+            // 初始化设置显示
+            updateSettingsDisplay();
+        });
+    </script>
+</body>
+</html>
