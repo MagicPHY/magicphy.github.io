@@ -91,10 +91,14 @@
             overflow: hidden;
             box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.5), 0 10px 25px rgba(0, 100, 200, 0.1);
             border: 2px solid rgba(255, 255, 255, 0.6);
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         #result {
-            font-size: 8rem;
+            font-size: 3.5rem;
             font-weight: 700;
             color: #2c3e50;
             font-family: 'Montserrat', sans-serif;
@@ -127,17 +131,24 @@
             font-family: 'Montserrat', sans-serif;
             letter-spacing: 1px;
             margin-top: 10px;
+            min-width: 260px;
         }
         
-        #random-btn:hover {
+        #random-btn:hover:not(:disabled) {
             transform: translateY(-5px);
             box-shadow: 0 12px 30px rgba(52, 152, 219, 0.5);
             background: linear-gradient(135deg, #3da5e0 0%, #1f6ab4 100%);
         }
         
-        #random-btn:active {
+        #random-btn:active:not(:disabled) {
             transform: translateY(0);
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        #random-btn:disabled {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            cursor: not-allowed;
+            opacity: 0.8;
         }
         
         #random-btn::after {
@@ -153,19 +164,13 @@
             transition: width 0.6s ease, height 0.6s ease;
         }
         
-        #random-btn:active::after {
+        #random-btn:active:not(:disabled)::after {
             width: 300px;
             height: 300px;
         }
         
         .fa-random {
-            margin-right: 12px;
-            animation: spin 6s infinite linear;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            margin-right: 10px;
         }
         
         .settings-indicator {
@@ -243,6 +248,26 @@
             color: #3498db;
             font-weight: 500;
             font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+        }
+        
+        .reset-history-btn {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+            border-radius: 20px;
+            padding: 6px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reset-history-btn:hover {
+            background: rgba(231, 76, 60, 0.2);
+            transform: translateY(-2px);
         }
         
         .info {
@@ -411,31 +436,6 @@
             transform: translateX(26px);
         }
         
-        .modal-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .modal-btn {
-            background: linear-gradient(135deg, #3498db 0%, #1a5d9e 100%);
-            border: none;
-            border-radius: 50px;
-            color: white;
-            font-size: 1.1rem;
-            padding: 12px 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-        
-        .modal-btn:hover {
-            background: linear-gradient(135deg, #3da5e0 0%, #1f6ab4 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }
-        
         .close-btn {
             position: absolute;
             top: 15px;
@@ -466,12 +466,13 @@
             }
             
             #result {
-                font-size: 6rem;
+                font-size: 3rem;
             }
             
             #random-btn {
                 font-size: 1.3rem;
                 padding: 16px 50px;
+                min-width: 220px;
             }
             
             .history-item {
@@ -495,7 +496,13 @@
             }
             
             #result {
-                font-size: 5rem;
+                font-size: 2.5rem;
+            }
+            
+            #random-btn {
+                font-size: 1.1rem;
+                padding: 14px 30px;
+                min-width: 180px;
             }
             
             .history-item {
@@ -521,11 +528,11 @@
         <div id="bubbles"></div>
         
         <!-- 主标题 -->
-        <h1 class="title">MagicPHY——随机学号</h1>
+        <h1 class="title">MagicPHY随机学号</h1>
         
         <!-- 结果展示区域 -->
         <div class="result-container">
-            <div id="result" class="floating">?</div>
+            <div id="result" class="floating">等待进入随机</div>
         </div>
         
         <!-- 当前设置指示器 -->
@@ -536,7 +543,8 @@
         <!-- 按钮容器 -->
         <div class="button-container">
             <button id="random-btn">
-                <i class="fas fa-random"></i>生成随机学号
+                <i class="fas fa-random"></i>
+                <span id="button-text">生成随机学号</span>
             </button>
         </div>
         
@@ -544,16 +552,22 @@
         <div class="history-container">
             <div class="history-title">历史记录</div>
             <div class="history-items" id="history-items"></div>
-            <div class="history-counter">已记录: <span id="history-count">0</span>/10</div>
+            <div class="history-counter">
+                <span>已记录: <span id="history-count">0</span>/10</span>
+                <button class="reset-history-btn" id="reset-history">
+                    <i class="fas fa-trash-alt"></i> 重置历史记录
+                </button>
+            </div>
         </div>
         
         <!-- 信息区域 -->
         <div class="info">
             <h3><i class="fas fa-star"></i> 使用说明</h3>
             <p>• 点击"生成随机学号"按钮随机获得1-51之间的学号</p>
-            <p>• 右上角设置按钮可修改抽取选项，记得点击保存。</p>
+            <p>• 右上角设置按钮可修改抽取选项</p>
+            <p>• 可选择是否允许重复抽取同一学号</p>
             <p>• 历史记录最多保存10条，达到后自动清空</p>
-            <p>• 响应式设计</p>
+            <p>• 随机按钮有3秒冷却时间</p>
         </div>
     </div>
     
@@ -566,7 +580,7 @@
             
             <div class="modal-header">
                 <h2><i class="fas fa-cog"></i> 抽取设置</h2>
-                <p>配置随机学号生成选项</p>
+                <p>配置随机选项</p>
             </div>
             
             <div class="setting-option">
@@ -575,11 +589,6 @@
                     <input type="checkbox" id="allow-duplicates" checked>
                     <span class="slider"></span>
                 </label>
-            </div>
-            
-            <div class="modal-buttons">
-                <button class="modal-btn" id="save-settings">保存设置</button>
-                <button class="modal-btn" id="reset-history">重置历史</button>
             </div>
         </div>
     </div>
@@ -590,16 +599,16 @@
             // 获取DOM元素
             const resultElement = document.getElementById('result');
             const randomButton = document.getElementById('random-btn');
+            const buttonText = document.getElementById('button-text');
             const bubblesContainer = document.getElementById('bubbles');
             const settingsButton = document.querySelector('.settings-btn');
             const settingsModal = document.getElementById('settings-modal');
             const closeModalButton = document.getElementById('close-modal');
-            const saveSettingsButton = document.getElementById('save-settings');
-            const resetHistoryButton = document.getElementById('reset-history');
             const allowDuplicatesCheckbox = document.getElementById('allow-duplicates');
             const currentSettingsElement = document.getElementById('current-settings');
             const historyItemsContainer = document.getElementById('history-items');
             const historyCountElement = document.getElementById('history-count');
+            const resetHistoryButton = document.getElementById('reset-history');
             
             // 初始化设置
             let settings = {
@@ -608,6 +617,10 @@
             
             // 历史记录（最多10条）
             let history = [];
+            
+            // 冷却状态
+            let isCooldown = false;
+            let originalButtonText = "生成随机学号";
             
             // 创建气泡背景
             function createBubbles() {
@@ -655,8 +668,34 @@
                 return randomNum;
             }
             
+            // 开始冷却计时器（3秒）
+            function startCooldownTimer() {
+                isCooldown = true;
+                randomButton.disabled = true;
+                
+                let seconds = 3;
+                
+                const countdown = setInterval(() => {
+                    buttonText.textContent = `冷却中: ${seconds}秒`;
+                    seconds--;
+                    
+                    if (seconds < 0) {
+                        clearInterval(countdown);
+                        isCooldown = false;
+                        randomButton.disabled = false;
+                        buttonText.textContent = originalButtonText;
+                    }
+                }, 1000);
+            }
+            
             // 显示随机学号（带动画效果）
             function displayRandomNumber() {
+                // 如果处于冷却状态，则不执行
+                if (isCooldown) return;
+                
+                // 开始冷却计时
+                startCooldownTimer();
+                
                 // 移除浮动动画
                 resultElement.classList.remove('floating');
                 
@@ -700,14 +739,12 @@
                     
                     // 更新显示的数字
                     resultElement.textContent = randomNum;
+                    resultElement.style.fontSize = "8rem"; // 恢复数字大小
                     
                     // 恢复动画效果
                     resultElement.style.transform = 'scale(1)';
                     resultElement.style.opacity = '1';
                     resultElement.classList.add('floating');
-                    
-                    // 添加背景闪光效果
-                    flashBackground();
                 }, 300);
             }
             
@@ -725,20 +762,6 @@
                 
                 // 更新历史记录计数
                 historyCountElement.textContent = history.length;
-            }
-            
-            // 背景闪光效果
-            function flashBackground() {
-                // 获取结果容器
-                const container = document.querySelector('.result-container');
-                
-                // 添加闪光效果
-                container.style.background = 'linear-gradient(135deg, #74b9ff 0%, #a1c4fd 100%)';
-                
-                // 0.5秒后恢复原背景
-                setTimeout(() => {
-                    container.style.background = 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)';
-                }, 500);
             }
             
             // 更新设置显示
@@ -762,25 +785,20 @@
                 settingsModal.classList.remove('active');
             });
             
-            // 保存设置
-            saveSettingsButton.addEventListener('click', function() {
-                settings.allowDuplicates = allowDuplicatesCheckbox.checked;
+            // 设置开关即时生效
+            allowDuplicatesCheckbox.addEventListener('change', function() {
+                settings.allowDuplicates = this.checked;
                 updateSettingsDisplay();
-                settingsModal.classList.remove('active');
             });
             
             // 重置历史记录
             resetHistoryButton.addEventListener('click', function() {
                 history = [];
                 updateHistoryDisplay();
-                settingsModal.classList.remove('active');
             });
             
             // 页面加载时创建气泡背景
             createBubbles();
-            
-            // 页面加载时显示初始值
-            displayRandomNumber();
             
             // 初始化设置显示
             updateSettingsDisplay();
