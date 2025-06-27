@@ -451,6 +451,91 @@
             transform: rotate(90deg);
         }
         
+        /* 版本更新公告样式 */
+        .announcement {
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .announcement-title {
+            color: #3498db;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            text-align: center;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .announcement-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #a1c4fd);
+            border-radius: 3px;
+        }
+        
+        .announcement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .announcement-item {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        
+        .announcement-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .announcement-version {
+            background: linear-gradient(135deg, #3498db, #1a5d9e);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .announcement-date {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .announcement-content {
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        
+        .announcement-content li {
+            margin-left: 20px;
+            margin-bottom: 5px;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 30px 20px;
@@ -514,6 +599,16 @@
             .modal-content {
                 padding: 30px 20px;
             }
+            
+            .announcement-item {
+                padding: 12px;
+            }
+            
+            .announcement-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
         }
     </style>
 </head>
@@ -560,6 +655,28 @@
             </div>
         </div>
         
+                <!-- 版本更新公告 -->
+        <div class="announcement">
+            <div class="announcement-title">
+                <i class="fas fa-bullhorn"></i> 版本更新公告
+            </div>
+            <div class="announcement-list" id="announcement-list">
+                <div class="announcement-item">
+                    <div class="announcement-header">
+                        <span class="announcement-version">版本 1.2.0</span>
+                        <span class="announcement-date">2025-06-27</span>
+                    </div>
+                    <div class="announcement-content">
+                        <p>本次更新内容：</p>
+                        <ul>
+                            <li>新增版本更新公告功能，及时了解最新动态</li>
+                            <li>优化历史记录显示效果</li>
+                            <li>删除保存设置摁钮</li>
+                            <li>移出重置历史记录按钮</li>
+                        </ul>
+                    </div>
+                </div>
+                
         <!-- 信息区域 -->
         <div class="info">
             <h3><i class="fas fa-star"></i> 使用说明</h3>
@@ -568,6 +685,38 @@
             <p>• 可选择是否允许重复抽取同一学号</p>
             <p>• 历史记录最多保存10条，达到后自动清空</p>
             <p>• 随机按钮有3秒冷却时间</p>
+        </div>
+        
+                <div class="announcement-item">
+                    <div class="announcement-header">
+                        <span class="announcement-version">版本 1.1.0</span>
+                        <span class="announcement-date">2025-06-20</span>
+                    </div>
+                    <div class="announcement-content">
+                        <p>本次更新内容：</p>
+                        <ul>
+                            <li>新增历史记录功能，显示最近抽取的学号</li>
+                            <li>添加重置历史记录按钮（在设置里）</li>
+                            <li>优化了动画效果</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="announcement-item">
+                    <div class="announcement-header">
+                        <span class="announcement-version">版本 1.0.0</span>
+                        <span class="announcement-date">2025-06-26</span>
+                    </div>
+                    <div class="announcement-content">
+                        <p>本次更新内容：</p>
+                        <ul>
+                            <li>MagicPHY随机学号生成器Web版上线</li>
+                            <li>支持重复抽取设置</li>
+                            <li>添加精美动画效果</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -656,7 +805,7 @@
                 }
             }
             
-            // 生成随机学号函数（排除27）
+            // 生成随机学号函数（del27）
             function generateRandomNumber() {
                 let randomNum;
                 // 循环直到生成的数字不是27
