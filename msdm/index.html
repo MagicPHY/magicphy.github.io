@@ -1,1 +1,296 @@
-000
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>摩斯代码转换器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e6f7ff, #b3e0ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 120, 215, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #4da6ff, #0078d7);
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .input-section, .output-section {
+            margin-bottom: 25px;
+        }
+        
+        h2 {
+            color: #0078d7;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #b3e0ff;
+            border-radius: 10px;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #0078d7;
+            box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.1);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .convert-btn {
+            background: linear-gradient(90deg, #4da6ff, #0078d7);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 120, 215, 0.3);
+        }
+        
+        .convert-btn:hover {
+            background: linear-gradient(90deg, #3d96ef, #0068c7);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 120, 215, 0.4);
+        }
+        
+        .convert-btn:active {
+            transform: translateY(0);
+        }
+        
+        .copy-btn {
+            background: linear-gradient(90deg, #66cc99, #2ecc71);
+            color: white;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+        
+        .copy-btn:hover {
+            background: linear-gradient(90deg, #56bb89, #1ebc61);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+        }
+        
+        .morse-code {
+            background-color: #f0f9ff;
+            border-left: 4px solid #0078d7;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 10px;
+            font-size: 1.1rem;
+            min-height: 50px;
+            word-break: break-word;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #f0f9ff;
+            color: #0078d7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 500px) {
+            .buttons {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-signal"></i>摩斯密码转换器</h1>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <h2><i class="fas fa-keyboard"></i> 输入区域</h2>
+                <textarea id="inputText" placeholder="在此输入文本或摩斯密码..."></textarea>
+                
+                <div class="buttons">
+                    <button id="toMorse" class="convert-btn">
+                        <i class="fas fa-arrow-right"></i> 转摩斯密码
+                    </button>
+                    <button id="toText" class="convert-btn">
+                        <i class="fas fa-arrow-left"></i> 转文本
+                    </button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2><i class="fas fa-code"></i> 转换结果</h2>
+                <div class="buttons">
+                    <button id="copyBtn" class="copy-btn">
+                        <i class="fas fa-copy"></i> 复制
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>摩斯代码转换器 &copy; MagicPHY</p>
+        </footer>
+    </div>
+
+    <script>
+        // 摩斯密码映射表
+        const morseCodeMap = {
+            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 
+            'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 
+            'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.', 
+            'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-', 
+            'Y': '-.--', 'Z': '--..', '0': '-----', '1': '.----', '2': '..---', 
+            '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...', 
+            '8': '---..', '9': '----.', '.': '.-.-.-', ',': '--..--', '?': '..--..', 
+            "'": '.----.', '!': '-.-.--', '/': '-..-.', '(': '-.--.', ')': '-.--.-', 
+            '&': '.-...', ':': '---...', ';': '-.-.-.', '=': '-...-', '+': '.-.-.', 
+            '-': '-....-', '_': '..--.-', '"': '.-..-.', '$': '...-..-', '@': '.--.-.',
+            ' ': '/'
+        };
+        
+        // 反转映射表用于解码
+        const textMap = {};
+        for (const [key, value] of Object.entries(morseCodeMap)) {
+            textMap[value] = key;
+        }
+        
+        // DOM元素
+        const inputText = document.getElementById('inputText');
+        const outputDiv = document.getElementById('output');
+        const toMorseBtn = document.getElementById('toMorse');
+        const toTextBtn = document.getElementById('toText');
+        const copyBtn = document.getElementById('copyBtn');
+        
+        // 转换为摩斯密码
+        toMorseBtn.addEventListener('click', () => {
+            const text = inputText.value.trim().toUpperCase();
+            if (!text) {
+                outputDiv.textContent = "请输入要转换的文本";
+                return;
+            }
+            
+            let morse = '';
+            for (let char of text) {
+                if (morseCodeMap[char]) {
+                    morse += morseCodeMap[char] + ' ';
+                } else {
+                    morse += char + ' ';
+                }
+            }
+            
+            outputDiv.textContent = morse.trim();
+        });
+        
+        // 转换为文本
+        toTextBtn.addEventListener('click', () => {
+            const morse = inputText.value.trim();
+            if (!morse) {
+                outputDiv.textContent = "请输入要转换的摩斯密码";
+                return;
+            }
+            
+            let text = '';
+            const words = morse.split(' / ');
+            for (let word of words) {
+                const chars = word.split(' ');
+                for (let char of chars) {
+                    if (textMap[char]) {
+                        text += textMap[char];
+                    } else if (char === '') {
+                        // 处理多余空格
+                    } else {
+                        text += char;
+                    }
+                }
+                text += ' ';
+            }
+            
+            outputDiv.textContent = text.trim();
+        });
+        
+        // 复制结果
+        copyBtn.addEventListener('click', () => {
+            const textToCopy = outputDiv.textContent;
+            if (textToCopy === "转换结果将显示在这里" || !textToCopy) {
+                alert("没有可复制的内容");
+                return;
+            }
+            
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    // 显示复制成功反馈
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> 已复制!';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalText;
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('复制失败:', err);
+                    alert("复制失败，请手动复制");
+                });
+        });
+    </script>
+</body>
+</html>
