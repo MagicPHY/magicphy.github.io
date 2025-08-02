@@ -1,3 +1,4 @@
+ 
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -426,6 +427,14 @@
                 left: 12px;
             }
         }
+        
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -598,6 +607,10 @@
                 <i class="fas fa-drumstick-bite"></i> 随机晚餐
             </button>
         </section>
+        
+        <footer>
+            <a href="https://icp.gov.moe/?keyword=20250330" target="_blank">萌ICP备20250330号</a>
+        </footer>
     </div>
 
     <script>
@@ -616,7 +629,7 @@
                 options: [
                     ['炸鸡汉堡', '披萨', '寿司套餐', '盖浇饭', '沙拉轻食'],   // 外卖
                     ['番茄炒蛋', '青椒肉丝', '红烧排骨', '炒青菜', '蛋炒饭'],   // 自制
-                    ['麦当劳', '肯德基', '汉堡王', '赛百味三明治', '必胜客比萨'], // 快餐
+                    ['麦当劳', '肯德基', '汉堡王', '必胜客', '空气（这是彩蛋）'], // 快餐
                     ['麻婆豆腐', '宫保鸡丁', '鱼香肉丝', '水煮鱼', '回锅肉'],   // 中式
                     ['牛排', '意大利面', '焗烤意面', '蔬菜沙拉', '烤三文鱼']     // 西式
                 ],
@@ -626,11 +639,11 @@
             dinner: {
                 categories: ['外 卖', '自 制', '火 锅', '面 食', '烧 烤'],
                 options: [
-                    ['麻辣烫', '牛肉粉', '黄焖鸡米饭', '韩式炸鸡', '小龙虾'],   // 外卖
-                    ['番茄牛腩', "可乐鸡翅", '酸辣土豆丝', '香菇滑鸡', '清蒸鱼'], // 自制
-                    ['重庆火锅', '涮羊肉', '椰子鸡火锅', '串串香', '麻辣香锅'],  // 火锅
-                    ['牛肉面', '炸酱面', '云吞面', '刀削面', '番茄鸡蛋面'],     // 面食
-                    ['羊肉串', '烤鸡翅', '烤茄子', '烤生蚝', '烤玉米']          // 烧烤
+                    ['麻辣烫', '米线', '米饭', '炸鸡汉堡', '小龙虾'],   // 外卖
+                    ['番茄牛腩', "可乐鸡翅", '土豆丝', '香菇滑鸡', '清蒸鱼'], // 自制
+                    ['重庆火锅', '涮羊肉', '串串香', '麻辣香锅'],   // 火锅
+                    ['牛肉面', '炸酱面', '刀削面', '番茄鸡蛋面'],     // 面食
+                    ['羊肉串', '烤鸡翅', '烤茄子', '烤玉米']          // 烧烤
                 ],
                 selected: [],
                 currentCategory: -1
@@ -748,11 +761,14 @@
         // 更新按钮状态
         function updateButtonStates() {
             for (const meal in inputManager) {
-                const minusBtn = document.querySelector(`#${meal}-manual + .input-controls .control-btn:first-child`);
-                const plusBtn = document.querySelector(`#${meal}-manual + .input-controls .control-btn:last-child`);
-                
-                minusBtn.disabled = inputManager[meal].count <= 1;
-                plusBtn.disabled = inputManager[meal].count >= 15;
+                const inputControls = document.querySelector(`#${meal}-manual ~ .input-controls`);
+                if (inputControls) {
+                    const minusBtn = inputControls.querySelector('.control-btn:first-child');
+                    const plusBtn = inputControls.querySelector('.control-btn:last-child');
+                    
+                    minusBtn.disabled = inputManager[meal].count <= 1;
+                    plusBtn.disabled = inputManager[meal].count >= 15;
+                }
             }
         }
         
@@ -839,6 +855,5 @@
             return names[mealType];
         }
     </script>
-    <a href="https://icp.gov.moe/?keyword=20250330" target="_blank">萌ICP备20250330号</a>
 </body>
 </html>
