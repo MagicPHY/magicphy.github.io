@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天吃什么？</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1976d2;      /* 主蓝色 */
+            --primary-light: #64b5f6; /* 浅蓝色 */
+            --primary-dark: #0d47a1;  /* 深蓝色 */
+            --accent: #fff9c4;        /* 强调色 */
+            --text: #212121;          /* 正文颜色 */
+            --light: #f5f9ff;         /* 浅背景色 */
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+            color: var(--text);
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        /* 头部样式 */
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(13, 71, 161, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin: 10px 0 5px;
+            color: var(--primary-dark);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .date {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            color: #555;
+            max-width: 600px;
+            margin: 10px auto 20px;
+            font-size: 1.1rem;
+        }
+        
+        /* 餐区样式 */
+        .meal-section {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(13, 71, 161, 0.15);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .meal-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(13, 71, 161, 0.2);
+        }
+        
+        .meal-title {
+            color: var(--primary-dark);
+            border-left: 6px solid var(--primary);
+            padding: 10px 15px;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            background-color: rgba(25, 118, 210, 0.05);
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .meal-title i {
+            margin-right: 12px;
+            font-size: 1.5rem;
+        }
+        
+        .methods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .method {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .method-title {
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 1.25rem;
+        }
+        
+        /* 预制食物选择器 */
+        .category-container {
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+        
+        .category-label {
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .category-label i {
+            font-size: 1.1rem;
+        }
+        
+        .category-select {
+            position: relative;
+        }
+        
+        .category-select select {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1.05rem;
+            border: 2px solid var(--primary-light);
+            border-radius: 8px;
+            appearance: none;
+            outline: none;
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        .category-select::after {
+            content: "▼";
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 0.8rem;
+            pointer-events: none;
+        }
+        
+        .premade-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .premade-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .food-tag {
+            position: relative;
+            background-color: white;
+            color: var(--text);
+            border: 1px solid var(--primary-light);
+            padding: 12px 15px 12px 45px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.05rem;
+            user-select: none;
+            flex: 1;
+            text-align: left;
+        }
+        
+        .food-tag:hover {
+            border-color: var(--primary);
+            background-color: rgba(25, 118, 210, 0.05);
+        }
+        
+        .food-tag.selected {
+            border-color: var(--primary);
+            background-color: rgba(25, 118, 210, 0.1);
+        }
+        
+        /* 复选框样式 */
+        .checkbox-custom {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--primary-light);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .food-tag.selected .checkbox-custom {
+            border-color: var(--primary-dark);
+            background-color: var(--primary-dark);
+        }
+        
+        .food-tag.selected .checkbox-custom::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* 手动输入区域 */
+        .manual-container {
+            margin-bottom: 20px;
+        }
+        
+        .input-counter {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .input-counter span {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .counter-box {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: var(--light);
+            border-radius: 8px;
+            padding: 5px 15px;
+            color: var(--primary-dark);
+        }
+        
+        .counter-box i {
+            font-size: 1.1rem;
+        }
+        
+        .food-input-group {
+            display: flex;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+        
+        .food-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--primary-light);
+            border-radius: 8px;
+            font-size: 1.05rem;
+            outline: none;
+            transition: border 0.3s ease;
+        }
+        
+        .food-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+        }
+        
+        .food-input::placeholder {
+            color: #aaa;
+        }
+        
+        .input-controls {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .control-btn {
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .control-btn:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.1);
+        }
+        
+        .control-btn:disabled {
+            background-color: #b3e5fc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* 结果区域和按钮 */
+        .result-area {
+            text-align: center;
+            margin-top: 25px;
+            padding: 25px;
+            background-color: rgba(25, 118, 210, 0.08);
+            border-radius: 15px;
+            border-left: 4px solid var(--primary);
+            position: relative;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .result-text {
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+            font-weight: bold;
+            min-height: 1.5em;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: block;
+            margin: 25px auto 0;
+            min-width: 220px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 6px 12px rgba(13, 71, 161, 0.2);
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 18px rgba(13, 71, 161, 0.3);
+        }
+        
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .generate-btn i {
+            margin-right: 10px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .methods {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .meal-title {
+                font-size: 1.6rem;
+            }
+            
+            .premade-container {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .result-text {
+                font-size: 1.4rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            .meal-section {
+                padding: 20px;
+            }
+            
+            .food-tag {
+                padding: 10px 12px 10px 40px;
+                font-size: 1rem;
+            }
+            
+            .checkbox-custom {
+                left: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>今天吃什么？</h1>
+        </header>
+
+        <!-- 早餐部分 -->
+        <section class="meal-section">
+            <h2 class="meal-title"><i class="fas fa-coffee"></i> 早餐</h2>
+            <p class="subtitle">一日之计在于晨，美味早餐开启能量满满的一天！</p>
+            <div class="methods">
+                <!-- 系统预制方法 -->
+                <div class="method">
+                    <div class="method-title">系统预制</div>
+                    <div class="premade-container" id="breakfast-premade">
+                        <!-- JavaScript会填充预制选项 -->
+                    </div>
+                </div>
+                
+                <!-- 手动输入方法 -->
+                <div class="method">
+                    <div class="method-title">手动输入</div>
+                    <div class="input-counter">
+                        <span>自定义食物选项</span>
+                        <div class="counter-box">
+                            <i class="fas fa-list-ol"></i>
+                            <span id="breakfast-counter">1</span>/15
+                        </div>
+                    </div>
+                    <div class="manual-container" id="breakfast-manual">
+                        <div class="food-input-group">
+                            <input type="text" class="food-input" placeholder="输入自选早餐">
+                        </div>
+                    </div>
+                    <div class="input-controls">
+                        <button class="control-btn" onclick="removeInputField('breakfast')" disabled>
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button class="control-btn" onclick="addInputField('breakfast')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-area">
+                <span class="result-text" id="breakfast-result">请选择或输入食物选项</span>
+            </div>
+            <button class="generate-btn" onclick="generateResult('breakfast')">
+                <i class="fas fa-utensil-spoon"></i> 随机早餐
+            </button>
+        </section>
+
+        <!-- 午餐部分 -->
+        <section class="meal-section">
+            <h2 class="meal-title"><i class="fas fa-sun"></i> 午餐</h2>
+            <p class="subtitle">午间能量补给，选择丰富午餐补充一天的能量！</p>
+            <div class="methods">
+                <!-- 预制方法 -->
+                <div class="method">
+                    <div class="method-title">预制分类</div>
+                    <div class="category-container">
+                        <div class="category-label">
+                            <i class="fas fa-tags"></i>
+                            请选择食物分类
+                        </div>
+                        <div class="category-select">
+                            <select id="lunch-category-select" onchange="loadCategoryOptions('lunch')">
+                                <option value="-1" selected disabled>请选择种类</option>
+                                <!-- 选项将由JavaScript动态生成 -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="premade-container" id="lunch-premade">
+                        <!-- JavaScript会填充预制选项 -->
+                    </div>
+                </div>
+                
+                <!-- 手动方法 -->
+                <div class="method">
+                    <div class="method-title">手动输入</div>
+                    <div class="input-counter">
+                        <span>自定义食物选项</span>
+                        <div class="counter-box">
+                            <i class="fas fa-list-ol"></i>
+                            <span id="lunch-counter">1</span>/15
+                        </div>
+                    </div>
+                    <div class="manual-container" id="lunch-manual">
+                        <div class="food-input-group">
+                            <input type="text" class="food-input" placeholder="输入自选午餐">
+                        </div>
+                    </div>
+                    <div class="input-controls">
+                        <button class="control-btn" onclick="removeInputField('lunch')" disabled>
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button class="control-btn" onclick="addInputField('lunch')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-area">
+                <span class="result-text" id="lunch-result">请选择或输入食物选项</span>
+            </div>
+            <button class="generate-btn" onclick="generateResult('lunch')">
+                <i class="fas fa-utensils"></i> 随机午餐
+            </button>
+        </section>
+
+        <!-- 晚餐部分 -->
+        <section class="meal-section">
+            <h2 class="meal-title"><i class="fas fa-moon"></i> 晚餐</h2>
+            <p class="subtitle">结束一天的辛劳，给自己一份满意的美味犒赏！</p>
+            <div class="methods">
+                <!-- 预制方法 -->
+                <div class="method">
+                    <div class="method-title">预制分类</div>
+                    <div class="category-container">
+                        <div class="category-label">
+                            <i class="fas fa-tags"></i>
+                            请选择食物分类
+                        </div>
+                        <div class="category-select">
+                            <select id="dinner-category-select" onchange="loadCategoryOptions('dinner')">
+                                <option value="-1" selected disabled>请选择种类</option>
+                                <!-- 选项将由JavaScript动态生成 -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="premade-container" id="dinner-premade">
+                        <!-- JavaScript会填充预制选项 -->
+                    </div>
+                </div>
+                
+                <!-- 手动方法 -->
+                <div class="method">
+                    <div class="method-title">手动输入</div>
+                    <div class="input-counter">
+                        <span>自定义食物选项</span>
+                        <div class="counter-box">
+                            <i class="fas fa-list-ol"></i>
+                            <span id="dinner-counter">1</span>/15
+                        </div>
+                    </div>
+                    <div class="manual-container" id="dinner-manual">
+                        <div class="food-input-group">
+                            <input type="text" class="food-input" placeholder="输入自选晚餐">
+                        </div>
+                    </div>
+                    <div class="input-controls">
+                        <button class="control-btn" onclick="removeInputField('dinner')" disabled>
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button class="control-btn" onclick="addInputField('dinner')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-area">
+                <span class="result-text" id="dinner-result">请选择或输入食物选项</span>
+            </div>
+            <button class="generate-btn" onclick="generateResult('dinner')">
+                <i class="fas fa-drumstick-bite"></i> 随机晚餐
+            </button>
+        </section>
+    </div>
+
+    <script>
+        // 食物数据库
+        const foodDatabase = {
+            breakfast: {
+                options: [
+                    '豆浆油条', '面包牛奶', '包子粥', '麦片水果', '煎蛋火腿',
+                    '面条', '三明治', '煎饼果子', '馄饨', '肠粉', 
+                    '小米粥', '牛奶燕麦', '鸡蛋灌饼', '馒头咸菜', '水果沙拉'
+                ],
+                selected: []
+            },
+            lunch: {
+                categories: ['外 卖', '自 制', '快 餐', '中 式', '西 式'],
+                options: [
+                    ['炸鸡汉堡', '披萨', '寿司套餐', '盖浇饭', '沙拉轻食'],   // 外卖
+                    ['番茄炒蛋', '青椒肉丝', '红烧排骨', '炒青菜', '蛋炒饭'],   // 自制
+                    ['麦当劳', '肯德基', '汉堡王', '赛百味三明治', '必胜客比萨'], // 快餐
+                    ['麻婆豆腐', '宫保鸡丁', '鱼香肉丝', '水煮鱼', '回锅肉'],   // 中式
+                    ['牛排', '意大利面', '焗烤意面', '蔬菜沙拉', '烤三文鱼']     // 西式
+                ],
+                selected: [],
+                currentCategory: -1
+            },
+            dinner: {
+                categories: ['外 卖', '自 制', '火 锅', '面 食', '烧 烤'],
+                options: [
+                    ['麻辣烫', '牛肉粉', '黄焖鸡米饭', '韩式炸鸡', '小龙虾'],   // 外卖
+                    ['番茄牛腩', "可乐鸡翅", '酸辣土豆丝', '香菇滑鸡', '清蒸鱼'], // 自制
+                    ['重庆火锅', '涮羊肉', '椰子鸡火锅', '串串香', '麻辣香锅'],  // 火锅
+                    ['牛肉面', '炸酱面', '云吞面', '刀削面', '番茄鸡蛋面'],     // 面食
+                    ['羊肉串', '烤鸡翅', '烤茄子', '烤生蚝', '烤玉米']          // 烧烤
+                ],
+                selected: [],
+                currentCategory: -1
+            }
+        };
+        
+        // 手动输入计数和输入框管理
+        const inputManager = {
+            breakfast: { count: 1, inputs: 1 },
+            lunch: { count: 1, inputs: 1 },
+            dinner: { count: 1, inputs: 1 }
+        };
+        
+        // 页面加载完成后初始化
+        window.onload = function() {
+            initializeBreakfast();
+            initializeMeal('lunch');
+            initializeMeal('dinner');
+            updateCounters();
+            updateButtonStates();
+        };
+        
+        // 初始化早餐部分
+        function initializeBreakfast() {
+            const container = document.getElementById('breakfast-premade');
+            container.innerHTML = '';
+            
+            foodDatabase.breakfast.options.forEach((food, i) => {
+                const item = createPremadeItem(food, 'breakfast');
+                container.appendChild(item);
+            });
+        }
+        
+        // 创建预制食物选项
+        function createPremadeItem(food, mealType) {
+            const div = document.createElement('div');
+            div.className = 'premade-item';
+            
+            const label = document.createElement('div');
+            label.className = 'food-tag';
+            label.innerHTML = `<div class="checkbox-custom"></div>${food}`;
+            
+            label.addEventListener('click', function() {
+                const index = foodDatabase[mealType].selected.indexOf(food);
+                this.classList.toggle('selected');
+                
+                if (index === -1) {
+                    foodDatabase[mealType].selected.push(food);
+                } else {
+                    foodDatabase[mealType].selected.splice(index, 1);
+                }
+            });
+            
+            div.appendChild(label);
+            return div;
+        }
+        
+        // 初始化午餐/晚餐部分
+        function initializeMeal(mealType) {
+            // 填充分类选择下拉菜单
+            const categorySelect = document.getElementById(`${mealType}-category-select`);
+            categorySelect.innerHTML = '<option value="-1" selected disabled>请选择种类</option>';
+            
+            foodDatabase[mealType].categories.forEach((category, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = category;
+                categorySelect.appendChild(option);
+            });
+            
+            // 初始化预制食物容器
+            const container = document.getElementById(`${mealType}-premade`);
+            container.innerHTML = '';
+            
+            const message = document.createElement('div');
+            message.className = 'premade-item';
+            message.style.gridColumn = '1 / -1';
+            
+            const msgText = document.createElement('div');
+            msgText.className = 'food-tag';
+            msgText.style.padding = '15px';
+            msgText.style.textAlign = 'center';
+            msgText.innerHTML = `<i class="fas fa-info-circle"></i> 请从上方选择食物分类`;
+            msgText.style.cursor = 'default';
+            
+            message.appendChild(msgText);
+            container.appendChild(message);
+        }
+        
+        // 加载分类选项
+        function loadCategoryOptions(mealType) {
+            const categorySelect = document.getElementById(`${mealType}-category-select`);
+            const categoryIndex = parseInt(categorySelect.value);
+            
+            if (categoryIndex === -1) return;
+            
+            foodDatabase[mealType].currentCategory = categoryIndex;
+            
+            const container = document.getElementById(`${mealType}-premade`);
+            container.innerHTML = '';
+            
+            foodDatabase[mealType].options[categoryIndex].forEach(food => {
+                const item = createPremadeItem(food, mealType);
+                container.appendChild(item);
+            });
+        }
+        
+        // 更新计数函数
+        function updateCounters() {
+            for (const meal in inputManager) {
+                document.getElementById(`${meal}-counter`).textContent = inputManager[meal].count;
+            }
+        }
+        
+        // 更新按钮状态
+        function updateButtonStates() {
+            for (const meal in inputManager) {
+                const minusBtn = document.querySelector(`#${meal}-manual + .input-controls .control-btn:first-child`);
+                const plusBtn = document.querySelector(`#${meal}-manual + .input-controls .control-btn:last-child`);
+                
+                minusBtn.disabled = inputManager[meal].count <= 1;
+                plusBtn.disabled = inputManager[meal].count >= 15;
+            }
+        }
+        
+        // 添加输入框
+        function addInputField(mealType) {
+            if (inputManager[mealType].count >= 15) {
+                alert('您已达到最大输入框数量（15个）');
+                return;
+            }
+            
+            const container = document.getElementById(`${mealType}-manual`);
+            const group = document.createElement('div');
+            group.className = 'food-input-group';
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'food-input';
+            input.placeholder = `输入自选${getMealName(mealType)}`;
+            
+            group.appendChild(input);
+            container.appendChild(group);
+            
+            inputManager[mealType].count++;
+            inputManager[mealType].inputs++;
+            
+            updateCounters();
+            updateButtonStates();
+        }
+        
+        // 移除输入框
+        function removeInputField(mealType) {
+            const container = document.getElementById(`${mealType}-manual`);
+            
+            if (inputManager[mealType].count <= 1) {
+                alert('至少需要保留一个输入框');
+                return;
+            }
+            
+            if (container.lastChild) {
+                container.removeChild(container.lastChild);
+                inputManager[mealType].count--;
+                inputManager[mealType].inputs--;
+                
+                updateCounters();
+                updateButtonStates();
+            }
+        }
+        
+        // 生成随机结果
+        function generateResult(mealType) {
+            // 获取所有备选食物（预制+手动）
+            const allOptions = [];
+            
+            // 添加预制选中的食物
+            allOptions.push(...foodDatabase[mealType].selected);
+            
+            // 添加手动输入的食物（非空值）
+            const inputs = document.querySelectorAll(`#${mealType}-manual .food-input`);
+            inputs.forEach(input => {
+                if (input.value.trim() !== '') {
+                    allOptions.push(input.value.trim());
+                }
+            });
+            
+            // 处理没有选项的情况
+            const resultElement = document.getElementById(`${mealType}-result`);
+            if (allOptions.length === 0) {
+                resultElement.innerHTML = `<span style="color: #d32f2f;">请在<span style="font-weight:700; color: var(--primary-dark);">${getMealName(mealType)}</span>区域添加至少一个选项</span>`;
+                return;
+            }
+            
+            // 随机选择一项
+            const randomIndex = Math.floor(Math.random() * allOptions.length);
+            resultElement.innerHTML = `<span style="color: #388e3c;">为您推荐：<span style="color: var(--primary-dark); font-size: 1.8rem;">${allOptions[randomIndex]}</span></span>`;
+        }
+        
+        // 获取餐饮类型名称
+        function getMealName(mealType) {
+            const names = {
+                breakfast: '早餐',
+                lunch: '午餐',
+                dinner: '晚餐'
+            };
+            return names[mealType];
+        }
+    </script>
+</body>
+</html>
