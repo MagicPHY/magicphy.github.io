@@ -1,3 +1,4 @@
+ 
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -349,7 +350,6 @@
             color: #854d0e;
         }
         
-        /* 兼容模式切换样式 */
         .compatibility-toggle {
             display: flex;
             align-items: center;
@@ -402,6 +402,15 @@
         
         input:checked + .toggle-slider:before {
             transform: translateX(26px);
+        }
+        
+        .compatibility-info {
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: #00838f;
+            padding: 5px;
+            background: rgba(178, 235, 242, 0.3);
+            border-radius: 8px;
         }
         
         /* Animations */
@@ -560,6 +569,9 @@
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
+                <div class="compatibility-info">
+                    兼容模式用于解决某些设备无法正常启动摄像头的问题
+                </div>
                 
                 <label class="file-upload-label" for="fileInput">
                     <i class="fas fa-upload"></i> 或上传二维码图片
@@ -657,7 +669,7 @@
                 scanAnimation.style.display = 'block';
                 
                 // 更新状态
-                cameraStatus.innerHTML = '<span class="status-indicator status-active"></span> 扫描中...';
+                cameraStatus.innerHTML = `<span class="status-indicator status-active"></span> 扫描中... (${compatibilityToggle.checked ? '兼容模式' : '标准模式'})`;
                 startCameraBtn.disabled = true;
                 stopCameraBtn.disabled = false;
                 scanning = true;
@@ -726,6 +738,14 @@
             resultDiv.textContent = '摄像头已关闭';
             resultDiv.className = '';
         }
+        
+        // 兼容模式切换时自动重启摄像头
+        compatibilityToggle.addEventListener('change', () => {
+            if (scanning) {
+                stopCamera();
+                setTimeout(startCameraWithFallback, 500);
+            }
+        });
         
         // 从图片文件扫描二维码
         fileInput.addEventListener('change', (e) => {
@@ -895,3 +915,4 @@
     </script>
 </body>
 </html>
+ 
