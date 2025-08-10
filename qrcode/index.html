@@ -349,13 +349,59 @@
             color: #854d0e;
         }
         
-        .browser-fallback {
-            display: none;
-            background: rgba(255, 228, 230, 0.8);
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 15px;
-            color: #dc2626;
+        /* 兼容模式切换样式 */
+        .compatibility-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            color: #00838f;
+            font-size: 0.9rem;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #0277bd;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
         }
         
         /* Animations */
@@ -480,12 +526,6 @@
             <div class="card">
                 <h2 class="card-title"><i class="fas fa-camera"></i> 扫描二维码</h2>
                 
-                <div class="browser-fallback" id="browserFallback">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <p>当前浏览器可能不支持摄像头功能，建议使用 Chrome 或 Firefox 浏览器</p>
-                    <button id="tryFallbackCamera" style="margin-top: 10px;">尝试兼容模式</button>
-                </div>
-                
                 <div class="camera-container">
                     <div class="scanning-animation" id="scanAnimation"></div>
                     <div class="camera-overlay" id="cameraStatus">
@@ -510,6 +550,15 @@
                     <button id="stopCamera" class="btn-secondary">
                         <i class="fas fa-stop"></i> 停止扫描
                     </button>
+                </div>
+                
+                <!-- 添加兼容模式切换 -->
+                <div class="compatibility-toggle">
+                    <label>兼容模式：</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="compatibilityToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
                 
                 <label class="file-upload-label" for="fileInput">
@@ -573,7 +622,6 @@
         // 扫描二维码相关变量
         let videoStream = null;
         let scanning = false;
-        let isFallbackMode = false;
         
         // DOM元素
         const camera = document.getElementById('camera');
@@ -588,31 +636,12 @@
         const qrcodeDiv = document.getElementById('qrcode');
         const downloadBtn = document.getElementById('downloadBtn');
         const clearBtn = document.getElementById('clearBtn');
-        const browserFallback = document.getElementById('browserFallback');
-        const tryFallbackCameraBtn = document.getElementById('tryFallbackCamera');
+        const compatibilityToggle = document.getElementById('compatibilityToggle');
         
-        // 检测浏览器兼容性
-        function checkBrowserCompatibility() {
-            const isViaBrowser = /ViaBrowser/i.test(navigator.userAgent);
-            const isAndroid = /Android/i.test(navigator.userAgent);
-            
-            // 检查是否支持getUserMedia
-            const hasGetUserMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
-            
-            // 检查是否支持MediaDevices
-            const hasMediaDevices = !!(navigator.mediaDevices);
-            
-            // 在Via浏览器或某些Android设备上显示警告
-            if ((isViaBrowser && isAndroid) || !hasGetUserMedia || !hasMediaDevices) {
-                browserFallback.style.display = 'block';
-            }
-        }
-        
-        // 开启摄像头 (兼容模式)
+        // 开启摄像头
         async function startCameraWithFallback() {
             try {
-                // 尝试使用通用约束
-                const constraints = isFallbackMode ? 
+                const constraints = compatibilityToggle.checked ? 
                     { video: true } : 
                     { video: { facingMode: "environment" } };
                 
@@ -626,7 +655,6 @@
                 camera.style.display = 'block';
                 cameraPlaceholder.style.display = 'none';
                 scanAnimation.style.display = 'block';
-                browserFallback.style.display = 'none';
                 
                 // 更新状态
                 cameraStatus.innerHTML = '<span class="status-indicator status-active"></span> 扫描中...';
@@ -650,9 +678,6 @@
                     <small>${errorMessage}</small>
                 `;
                 cameraPlaceholder.style.display = 'flex';
-                
-                // 显示浏览器回退提示
-                browserFallback.style.display = 'block';
             }
         }
         
@@ -802,7 +827,7 @@
             }
         }
         
-        // 下载二维码（修复版）
+        // 下载二维码
         downloadBtn.addEventListener('click', () => {
             const img = qrcodeDiv.querySelector('img');
             if (!img) {
@@ -863,16 +888,9 @@
             // 添加输入事件监听器
             qrContent.addEventListener('input', generateQRCode);
             
-            // 检查浏览器兼容性
-            checkBrowserCompatibility();
-            
             // 添加事件监听器
             startCameraBtn.addEventListener('click', startCameraWithFallback);
             stopCameraBtn.addEventListener('click', stopCamera);
-            tryFallbackCameraBtn.addEventListener('click', () => {
-                isFallbackMode = true;
-                startCameraWithFallback();
-            });
         });
     </script>
 </body>
