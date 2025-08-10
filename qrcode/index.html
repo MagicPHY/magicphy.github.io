@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二维码工具 - 扫描与生成</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@gh-pages/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e0f7fa, #b2ebf2, #80deea);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            color: #0277bd;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #00838f;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 150, 180, 0.15);
+            border: 1px solid rgba(2, 119, 189, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 150, 180, 0.25);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            color: #0277bd;
+        }
+        
+        .card-title i {
+            background: rgba(3, 169, 244, 0.15);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            color: #0288d1;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #00838f;
+        }
+        
+        input, textarea, button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(2, 119, 189, 0.2);
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 1rem;
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: rgba(0, 131, 143, 0.5);
+        }
+        
+        button {
+            background: linear-gradient(to right, #039be5, #0277bd);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(2, 119, 189, 0.2);
+            border: none;
+        }
+        
+        button:hover {
+            background: linear-gradient(to right, #0288d1, #01579b);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(2, 119, 189, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .camera-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin: 20px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            background: rgba(178, 235, 242, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed rgba(3, 155, 229, 0.4);
+        }
+        
+        #camera {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            background-color: rgba(178, 235, 242, 0.5);
+        }
+        
+        .camera-placeholder {
+            text-align: center;
+            padding: 20px;
+            color: rgba(0, 131, 143, 0.7);
+        }
+        
+        .camera-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .file-upload-label {
+            display: block;
+            background: rgba(178, 235, 242, 0.4);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 10px;
+            color: #00838f;
+            font-weight: 500;
+        }
+        
+        .file-upload-label:hover {
+            background: rgba(128, 222, 234, 0.5);
+        }
+        
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(178, 235, 242, 0.3);
+            border-radius: 12px;
+            min-height: 60px;
+            word-break: break-all;
+            color: #00838f;
+        }
+        
+        #qrcode {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(178, 235, 242, 0.3);
+            border-radius: 15px;
+            min-height: 200px;
+            align-items: center;
+        }
+        
+        #qrcode img {
+            max-width: 100%;
+            max-height: 200px;
+        }
+        
+        .qr-placeholder {
+            text-align: center;
+            color: rgba(0, 131, 143, 0.5);
+        }
+        
+        .qr-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .action-buttons button {
+            flex: 1;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, #00838f, #006064) !important;
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(to right, #006064, #004d40) !important;
+        }
+        
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: rgba(0, 131, 143, 0.8);
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .icp-link {
+            color: #0277bd;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+        
+        .icp-link:hover {
+            background: rgba(178, 235, 242, 0.4);
+            color: #01579b;
+            transform: translateY(-2px);
+        }
+        
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            max-width: 600px;
+            margin-top: 10px;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .success {
+            color: #00838f;
+            font-weight: bold;
+        }
+        
+        .error {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background-color: #4ade80;
+            box-shadow: 0 0 8px #4ade80;
+        }
+        
+        .status-inactive {
+            background-color: #f87171;
+        }
+        
+        .camera-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 10;
+        }
+        
+        .mobile-warning {
+            display: none;
+            background: rgba(253, 230, 138, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            text-align: center;
+            color: #854d0e;
+        }
+        
+        .browser-fallback {
+            display: none;
+            background: rgba(255, 228, 230, 0.8);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            color: #dc2626;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes scanning {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 0% 100%;
+            }
+        }
+        
+        .scanning-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #039be5, #4ade80, #facc15, #f87171);
+            background-size: 100% 400%;
+            animation: scanning 2s linear infinite;
+            z-index: 5;
+            display: none;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .card {
+                max-width: 100%;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .features {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .mobile-warning {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 20px 10px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+            }
+            
+            .camera-container {
+                height: 250px;
+            }
+            
+            #qrcode {
+                min-height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-qrcode"></i> 二维码工具</h1>
+            <p class="subtitle">扫描二维码或生成自定义二维码 - 简单、快捷、安全</p>
+        </header>
+        
+        <div class="main-content">
+            <!-- 扫描二维码部分 -->
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-camera"></i> 扫描二维码</h2>
+                
+                <div class="browser-fallback" id="browserFallback">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>当前浏览器可能不支持摄像头功能，建议使用 Chrome 或 Firefox 浏览器</p>
+                    <button id="tryFallbackCamera" style="margin-top: 10px;">尝试兼容模式</button>
+                </div>
+                
+                <div class="camera-container">
+                    <div class="scanning-animation" id="scanAnimation"></div>
+                    <div class="camera-overlay" id="cameraStatus">
+                        <span class="status-indicator status-inactive"></span>
+                        摄像头未启动
+                    </div>
+                    <video id="camera" autoplay playsinline></video>
+                    <div class="camera-placeholder" id="cameraPlaceholder">
+                        <i class="fas fa-camera"></i>
+                        <p>点击下方按钮开启摄像头</p>
+                    </div>
+                </div>
+                
+                <div class="mobile-warning">
+                    <i class="fas fa-mobile-alt"></i> 在手机上使用时，请确保授予摄像头权限
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="startCamera" class="pulse">
+                        <i class="fas fa-video"></i> 开启摄像头
+                    </button>
+                    <button id="stopCamera" class="btn-secondary">
+                        <i class="fas fa-stop"></i> 停止扫描
+                    </button>
+                </div>
+                
+                <label class="file-upload-label" for="fileInput">
+                    <i class="fas fa-upload"></i> 或上传二维码图片
+                </label>
+                <input type="file" id="fileInput" accept="image/*">
+                
+                <div class="input-group">
+                    <label>扫描结果：</label>
+                    <div id="result">等待扫描...</div>
+                </div>
+            </div>
+            
+            <!-- 生成二维码部分 -->
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-qrcode"></i> 生成二维码</h2>
+                
+                <div class="input-group">
+                    <label for="qrContent">输入文本或URL：</label>
+                    <textarea id="qrContent" placeholder="输入要生成二维码的内容（网址、文本等）" rows="3">https://magicphy.github.io</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>二维码预览：</label>
+                    <div id="qrcode">
+                        <div class="qr-placeholder">
+                            <i class="fas fa-qrcode"></i>
+                            <p>二维码将实时生成</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="downloadBtn" class="btn-secondary">
+                        <i class="fas fa-download"></i> 下载二维码
+                    </button>
+                    <button id="clearBtn" class="btn-secondary">
+                        <i class="fas fa-trash"></i> 清除
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="features">
+                <div class="feature"><i class="fas fa-shield-alt"></i> 本地处理 · 保护隐私</div>
+                <div class="feature"><i class="fas fa-mobile-alt"></i> 响应式设计 · 多设备支持</div>
+                <div class="feature"><i class="fas fa-bolt"></i> 快速扫描 · 即时生成</div>
+                <div class="feature"><i class="fas fa-lock"></i> 无数据上传 · 安全可靠</div>
+            </div>
+            
+            <a class="icp-link" href="https://icp.gov.moe/?keyword=20250330" target="_blank">
+                <i class="fas fa-link"></i> 萌ICP备20250330号
+            </a>
+            
+            <p>二维码工具 | 免费、便捷的二维码解决方案</p>
+        </footer>
+    </div>
+
+    <script>
+        // 扫描二维码相关变量
+        let videoStream = null;
+        let scanning = false;
+        let isFallbackMode = false;
+        
+        // DOM元素
+        const camera = document.getElementById('camera');
+        const cameraPlaceholder = document.getElementById('cameraPlaceholder');
+        const cameraStatus = document.getElementById('cameraStatus');
+        const scanAnimation = document.getElementById('scanAnimation');
+        const startCameraBtn = document.getElementById('startCamera');
+        const stopCameraBtn = document.getElementById('stopCamera');
+        const fileInput = document.getElementById('fileInput');
+        const resultDiv = document.getElementById('result');
+        const qrContent = document.getElementById('qrContent');
+        const qrcodeDiv = document.getElementById('qrcode');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const browserFallback = document.getElementById('browserFallback');
+        const tryFallbackCameraBtn = document.getElementById('tryFallbackCamera');
+        
+        // 检测浏览器兼容性
+        function checkBrowserCompatibility() {
+            const isViaBrowser = /ViaBrowser/i.test(navigator.userAgent);
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            
+            // 检查是否支持getUserMedia
+            const hasGetUserMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+            
+            // 检查是否支持MediaDevices
+            const hasMediaDevices = !!(navigator.mediaDevices);
+            
+            // 在Via浏览器或某些Android设备上显示警告
+            if ((isViaBrowser && isAndroid) || !hasGetUserMedia || !hasMediaDevices) {
+                browserFallback.style.display = 'block';
+            }
+        }
+        
+        // 开启摄像头 (兼容模式)
+        async function startCameraWithFallback() {
+            try {
+                // 尝试使用通用约束
+                const constraints = isFallbackMode ? 
+                    { video: true } : 
+                    { video: { facingMode: "environment" } };
+                
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                
+                // 设置视频流
+                videoStream = stream;
+                camera.srcObject = stream;
+                
+                // 显示摄像头
+                camera.style.display = 'block';
+                cameraPlaceholder.style.display = 'none';
+                scanAnimation.style.display = 'block';
+                browserFallback.style.display = 'none';
+                
+                // 更新状态
+                cameraStatus.innerHTML = '<span class="status-indicator status-active"></span> 扫描中...';
+                startCameraBtn.disabled = true;
+                stopCameraBtn.disabled = false;
+                scanning = true;
+                
+                // 开始扫描
+                scanQRCode();
+                
+            } catch (err) {
+                // 处理摄像头错误
+                const errorMessage = getCameraErrorMessage(err);
+                resultDiv.textContent = errorMessage;
+                resultDiv.className = 'error';
+                
+                // 更新占位符显示错误信息
+                cameraPlaceholder.innerHTML = `
+                    <i class="fas fa-exclamation-triangle" style="color: #f87171;"></i>
+                    <p>摄像头访问失败</p>
+                    <small>${errorMessage}</small>
+                `;
+                cameraPlaceholder.style.display = 'flex';
+                
+                // 显示浏览器回退提示
+                browserFallback.style.display = 'block';
+            }
+        }
+        
+        // 获取摄像头错误信息
+        function getCameraErrorMessage(err) {
+            if (err.name === 'NotAllowedError') {
+                return '摄像头访问被拒绝。请检查浏览器设置并允许访问摄像头。';
+            } else if (err.name === 'NotFoundError') {
+                return '未找到摄像头设备。请确保设备已连接摄像头。';
+            } else if (err.name === 'NotReadableError') {
+                return '摄像头不可用。可能已被其他应用程序占用。';
+            } else if (err.name === 'OverconstrainedError') {
+                return '无法满足请求的摄像头参数。';
+            } else if (err.name === 'SecurityError') {
+                return '安全限制阻止了摄像头访问。请确保页面通过HTTPS加载。';
+            } else {
+                return `无法访问摄像头: ${err.message}`;
+            }
+        }
+        
+        // 停止摄像头
+        function stopCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+            
+            // 隐藏摄像头显示占位符
+            camera.style.display = 'none';
+            cameraPlaceholder.style.display = 'flex';
+            scanAnimation.style.display = 'none';
+            
+            // 重置占位符内容
+            cameraPlaceholder.innerHTML = `
+                <i class="fas fa-camera"></i>
+                <p>点击下方按钮开启摄像头</p>
+            `;
+            
+            // 更新状态
+            cameraStatus.innerHTML = '<span class="status-indicator status-inactive"></span> 摄像头未启动';
+            startCameraBtn.disabled = false;
+            stopCameraBtn.disabled = true;
+            scanning = false;
+            
+            // 更新结果区域
+            resultDiv.textContent = '摄像头已关闭';
+            resultDiv.className = '';
+        }
+        
+        // 从图片文件扫描二维码
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // 创建图像对象
+            const img = new Image();
+            img.onload = function() {
+                // 创建画布进行图像处理
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                
+                // 获取图像数据
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                
+                // 使用jsQR库解析二维码
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+                
+                if (code) {
+                    // 成功扫描到二维码
+                    resultDiv.textContent = code.data;
+                    resultDiv.className = 'success';
+                } else {
+                    // 未找到二维码
+                    resultDiv.textContent = '未检测到二维码，请尝试其他图片';
+                    resultDiv.className = 'error';
+                }
+            };
+            
+            // 加载图像文件
+            img.src = URL.createObjectURL(file);
+        });
+        
+        // 从摄像头扫描二维码
+        function scanQRCode() {
+            if (!scanning) return;
+            
+            // 创建画布处理视频帧
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = camera.videoWidth;
+            canvas.height = camera.videoHeight;
+            
+            // 确保视频尺寸有效
+            if (canvas.width > 0 && canvas.height > 0) {
+                // 绘制当前视频帧
+                ctx.drawImage(camera, 0, 0, canvas.width, canvas.height);
+                
+                // 获取图像数据
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                
+                // 使用jsQR库解析二维码
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+                
+                if (code) {
+                    // 成功扫描到二维码
+                    resultDiv.textContent = code.data;
+                    resultDiv.className = 'success';
+                } else {
+                    // 未找到二维码
+                    resultDiv.textContent = '正在扫描...';
+                    resultDiv.className = '';
+                }
+            }
+            
+            // 继续扫描下一帧
+            requestAnimationFrame(scanQRCode);
+        }
+        
+        // 生成二维码
+        function generateQRCode() {
+            const content = qrContent.value.trim();
+            
+            // 如果内容为空，则显示占位符
+            if (!content) {
+                qrcodeDiv.innerHTML = '<div class="qr-placeholder"><i class="fas fa-qrcode"></i><p>请输入内容生成二维码</p></div>';
+                return;
+            }
+            
+            // 清除现有二维码
+            qrcodeDiv.innerHTML = '';
+            
+            // 生成新二维码
+            try {
+                new QRCode(qrcodeDiv, {
+                    text: content,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#0277bd",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            } catch (err) {
+                qrcodeDiv.innerHTML = '<div class="error">生成二维码失败：内容过长或包含特殊字符</div>';
+            }
+        }
+        
+        // 下载二维码（修复版）
+        downloadBtn.addEventListener('click', () => {
+            const img = qrcodeDiv.querySelector('img');
+            if (!img) {
+                alert('请先生成二维码');
+                return;
+            }
+            
+            // 创建临时链接
+            const link = document.createElement('a');
+            
+            // 将图片转换为Blob
+            fetch(img.src)
+                .then(res => res.blob())
+                .then(blob => {
+                    // 创建Blob URL
+                    const blobUrl = URL.createObjectURL(blob);
+                    
+                    // 设置下载属性
+                    link.download = 'qrcode.png';
+                    link.href = blobUrl;
+                    
+                    // 使用setTimeout确保点击事件被正确处理
+                    setTimeout(() => {
+                        // 模拟点击下载
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        // 释放Blob URL
+                        setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+                    }, 100);
+                })
+                .catch(err => {
+                    console.error('下载失败:', err);
+                    alert('下载二维码失败，请重试');
+                });
+        });
+        
+        // 清除生成的二维码
+        clearBtn.addEventListener('click', () => {
+            qrContent.value = '';
+            generateQRCode();
+        });
+        
+        // 页面加载时初始化
+        window.addEventListener('load', () => {
+            // 禁用停止摄像头按钮
+            stopCameraBtn.disabled = true;
+            
+            // 确保扫描区域正确显示
+            camera.style.display = 'none';
+            cameraPlaceholder.style.display = 'flex';
+            scanAnimation.style.display = 'none';
+            
+            // 初始生成二维码
+            generateQRCode();
+            
+            // 添加输入事件监听器
+            qrContent.addEventListener('input', generateQRCode);
+            
+            // 检查浏览器兼容性
+            checkBrowserCompatibility();
+            
+            // 添加事件监听器
+            startCameraBtn.addEventListener('click', startCameraWithFallback);
+            stopCameraBtn.addEventListener('click', stopCamera);
+            tryFallbackCameraBtn.addEventListener('click', () => {
+                isFallbackMode = true;
+                startCameraWithFallback();
+            });
+        });
+    </script>
+</body>
+</html>
