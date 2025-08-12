@@ -12,7 +12,7 @@
         :root {
             --primary-color: #3498db;
             --primary-gradient: linear-gradient(135deg, #3498db 0%, #1a5d9e 100%);
-            --secondary-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            --result-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
             --background-gradient: linear-gradient(135deg, #e6f7ff 0%, #c2e9fb 100%);
             --text-color: #2c3e50;
             --container-bg: rgba(255, 255, 255, 0.95);
@@ -29,7 +29,7 @@
         .dark-mode {
             --primary-color: #4da6ff;
             --primary-gradient: linear-gradient(135deg, #4da6ff 0%, #0066cc 100%);
-            --secondary-gradient: linear-gradient(135deg, #5a7fca 0%, #3a5f8a 100%);
+            --result-gradient: linear-gradient(135deg, #5a7fca 0%, #3a5f8a 100%);
             --background-gradient: linear-gradient(135deg, #1a2a40 0%, #0d1b2a 100%);
             --text-color: #f0f8ff;
             --container-bg: rgba(30, 41, 59, 0.95);
@@ -118,7 +118,7 @@
         }
         
         .result-container {
-            background: var(--secondary-gradient);
+            background: var(--result-gradient);
             border-radius: 20px;
             padding: 40px 20px;
             margin: 30px 0;
@@ -806,6 +806,22 @@
             <div class="announcement-list" id="announcement-list">
                 <div class="announcement-item">
                     <div class="announcement-header">
+                        <span class="announcement-version">版本 1.5.0</span>
+                        <span class="announcement-date">2025-08-15</span>
+                    </div>
+                    <div class="announcement-content">
+                        <p>本次更新内容：</p>
+                        <ul>
+                            <li>结果框背景色现在支持主题自定义</li>
+                            <li>新增多种结果框渐变效果</li>
+                            <li>优化了主题颜色选择器</li>
+                            <li>增强整体视觉效果</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="announcement-item">
+                    <div class="announcement-header">
                         <span class="announcement-version">版本 1.4.0</span>
                         <span class="announcement-date">2025-08-12</span>
                     </div>
@@ -832,51 +848,6 @@
                         </ul>
                     </div>
                 </div>
-                
-                <div class="announcement-item">
-                    <div class="announcement-header">
-                        <span class="announcement-version">版本 1.2.0</span>
-                        <span class="announcement-date">2025-06-27</span>
-                    </div>
-                    <div class="announcement-content">
-                        <p>本次更新内容：</p>
-                        <ul>
-                            <li>新增版本更新公告功能，及时了解最新动态</li>
-                            <li>优化历史记录显示效果</li>
-                            <li>删除保存设置摁钮</li>
-                            <li>移出重置历史记录按钮</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="announcement-item">
-                    <div class="announcement-header">
-                        <span class="announcement-version">版本 1.1.0</span>
-                        <span class="announcement-date">2025-06-26</span>
-                    </div>
-                    <div class="announcement-content">
-                        <p>本次更新内容：</p>
-                        <ul>
-                            <li>新增历史记录功能，显示最近抽取的学号</li>
-                            <li>添加重置历史记录按钮（在设置里）</li>
-                            <li>优化了动画效果</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="announcement-item">
-                    <div class="announcement-header">
-                        <span class="announcement-version">版本 1.0.0</span>
-                        <span class="announcement-date">2025-06-26</span>
-                    </div>
-                    <div class="announcement-content">
-                        <p>本次更新内容：</p>
-                        <ul>
-                            <li>MagicPHY随机学号生成器Web版上线</li>
-                            <li>支持重复抽取设置</li>
-                            <li>添加精美动画效果</li>
-                        </ul>
-                    </div>
-                </div>
             </div>
         </div>
         
@@ -888,7 +859,7 @@
             <p>• 可选择是否允许重复抽取同一学号</p>
             <p>• 历史记录最多保存10条，达到后自动清空</p>
             <p>• 随机按钮有3秒冷却时间</p>
-            <p>• 新增深色模式与主题颜色设置功能</p>
+            <p>• 新增结果框背景色主题自定义功能</p>
         </div>
     </div>
     
@@ -901,7 +872,7 @@
             
             <div class="modal-header">
                 <h2><i class="fas fa-cog"></i> 抽取设置</h2>
-                <p>配置随机选项</p>
+                <p>配置随机选项与主题</p>
             </div>
             
             <div class="setting-option">
@@ -1010,7 +981,7 @@
                 }
             }
             
-            // 生成随机学号函数（del27）
+            // 生成随机学号函数（排除27）
             function generateRandomNumber() {
                 let randomNum;
                 // 循环直到生成的数字不是27
@@ -1148,11 +1119,13 @@
                 const darkerColor = shadeColor(primaryColor, -30);
                 document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(135deg, ${primaryColor} 0%, ${darkerColor} 100%)`);
                 
+                // 更新结果框渐变
+                const lightColor = shadeColor(primaryColor, 40); // 增加40%亮度
+                const lighterColor = shadeColor(primaryColor, 70); // 增加70%亮度
+                document.documentElement.style.setProperty('--result-gradient', `linear-gradient(135deg, ${lightColor} 0%, ${lighterColor} 100%)`);
+                
                 // 更新历史项渐变
                 document.documentElement.style.setProperty('--history-item-gradient', `linear-gradient(135deg, ${primaryColor} 0%, ${darkerColor} 100%)`);
-                
-                // 更新颜色选择器
-                customColorInput.value = primaryColor;
             }
             
             // 辅助函数：调整颜色深浅
