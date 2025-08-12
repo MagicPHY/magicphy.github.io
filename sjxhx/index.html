@@ -9,27 +9,61 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* 样式 */
+        :root {
+            --primary-color: #3498db;
+            --primary-gradient: linear-gradient(135deg, #3498db 0%, #1a5d9e 100%);
+            --secondary-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            --background-gradient: linear-gradient(135deg, #e6f7ff 0%, #c2e9fb 100%);
+            --text-color: #2c3e50;
+            --container-bg: rgba(255, 255, 255, 0.95);
+            --history-bg: rgba(255, 255, 255, 0.7);
+            --info-bg: rgba(255, 255, 255, 0.7);
+            --history-border: rgba(52, 152, 219, 0.2);
+            --shadow-color: rgba(0, 100, 200, 0.15);
+            --button-hover: #2980b9;
+            --button-active: #1f6ab4;
+            --history-item-gradient: linear-gradient(135deg, #3498db 0%, #1a5d9e 100%);
+        }
+
+        /* 深色模式变量 */
+        .dark-mode {
+            --primary-color: #4da6ff;
+            --primary-gradient: linear-gradient(135deg, #4da6ff 0%, #0066cc 100%);
+            --secondary-gradient: linear-gradient(135deg, #5a7fca 0%, #3a5f8a 100%);
+            --background-gradient: linear-gradient(135deg, #1a2a40 0%, #0d1b2a 100%);
+            --text-color: #f0f8ff;
+            --container-bg: rgba(30, 41, 59, 0.95);
+            --history-bg: rgba(30, 41, 59, 0.7);
+            --info-bg: rgba(30, 41, 59, 0.7);
+            --history-border: rgba(77, 166, 255, 0.2);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --button-hover: #3d8fd9;
+            --button-active: #2c7bc0;
+            --history-item-gradient: linear-gradient(135deg, #4da6ff 0%, #0066cc 100%);
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         body {
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #e6f7ff 0%, #c2e9fb 100%);
+            background: var(--background-gradient);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            color: #2c3e50;
+            color: var(--text-color);
         }
         
         .container {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--container-bg);
             border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 100, 200, 0.15);
+            box-shadow: 0 15px 35px var(--shadow-color);
             width: 100%;
             max-width: 900px;
             padding: 40px 30px;
@@ -43,7 +77,7 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 3.2rem;
             font-weight: 700;
-            color: #3498db;
+            color: var(--primary-color);
             margin-bottom: 15px;
             position: relative;
             z-index: 1;
@@ -53,7 +87,7 @@
         
         .subtitle {
             font-size: 1.3rem;
-            color: #3498db;
+            color: var(--primary-color);
             margin-bottom: 40px;
             font-weight: 400;
         }
@@ -62,7 +96,7 @@
             position: absolute;
             top: 25px;
             right: 25px;
-            background: #3498db;
+            background: var(--primary-color);
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -79,12 +113,12 @@
         
         .settings-btn:hover {
             transform: rotate(45deg);
-            background: #2980b9;
+            background: var(--button-hover);
             box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
         }
         
         .result-container {
-            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            background: var(--secondary-gradient);
             border-radius: 20px;
             padding: 40px 20px;
             margin: 30px 0;
@@ -101,7 +135,7 @@
         #result {
             font-size: 3.5rem;
             font-weight: 700;
-            color: #2c3e50;
+            color: var(--text-color);
             font-family: 'Montserrat', sans-serif;
             transition: all 0.5s ease;
             position: relative;
@@ -116,7 +150,7 @@
         }
         
         #random-btn {
-            background: linear-gradient(135deg, #3498db 0%, #1a5d9e 100%);
+            background: var(--primary-gradient);
             border: none;
             border-radius: 50px;
             color: white;
@@ -138,7 +172,7 @@
         #random-btn:hover:not(:disabled) {
             transform: translateY(-5px);
             box-shadow: 0 12px 30px rgba(52, 152, 219, 0.5);
-            background: linear-gradient(135deg, #3da5e0 0%, #1f6ab4 100%);
+            background: linear-gradient(135deg, var(--button-hover) 0%, var(--button-active) 100%);
         }
         
         #random-btn:active:not(:disabled) {
@@ -181,23 +215,23 @@
             display: inline-block;
             margin-top: 20px;
             font-weight: 500;
-            color: #2c3e50;
+            color: var(--text-color);
             border: 1px solid rgba(52, 152, 219, 0.3);
         }
         
         .history-container {
             margin-top: 40px;
-            background: rgba(255, 255, 255, 0.7);
+            background: var(--history-bg);
             border-radius: 15px;
             padding: 25px;
             max-height: 300px;
             overflow-y: auto;
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(52, 152, 219, 0.2);
+            border: 1px solid var(--history-border);
         }
         
         .history-title {
-            color: #3498db;
+            color: var(--primary-color);
             margin-bottom: 20px;
             font-size: 1.4rem;
             text-align: center;
@@ -214,7 +248,7 @@
             transform: translateX(-50%);
             width: 80px;
             height: 3px;
-            background: linear-gradient(90deg, #3498db, #a1c4fd);
+            background: linear-gradient(90deg, var(--primary-color), #a1c4fd);
             border-radius: 3px;
         }
         
@@ -225,7 +259,7 @@
         }
         
         .history-item {
-            background: linear-gradient(135deg, #3498db 0%, #1a5d9e 100%);
+            background: var(--history-item-gradient);
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -246,7 +280,7 @@
         
         .history-counter {
             margin-top: 15px;
-            color: #3498db;
+            color: var(--primary-color);
             font-weight: 500;
             font-size: 1.1rem;
             display: flex;
@@ -272,18 +306,18 @@
         }
         
         .info {
-            background: rgba(255, 255, 255, 0.7);
+            background: var(--info-bg);
             border-radius: 15px;
             padding: 25px;
             margin-top: 40px;
             position: relative;
             z-index: 1;
             text-align: center;
-            border: 1px solid rgba(52, 152, 219, 0.2);
+            border: 1px solid var(--history-border);
         }
         
         .info h3 {
-            color: #3498db;
+            color: var(--primary-color);
             margin-bottom: 20px;
             font-size: 1.5rem;
         }
@@ -291,7 +325,7 @@
         .info p {
             margin-bottom: 15px;
             line-height: 1.6;
-            color: #2c3e50;
+            color: var(--text-color);
             font-size: 1.1rem;
         }
         
@@ -353,6 +387,10 @@
             transition: transform 0.4s ease;
         }
         
+        .dark-mode .modal-content {
+            background: var(--container-bg);
+        }
+        
         .settings-modal.active .modal-content {
             transform: translateY(0);
         }
@@ -364,7 +402,7 @@
         
         .modal-header h2 {
             font-size: 2.2rem;
-            color: #3498db;
+            color: var(--primary-color);
             margin-bottom: 10px;
         }
         
@@ -381,13 +419,17 @@
             border-bottom: 1px solid #ecf0f1;
         }
         
+        .dark-mode .setting-option {
+            border-bottom: 1px solid #2d3748;
+        }
+        
         .setting-option:last-child {
             border-bottom: none;
         }
         
         .setting-option label {
             font-size: 1.2rem;
-            color: #2c3e50;
+            color: var(--text-color);
             cursor: pointer;
             font-weight: 500;
         }
@@ -430,7 +472,7 @@
         }
         
         input:checked + .slider {
-            background-color: #3498db;
+            background-color: var(--primary-color);
         }
         
         input:checked + .slider:before {
@@ -455,16 +497,16 @@
         /* 版本更新公告样式 */
         .announcement {
             margin-top: 40px;
-            background: rgba(255, 255, 255, 0.7);
+            background: var(--history-bg);
             border-radius: 15px;
             padding: 25px;
-            border: 1px solid rgba(52, 152, 219, 0.2);
+            border: 1px solid var(--history-border);
             max-height: 300px;
             overflow-y: auto;
         }
         
         .announcement-title {
-            color: #3498db;
+            color: var(--primary-color);
             margin-bottom: 20px;
             font-size: 1.4rem;
             text-align: center;
@@ -481,7 +523,7 @@
             transform: translateX(-50%);
             width: 80px;
             height: 3px;
-            background: linear-gradient(90deg, #3498db, #a1c4fd);
+            background: linear-gradient(90deg, var(--primary-color), #a1c4fd);
             border-radius: 3px;
         }
         
@@ -495,10 +537,14 @@
             background: rgba(255, 255, 255, 0.9);
             border-radius: 12px;
             padding: 15px;
-            border-left: 4px solid #3498db;
+            border-left: 4px solid var(--primary-color);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
             text-align: left;
             transition: all 0.3s ease;
+        }
+        
+        .dark-mode .announcement-item {
+            background: rgba(30, 41, 59, 0.9);
         }
         
         .announcement-item:hover {
@@ -514,7 +560,7 @@
         }
         
         .announcement-version {
-            background: linear-gradient(135deg, #3498db, #1a5d9e);
+            background: var(--primary-gradient);
             color: white;
             padding: 4px 12px;
             border-radius: 20px;
@@ -528,13 +574,96 @@
         }
         
         .announcement-content {
-            color: #2c3e50;
+            color: var(--text-color);
             line-height: 1.5;
         }
         
         .announcement-content li {
             margin-left: 20px;
             margin-bottom: 5px;
+        }
+        
+        /* 新增的深色模式设置 */
+        .dark-mode-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .dark-mode-select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #333;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 180px;
+        }
+        
+        .dark-mode .dark-mode-select {
+            background: #2d3748;
+            color: #f0f8ff;
+            border-color: #4a5568;
+        }
+        
+        /* 主题颜色选择器 */
+        .theme-colors {
+            margin-top: 20px;
+        }
+        
+        .theme-title {
+            text-align: left;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .color-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-option.active {
+            border-color: white;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+        
+        .custom-color-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        #custom-color {
+            width: 50px;
+            height: 40px;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+            background: transparent;
+        }
+        
+        #custom-color-label {
+            color: var(--text-color);
+            font-size: 0.9rem;
         }
         
         @media (max-width: 768px) {
@@ -565,6 +694,10 @@
                 width: 45px;
                 height: 45px;
                 font-size: 1.1rem;
+            }
+            
+            .modal-content {
+                padding: 30px 20px;
             }
         }
         
@@ -609,6 +742,16 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 8px;
+            }
+            
+            .dark-mode-option {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .dark-mode-select {
+                width: 100%;
             }
         }
     </style>
@@ -661,6 +804,22 @@
                 <i class="fas fa-bullhorn"></i> 版本更新公告：
             </div>
             <div class="announcement-list" id="announcement-list">
+                <div class="announcement-item">
+                    <div class="announcement-header">
+                        <span class="announcement-version">版本 1.4.0</span>
+                        <span class="announcement-date">2025-08-12</span>
+                    </div>
+                    <div class="announcement-content">
+                        <p>本次更新内容：</p>
+                        <ul>
+                            <li>新增深色模式功能（开启/关闭/跟随系统）</li>
+                            <li>添加主题颜色自定义功能</li>
+                            <li>提供多种预设主题颜色选择</li>
+                            <li>优化界面视觉效果</li>
+                        </ul>
+                    </div>
+                </div>
+                
                 <div class="announcement-item">
                     <div class="announcement-header">
                         <span class="announcement-version">版本 1.3.0</span>
@@ -729,11 +888,12 @@
             <p>• 可选择是否允许重复抽取同一学号</p>
             <p>• 历史记录最多保存10条，达到后自动清空</p>
             <p>• 随机按钮有3秒冷却时间</p>
+            <p>• 新增深色模式与主题颜色设置功能</p>
         </div>
     </div>
     
     <!-- 设置弹窗 -->
-    <div class="settings-modal active" id="settings-modal">
+    <div class="settings-modal" id="settings-modal">
         <div class="modal-content">
             <div class="close-btn" id="close-modal">
                 <i class="fas fa-times"></i>
@@ -750,6 +910,34 @@
                     <input type="checkbox" id="allow-duplicates" checked>
                     <span class="slider"></span>
                 </label>
+            </div>
+            
+            <!-- 深色模式设置 -->
+            <div class="setting-option">
+                <label for="dark-mode">深色模式</label>
+                <select id="dark-mode" class="dark-mode-select">
+                    <option value="auto">跟随系统</option>
+                    <option value="on">开启</option>
+                    <option value="off">关闭</option>
+                </select>
+            </div>
+            
+            <!-- 主题颜色设置 -->
+            <div class="theme-colors">
+                <div class="theme-title">主题颜色:</div>
+                <div class="color-options">
+                    <div class="color-option active" style="background-color: #3498db;" data-color="#3498db"></div>
+                    <div class="color-option" style="background-color: #27ae60;" data-color="#27ae60"></div>
+                    <div class="color-option" style="background-color: #e74c3c;" data-color="#e74c3c"></div>
+                    <div class="color-option" style="background-color: #9b59b6;" data-color="#9b59b6"></div>
+                    <div class="color-option" style="background-color: #f39c12;" data-color="#f39c12"></div>
+                    <div class="color-option" style="background-color: #1abc9c;" data-color="#1abc9c"></div>
+                </div>
+                
+                <div class="custom-color-container">
+                    <input type="color" id="custom-color" value="#3498db">
+                    <label id="custom-color-label">自定义颜色</label>
+                </div>
             </div>
         </div>
     </div>
@@ -770,10 +958,15 @@
             const historyItemsContainer = document.getElementById('history-items');
             const historyCountElement = document.getElementById('history-count');
             const resetHistoryButton = document.getElementById('reset-history');
+            const darkModeSelect = document.getElementById('dark-mode');
+            const colorOptions = document.querySelectorAll('.color-option');
+            const customColorInput = document.getElementById('custom-color');
             
             // 初始化设置
             let settings = {
-                allowDuplicates: true
+                allowDuplicates: true,
+                darkMode: 'auto',
+                themeColor: '#3498db'
             };
             
             // 历史记录（最多10条）
@@ -931,6 +1124,94 @@
                     "允许重复抽取" : "不允许重复抽取";
             }
             
+            // 应用深色模式设置
+            function applyDarkMode() {
+                const body = document.body;
+                const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                
+                // 移除现有模式类
+                body.classList.remove('dark-mode');
+                
+                // 应用深色模式
+                if (settings.darkMode === 'on' || (settings.darkMode === 'auto' && prefersDarkScheme)) {
+                    body.classList.add('dark-mode');
+                }
+            }
+            
+            // 应用主题颜色
+            function applyThemeColor() {
+                // 更新CSS变量
+                document.documentElement.style.setProperty('--primary-color', settings.themeColor);
+                
+                // 更新按钮渐变
+                const primaryColor = settings.themeColor;
+                const darkerColor = shadeColor(primaryColor, -30);
+                document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(135deg, ${primaryColor} 0%, ${darkerColor} 100%)`);
+                
+                // 更新历史项渐变
+                document.documentElement.style.setProperty('--history-item-gradient', `linear-gradient(135deg, ${primaryColor} 0%, ${darkerColor} 100%)`);
+                
+                // 更新颜色选择器
+                customColorInput.value = primaryColor;
+            }
+            
+            // 辅助函数：调整颜色深浅
+            function shadeColor(color, percent) {
+                let R = parseInt(color.substring(1, 3), 16);
+                let G = parseInt(color.substring(3, 5), 16);
+                let B = parseInt(color.substring(5, 7), 16);
+                
+                R = parseInt(R * (100 + percent) / 100);
+                G = parseInt(G * (100 + percent) / 100);
+                B = parseInt(B * (100 + percent) / 100);
+                
+                R = (R < 255) ? R : 255;
+                G = (G < 255) ? G : 255;
+                B = (B < 255) ? B : 255;
+                
+                R = Math.round(R);
+                G = Math.round(G);
+                B = Math.round(B);
+                
+                const RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
+                const GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
+                const BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
+                
+                return "#" + RR + GG + BB;
+            }
+            
+            // 保存设置到本地存储
+            function saveSettings() {
+                localStorage.setItem('randomNumberSettings', JSON.stringify(settings));
+            }
+            
+            // 从本地存储加载设置
+            function loadSettings() {
+                const savedSettings = localStorage.getItem('randomNumberSettings');
+                if (savedSettings) {
+                    settings = JSON.parse(savedSettings);
+                    
+                    // 更新UI
+                    allowDuplicatesCheckbox.checked = settings.allowDuplicates;
+                    darkModeSelect.value = settings.darkMode;
+                    
+                    // 应用设置
+                    applyDarkMode();
+                    applyThemeColor();
+                    
+                    // 更新颜色选择器的活动状态
+                    colorOptions.forEach(option => {
+                        option.classList.remove('active');
+                        if (option.dataset.color === settings.themeColor) {
+                            option.classList.add('active');
+                        }
+                    });
+                }
+                
+                // 更新设置显示
+                updateSettingsDisplay();
+            }
+            
             // 按钮点击事件 - 生成随机学号
             randomButton.addEventListener('click', displayRandomNumber);
             
@@ -938,6 +1219,7 @@
             settingsButton.addEventListener('click', function() {
                 // 更新设置弹窗中的值
                 allowDuplicatesCheckbox.checked = settings.allowDuplicates;
+                darkModeSelect.value = settings.darkMode;
                 settingsModal.classList.add('active');
             });
             
@@ -950,6 +1232,7 @@
             allowDuplicatesCheckbox.addEventListener('change', function() {
                 settings.allowDuplicates = this.checked;
                 updateSettingsDisplay();
+                saveSettings();
             });
             
             // 重置历史记录
@@ -958,8 +1241,52 @@
                 updateHistoryDisplay();
             });
             
+            // 深色模式选择改变
+            darkModeSelect.addEventListener('change', function() {
+                settings.darkMode = this.value;
+                applyDarkMode();
+                saveSettings();
+            });
+            
+            // 颜色选项点击
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // 移除所有active类
+                    colorOptions.forEach(opt => opt.classList.remove('active'));
+                    
+                    // 添加active类到当前选项
+                    this.classList.add('active');
+                    
+                    // 更新主题颜色
+                    settings.themeColor = this.dataset.color;
+                    applyThemeColor();
+                    saveSettings();
+                });
+            });
+            
+            // 自定义颜色改变
+            customColorInput.addEventListener('input', function() {
+                settings.themeColor = this.value;
+                
+                // 移除所有预设颜色的active类
+                colorOptions.forEach(opt => opt.classList.remove('active'));
+                
+                applyThemeColor();
+                saveSettings();
+            });
+            
+            // 监听系统颜色模式变化
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (settings.darkMode === 'auto') {
+                    applyDarkMode();
+                }
+            });
+            
             // 页面加载时创建气泡背景
             createBubbles();
+            
+            // 加载设置
+            loadSettings();
             
             // 初始化设置显示
             updateSettingsDisplay();
