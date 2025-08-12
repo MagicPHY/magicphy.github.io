@@ -1,4 +1,5 @@
- <!DOCTYPE html>
+ 
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -23,17 +24,25 @@
             align-items: center;
             padding: 40px 20px;
             color: #333;
+            transition: background 0.5s ease, color 0.3s ease;
+        }
+        
+        body.dark-theme {
+            background: linear-gradient(135deg, #1a2a32, #1a3a46, #1d4a53);
+            color: #f0f0f0;
         }
         
         .container {
             max-width: 1200px;
             width: 100%;
+            position: relative;
         }
         
         header {
             text-align: center;
             margin-bottom: 40px;
             animation: fadeInDown 1s ease;
+            position: relative;
         }
         
         h1 {
@@ -43,12 +52,20 @@
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
+        body.dark-theme h1 {
+            color: #4fc3f7;
+        }
+        
         .subtitle {
             font-size: 1.2rem;
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
             color: #00838f;
+        }
+        
+        body.dark-theme .subtitle {
+            color: #80deea;
         }
         
         .main-content {
@@ -66,13 +83,23 @@
             max-width: 500px;
             box-shadow: 0 10px 30px rgba(0, 150, 180, 0.15);
             border: 1px solid rgba(2, 119, 189, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
             animation: fadeInUp 1s ease;
+        }
+        
+        body.dark-theme .card {
+            background: rgba(30, 40, 50, 0.85);
+            border: 1px solid rgba(128, 222, 234, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 100, 120, 0.2);
         }
         
         .card:hover {
             transform: translateY(-10px);
             box-shadow: 0 15px 40px rgba(0, 150, 180, 0.25);
+        }
+        
+        body.dark-theme .card:hover {
+            box-shadow: 0 15px 40px rgba(0, 100, 120, 0.35);
         }
         
         .card-title {
@@ -82,6 +109,10 @@
             margin-bottom: 25px;
             font-size: 1.8rem;
             color: #0277bd;
+        }
+        
+        body.dark-theme .card-title {
+            color: #4fc3f7;
         }
         
         .card-title i {
@@ -96,6 +127,11 @@
             color: #0288d1;
         }
         
+        body.dark-theme .card-title i {
+            background: rgba(3, 169, 244, 0.25);
+            color: #4fc3f7;
+        }
+        
         .input-group {
             margin-bottom: 20px;
         }
@@ -107,6 +143,10 @@
             color: #00838f;
         }
         
+        body.dark-theme label {
+            color: #80deea;
+        }
+        
         input, textarea, button {
             width: 100%;
             padding: 14px;
@@ -115,10 +155,25 @@
             background: rgba(255, 255, 255, 0.9);
             color: #333;
             font-size: 1rem;
+            transition: all 0.3s ease;
         }
         
-        input::placeholder, textarea::placeholder {
+        body.dark-theme input, 
+        body.dark-theme textarea, 
+        body.dark-theme button {
+            background: rgba(50, 50, 60, 0.9);
+            color: #f0f0f0;
+            border: 1px solid rgba(128, 222, 234, 0.2);
+        }
+        
+        input::placeholder, 
+        textarea::placeholder {
             color: rgba(0, 131, 143, 0.5);
+        }
+        
+        body.dark-theme input::placeholder, 
+        body.dark-theme textarea::placeholder {
+            color: rgba(128, 222, 234, 0.5);
         }
         
         button {
@@ -132,10 +187,19 @@
             border: none;
         }
         
+        body.dark-theme button {
+            background: linear-gradient(to right, #0288d1, #01579b);
+            box-shadow: 0 4px 15px rgba(2, 119, 189, 0.3);
+        }
+        
         button:hover {
             background: linear-gradient(to right, #0288d1, #01579b);
             transform: translateY(-3px);
             box-shadow: 0 7px 20px rgba(2, 119, 189, 0.3);
+        }
+        
+        body.dark-theme button:hover {
+            background: linear-gradient(to right, #0277bd, #014d7a);
         }
         
         button:active {
@@ -156,6 +220,11 @@
             border: 2px dashed rgba(3, 155, 229, 0.4);
         }
         
+        body.dark-theme .camera-container {
+            background: rgba(30, 60, 70, 0.3);
+            border: 2px dashed rgba(79, 195, 247, 0.4);
+        }
+        
         #camera {
             width: 100%;
             height: 100%;
@@ -164,10 +233,18 @@
             background-color: rgba(178, 235, 242, 0.5);
         }
         
+        body.dark-theme #camera {
+            background-color: rgba(30, 60, 70, 0.5);
+        }
+        
         .camera-placeholder {
             text-align: center;
             padding: 20px;
             color: rgba(0, 131, 143, 0.7);
+        }
+        
+        body.dark-theme .camera-placeholder {
+            color: rgba(128, 222, 234, 0.7);
         }
         
         .camera-placeholder i {
@@ -193,8 +270,17 @@
             font-weight: 500;
         }
         
+        body.dark-theme .file-upload-label {
+            background: rgba(30, 60, 70, 0.4);
+            color: #80deea;
+        }
+        
         .file-upload-label:hover {
             background: rgba(128, 222, 234, 0.5);
+        }
+        
+        body.dark-theme .file-upload-label:hover {
+            background: rgba(30, 80, 90, 0.6);
         }
         
         #result {
@@ -205,6 +291,11 @@
             min-height: 60px;
             word-break: break-all;
             color: #00838f;
+        }
+        
+        body.dark-theme #result {
+            background: rgba(30, 60, 70, 0.3);
+            color: #80deea;
         }
         
         #qrcode {
@@ -218,6 +309,10 @@
             align-items: center;
         }
         
+        body.dark-theme #qrcode {
+            background: rgba(30, 60, 70, 0.3);
+        }
+        
         #qrcode img {
             max-width: 100%;
             max-height: 200px;
@@ -226,6 +321,10 @@
         .qr-placeholder {
             text-align: center;
             color: rgba(0, 131, 143, 0.5);
+        }
+        
+        body.dark-theme .qr-placeholder {
+            color: rgba(128, 222, 234, 0.5);
         }
         
         .qr-placeholder i {
@@ -252,6 +351,14 @@
             background: linear-gradient(to right, #006064, #004d40) !important;
         }
         
+        body.dark-theme .btn-secondary {
+            background: linear-gradient(to right, #006064, #004d40) !important;
+        }
+        
+        body.dark-theme .btn-secondary:hover {
+            background: linear-gradient(to right, #004d40, #00332d) !important;
+        }
+        
         footer {
             margin-top: 50px;
             text-align: center;
@@ -261,6 +368,10 @@
             flex-direction: column;
             align-items: center;
             gap: 10px;
+        }
+        
+        body.dark-theme footer {
+            color: rgba(128, 222, 234, 0.7);
         }
         
         .icp-link {
@@ -275,10 +386,19 @@
             border-radius: 8px;
         }
         
+        body.dark-theme .icp-link {
+            color: #4fc3f7;
+        }
+        
         .icp-link:hover {
             background: rgba(178, 235, 242, 0.4);
             color: #01579b;
             transform: translateY(-2px);
+        }
+        
+        body.dark-theme .icp-link:hover {
+            background: rgba(30, 60, 70, 0.4);
+            color: #80deea;
         }
         
         .features {
@@ -300,14 +420,26 @@
             gap: 5px;
         }
         
+        body.dark-theme .feature {
+            background: rgba(50, 60, 70, 0.3);
+        }
+        
         .success {
             color: #00838f;
             font-weight: bold;
         }
         
+        body.dark-theme .success {
+            color: #80deea;
+        }
+        
         .error {
             color: #d32f2f;
             font-weight: bold;
+        }
+        
+        body.dark-theme .error {
+            color: #f44336;
         }
         
         .status-indicator {
@@ -349,6 +481,11 @@
             color: #854d0e;
         }
         
+        body.dark-theme .mobile-warning {
+            background: rgba(180, 140, 0, 0.3);
+            color: #ffd54f;
+        }
+        
         .compatibility-toggle {
             display: flex;
             align-items: center;
@@ -356,6 +493,10 @@
             margin-top: 10px;
             color: #00838f;
             font-size: 0.9rem;
+        }
+        
+        body.dark-theme .compatibility-toggle {
+            color: #80deea;
         }
         
         .toggle-switch {
@@ -403,6 +544,10 @@
             transform: translateX(26px);
         }
         
+        body.dark-theme input:checked + .toggle-slider {
+            background-color: #4fc3f7;
+        }
+        
         .compatibility-info {
             margin-top: 5px;
             font-size: 0.8rem;
@@ -410,6 +555,174 @@
             padding: 5px;
             background: rgba(178, 235, 242, 0.3);
             border-radius: 8px;
+        }
+        
+        body.dark-theme .compatibility-info {
+            background: rgba(30, 60, 70, 0.3);
+        }
+        
+        /* 设置按钮样式 */
+        .settings-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #0277bd;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        body.dark-theme .settings-btn {
+            background: rgba(50, 50, 60, 0.7);
+            color: #4fc3f7;
+        }
+        
+        .settings-btn:hover {
+            background: white;
+            transform: rotate(90deg);
+        }
+        
+        body.dark-theme .settings-btn:hover {
+            background: rgba(70, 70, 80, 0.9);
+        }
+        
+        /* 设置面板样式 */
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 320px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            padding: 30px 20px;
+            z-index: 1000;
+            transition: right 0.4s ease;
+            overflow-y: auto;
+        }
+        
+        body.dark-theme .settings-panel {
+            background: rgba(30, 30, 40, 0.95);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+        }
+        
+        .settings-panel.active {
+            right: 0;
+        }
+        
+        .settings-panel h3 {
+            margin-bottom: 20px;
+            color: #0277bd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        body.dark-theme .settings-panel h3 {
+            color: #4fc3f7;
+        }
+        
+        .setting-group {
+            margin-bottom: 20px;
+        }
+        
+        .setting-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00838f;
+            font-weight: 600;
+        }
+        
+        body.dark-theme .setting-group label {
+            color: #80deea;
+        }
+        
+        .setting-group select, 
+        .setting-group input[type="color"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.9);
+            color: #333;
+        }
+        
+        body.dark-theme .setting-group select, 
+        body.dark-theme .setting-group input[type="color"] {
+            background: rgba(50, 50, 60, 0.9);
+            color: #f0f0f0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .color-pickers {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .color-picker {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .color-picker input {
+            height: 40px;
+            cursor: pointer;
+        }
+        
+        .color-picker span {
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        
+        .theme-options {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .theme-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(178, 235, 242, 0.3);
+            border: 1px solid rgba(2, 119, 189, 0.2);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        body.dark-theme .theme-btn {
+            background: rgba(30, 60, 70, 0.3);
+            border: 1px solid rgba(79, 195, 247, 0.2);
+        }
+        
+        .theme-btn.active {
+            background: rgba(3, 169, 244, 0.3);
+            border-color: #039be5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(3, 169, 244, 0.2);
+        }
+        
+        body.dark-theme .theme-btn.active {
+            background: rgba(3, 169, 244, 0.4);
+            box-shadow: 0 4px 8px rgba(3, 169, 244, 0.3);
+        }
+        
+        .theme-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
         }
         
         /* Animations */
@@ -497,6 +810,10 @@
             .mobile-warning {
                 display: block;
             }
+            
+            .settings-panel {
+                width: 280px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -519,6 +836,11 @@
             #qrcode {
                 min-height: 180px;
             }
+            
+            .settings-btn {
+                top: -10px;
+                right: -5px;
+            }
         }
     </style>
 </head>
@@ -527,7 +849,51 @@
         <header>
             <h1><i class="fas fa-qrcode"></i> 二维码工具</h1>
             <p class="subtitle">扫描二维码或生成自定义二维码 - 简单、快捷、安全</p>
+            <button class="settings-btn" id="settingsBtn">
+                <i class="fas fa-cog"></i>
+            </button>
         </header>
+        
+        <!-- 设置面板 -->
+        <div class="settings-panel" id="settingsPanel">
+            <h3><i class="fas fa-sliders-h"></i> 设置</h3>
+            
+            <div class="setting-group">
+                <label>主题模式：</label>
+                <div class="theme-options">
+                    <div class="theme-btn active" data-theme="light">
+                        <i class="fas fa-sun"></i>
+                        <div>浅色</div>
+                    </div>
+                    <div class="theme-btn" data-theme="dark">
+                        <i class="fas fa-moon"></i>
+                        <div>深色</div>
+                    </div>
+                    <div class="theme-btn" data-theme="auto">
+                        <i class="fas fa-adjust"></i>
+                        <div>自动</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="setting-group">
+                <label>二维码颜色：</label>
+                <div class="color-pickers">
+                    <div class="color-picker">
+                        <input type="color" id="foregroundColor" value="#0277bd">
+                        <span>前景色</span>
+                    </div>
+                    <div class="color-picker">
+                        <input type="color" id="backgroundColor" value="#ffffff">
+                        <span>背景色</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="saveSettings" class="btn-secondary">
+                <i class="fas fa-save"></i> 保存设置
+            </button>
+        </div>
         
         <div class="main-content">
             <!-- 扫描二维码部分 -->
@@ -601,8 +967,7 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="action-buttons">
+ class="action-buttons">
                     <button id="downloadBtn" class="btn-secondary">
                         <i class="fas fa-download"></i> 下载二维码
                     </button>
@@ -648,6 +1013,17 @@
         const downloadBtn = document.getElementById('downloadBtn');
         const clearBtn = document.getElementById('clearBtn');
         const compatibilityToggle = document.getElementById('compatibilityToggle');
+        
+        // 设置相关元素
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const themeBtns = document.querySelectorAll('.theme-btn');
+        const foregroundColor = document.getElementById('foregroundColor');
+        const backgroundColor = document.getElementById('backgroundColor');
+        const saveSettingsBtn = document.getElementById('saveSettings');
+        
+        // 修复二维码生成问题
+        let qrCodeInstance = null;
         
         // 开启摄像头
         async function startCameraWithFallback() {
@@ -818,7 +1194,7 @@
             requestAnimationFrame(scanQRCode);
         }
         
-        // 生成二维码
+        // 生成二维码（修复版）
         function generateQRCode() {
             const content = qrContent.value.trim();
             
@@ -831,19 +1207,78 @@
             // 清除现有二维码
             qrcodeDiv.innerHTML = '';
             
-            // 生成新二维码
-            try {
-                new QRCode(qrcodeDiv, {
-                    text: content,
-                    width: 200,
-                    height: 200,
-                    colorDark: "#0277bd",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-            } catch (err) {
-                qrcodeDiv.innerHTML = '<div class="error">生成二维码失败：内容过长或包含特殊字符</div>';
+            // 获取颜色值
+            const fgColor = foregroundColor.value;
+            const bgColor = backgroundColor.value;
+            
+            // 验证内容长度
+            if (content.length > 1024) {
+                // 内容过长，进行分段处理
+                handleLongContent(content, fgColor, bgColor);
+                return;
             }
+            
+            // 尝试创建二维码
+            try {
+                createSingleQR(content, fgColor, bgColor);
+            } catch (err) { // 处理其他可能错误
+                if (err.message.includes('overflow') || err.message.includes('special')) {
+                    handleLongContent(content, fgColor, bgColor);
+                } else {
+                    console.error("二维码生成错误:", err);
+                    const chunks = splitContent(content);
+                    
+                    chunks.forEach(chunk => {
+                        const container = document.createElement('div');
+                        qrcodeDiv.appendChild(container);
+                        createSingleQR(chunk, fgColor, bgColor, container);
+                    });
+                }
+            }
+        }
+        
+        // 处理长内容的方法
+        function handleLongContent(content, fgColor, bgColor) {
+            console.log("检测到长内容，启动分段机制");
+            qrcodeDiv.innerHTML = '<div class="compatibility-info" style="text-align:center">检测到长内容，已分段生成长二维码</div>';
+            const chunks = splitContent(content);
+            const container = document.createElement('div');
+            qrcodeDiv.appendChild(container);
+            
+            const qrContainer = document.createElement('div');
+            container.appendChild(qrContainer);
+            
+            try {
+                createSingleQR(content.substr(0, 200), fgColor, bgColor, qrContainer);
+            } catch (e) {
+                // 创建单段失败时降级
+                chunks.forEach(chunk => {
+                    const container = document.createElement('div');
+                    qrcodeDiv.appendChild(container);
+                    createSingleQR(chunk, fgColor, bgColor, container);
+                });
+            }
+        }
+        
+        // 分割长文本
+        function splitContent(content, chunkSize = 500) {
+            const chunks = [];
+            for (let i = 0; i < content.length; i += chunkSize) {
+                chunks.push(content.substring(i, i + chunkSize));
+            }
+            return chunks;
+        }
+        
+        // 创建单段二维码
+        function createSingleQR(content, fgColor, bgColor, container = qrcodeDiv) {
+            qrCodeInstance = new QRCode(container, {
+                text: content,
+                width: 200,
+                height: 200,
+                colorDark: fgColor,
+                colorLight: bgColor,
+                correctLevel: QRCode.CorrectLevel.L
+            });
         }
         
         // 下载二维码
@@ -888,7 +1323,66 @@
         // 清除生成的二维码
         clearBtn.addEventListener('click', () => {
             qrContent.value = '';
+            qrcodeDiv.innerHTML = '<div class="qr-placeholder"><i class="fas fa-qrcode"></i><p>请输入内容生成二维码</p></div>';
+        });
+        
+        // 修复主题函数
+        function applyTheme(theme) {
+            // 移除现有主题类
+            document.body.classList.remove('light-theme', 'dark-theme');
+            
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+            } else if (theme === 'light') {
+                document.body.classList.remove('dark-theme');
+            } else {
+                // 自动模式 - 跟随系统
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.body.classList.add('dark-theme');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                }
+            }
+        }
+        
+        // 设置面板控制
+        settingsBtn.addEventListener('click', () => {
+            settingsPanel.classList.toggle('active');
+        });
+        
+        // 主题按钮点击事件
+        themeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 移除所有活动状态
+                themeBtns.forEach(b => b.classList.remove('active'));
+                // 添加当前活动状态
+                btn.classList.add('active');
+            });
+        });
+        
+        // 保存设置
+        saveSettingsBtn.addEventListener('click', () => {
+            // 获取选中的主题
+            const selectedTheme = document.querySelector('.theme-btn.active').dataset.theme;
+            
+            // 保存主题
+            localStorage.setItem('theme', selectedTheme);
+            
+            // 保存颜色设置
+            localStorage.setItem('qrForegroundColor', foregroundColor.value);
+            localStorage.setItem('qrBackgroundColor', backgroundColor.value);
+            
+            // 应用设置
+            applyTheme(selectedTheme);
+            
+            // 重新生成二维码
             generateQRCode();
+            
+            // 关闭设置面板
+            settingsPanel.classList.remove('active');
+            
+            // 提示用户
+            alert('设置已保存！');
         });
         
         // 页面加载时初始化
@@ -901,8 +1395,26 @@
             cameraPlaceholder.style.display = 'flex';
             scanAnimation.style.display = 'none';
             
-            // 初始生成二维码
-            generateQRCode();
+            // 加载保存的设置
+            const savedTheme = localStorage.getItem('theme') || 'auto';
+            const savedFgColor = localStorage.getItem('qrForegroundColor') || '#0277bd';
+            const savedBgColor = localStorage.getItem('qrBackgroundColor') || '#ffffff';
+            
+            // 应用主题
+            applyTheme(savedTheme);
+            
+            // 设置主题按钮状态
+            themeBtns.forEach(btn => {
+                if (btn.dataset.theme === savedTheme) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // 设置颜色选择器
+            foregroundColor.value = savedFgColor;
+            backgroundColor.value = savedBgColor;
             
             // 添加输入事件监听器
             qrContent.addEventListener('input', generateQRCode);
@@ -910,6 +1422,17 @@
             // 添加事件监听器
             startCameraBtn.addEventListener('click', startCameraWithFallback);
             stopCameraBtn.addEventListener('click', stopCamera);
+            downloadBtn.addEventListener('click', () => window.requestAnimationFrame(generateQRCode));
+            
+            // 初始生成二维码
+            generateQRCode();
+            
+            // 监听系统主题变化（自动模式）
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (localStorage.getItem('theme') === 'auto') {
+                    applyTheme('auto');
+                }
+            });
         });
     </script>
 </body>
