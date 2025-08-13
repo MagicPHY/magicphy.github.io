@@ -709,23 +709,96 @@
             border-color: #4a5568;
         }
         
-        .exclude-option {
+        /* 排除学号设置新样式 */
+        .exclude-container {
             margin-top: 15px;
         }
         
-        #exclude-numbers {
-            width: 100%;
+        .exclude-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .exclude-title {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .exclude-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .exclude-control-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .exclude-control-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .exclude-control-btn:hover:not(:disabled) {
+            background: var(--button-hover);
+            transform: scale(1.1);
+        }
+        
+        .exclude-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .exclude-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .exclude-item input {
+            flex: 1;
             padding: 10px;
             border-radius: 8px;
             border: 1px solid #ddd;
-            margin-top: 8px;
             font-size: 1rem;
         }
         
-        .dark-mode #exclude-numbers {
+        .dark-mode .exclude-item input {
             background: #2d3748;
             color: #f0f8ff;
             border-color: #4a5568;
+        }
+        
+        .remove-exclude-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-exclude-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
         }
         
         /* 卡密验证界面 */
@@ -886,6 +959,30 @@
             .auth-title {
                 font-size: 2rem;
             }
+            
+            /* 移动端设置优化 */
+            .setting-option {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px 0;
+            }
+            
+            .range-option {
+                margin-top: 10px;
+                width: 100%;
+            }
+            
+            .range-input {
+                width: 100%;
+            }
+            
+            .exclude-controls {
+                gap: 5px;
+            }
+            
+            .exclude-item input {
+                padding: 8px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -963,6 +1060,43 @@
             
             .info p {
                 font-size: 1rem;
+            }
+            
+            /* 移动端设置优化 */
+            .modal-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .setting-option label {
+                font-size: 1rem;
+                margin-bottom: 8px;
+            }
+            
+            .switch {
+                width: 50px;
+                height: 28px;
+            }
+            
+            .slider:before {
+                width: 22px;
+                height: 22px;
+            }
+            
+            .color-option {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .exclude-control-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 0.9rem;
+            }
+            
+            .remove-exclude-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -1101,11 +1235,27 @@
                 </div>
             </div>
             
-            <!-- 排除学号设置 -->
+            <!-- 排除学号设置（新版本） -->
             <div class="setting-option">
-                <label for="exclude-numbers">排除学号</label>
-                <div class="exclude-option">
-                    <input type="text" id="exclude-numbers" placeholder="例如:27,35">
+                <label>排除学号</label>
+                <div class="exclude-container">
+                    <div class="exclude-header">
+                        <div class="exclude-title">排除以下学号：</div>
+                        <div class="exclude-controls">
+                            <button class="exclude-control-btn" id="add-exclude-btn" title="添加排除项">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="exclude-control-btn" id="remove-exclude-btn" title="移除排除项" disabled>
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="exclude-inputs" id="exclude-inputs-container">
+                        <!-- 动态添加的输入框 -->
+                        <div class="exclude-item">
+                            <input type="number" class="exclude-input" min="1" max="100" placeholder="输入学号">
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -1219,7 +1369,11 @@
             const customColorInput = document.getElementById('custom-color');
             const minNumberInput = document.getElementById('min-number');
             const maxNumberInput = document.getElementById('max-number');
-            const excludeNumbersInput = document.getElementById('exclude-numbers');
+            
+            // 新增的排除学号元素
+            const excludeInputsContainer = document.getElementById('exclude-inputs-container');
+            const addExcludeBtn = document.getElementById('add-exclude-btn');
+            const removeExcludeBtn = document.getElementById('remove-exclude-btn');
             
             // 初始化设置
             let settings = {
@@ -1298,15 +1452,6 @@
                 } while (exclude.includes(randomNum));
                 
                 return randomNum;
-            }
-            
-            // 解析排除学号
-            function parseExcludeNumbers(input) {
-                if (!input.trim()) return [];
-                
-                return input.split(',')
-                    .map(num => parseInt(num.trim()))
-                    .filter(num => !isNaN(num) && num >= settings.minNumber && num <= settings.maxNumber);
             }
             
             // 开始冷却计时器（3秒）
@@ -1441,15 +1586,15 @@
                 // 更新按钮渐变
                 const primaryColor = settings.themeColor;
                 const darkerColor = shadeColor(primaryColor, -30);
-                document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(135deg, ${primaryColor} 0%, ${darkerColor} 100%)`);
+                document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(135deg, ${primaryColor} 0%, ${darkerColor} 100%`);
                 
                 // 更新结果框渐变
                 const lightColor = shadeColor(primaryColor, 40); // 增加40%亮度
                 const lighterColor = shadeColor(primaryColor, 70); // 增加70%亮度
-                document.documentElement.style.setProperty('--result-gradient', `linear-gradient(135deg, ${lightColor} 0%, ${lighterColor} 100%)`);
+                document.documentElement.style.setProperty('--result-gradient', `linear-gradient(135deg, ${lightColor} 0%, ${lighterColor} 100%`);
                 
                 // 更新历史项渐变
-                document.documentElement.style.setProperty('--history-item-gradient', `linear-gradient(135deg, ${primaryColor} 0%, ${darkerColor} 100%)`);
+                document.documentElement.style.setProperty('--history-item-gradient', `linear-gradient(135deg, ${primaryColor} 0%, ${darkerColor} 100%`);
             }
             
             // 辅助函数：调整颜色深浅
@@ -1493,7 +1638,6 @@
                     darkModeSelect.value = settings.darkMode;
                     minNumberInput.value = settings.minNumber;
                     maxNumberInput.value = settings.maxNumber;
-                    excludeNumbersInput.value = settings.excludeNumbers.join(', ');
                     
                     // 应用设置
                     applyDarkMode();
@@ -1506,10 +1650,75 @@
                             option.classList.add('active');
                         }
                     });
+                    
+                    // 加载排除学号设置
+                    renderExcludeInputs();
                 }
                 
                 // 更新设置显示
                 updateSettingsDisplay();
+            }
+            
+            // 渲染排除学号输入框
+            function renderExcludeInputs() {
+                excludeInputsContainer.innerHTML = '';
+                
+                // 确保至少有一个输入框
+                if (settings.excludeNumbers.length === 0) {
+                    settings.excludeNumbers = [''];
+                }
+                
+                // 创建输入框
+                settings.excludeNumbers.forEach((num, index) => {
+                    const excludeItem = document.createElement('div');
+                    excludeItem.classList.add('exclude-item');
+                    
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.min = settings.minNumber;
+                    input.max = settings.maxNumber;
+                    input.value = num;
+                    input.classList.add('exclude-input');
+                    input.placeholder = '输入学号';
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.classList.add('remove-exclude-btn');
+                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    removeBtn.addEventListener('click', () => {
+                        if (settings.excludeNumbers.length > 1) {
+                            settings.excludeNumbers.splice(index, 1);
+                            renderExcludeInputs();
+                            updateSettingsDisplay();
+                            saveSettings();
+                        }
+                    });
+                    
+                    // 添加输入监听
+                    input.addEventListener('change', function() {
+                        const value = parseInt(this.value);
+                        if (!isNaN(value)) {
+                            settings.excludeNumbers[index] = value;
+                        } else {
+                            settings.excludeNumbers[index] = '';
+                        }
+                        updateSettingsDisplay();
+                        saveSettings();
+                    });
+                    
+                    excludeItem.appendChild(input);
+                    excludeItem.appendChild(removeBtn);
+                    excludeInputsContainer.appendChild(excludeItem);
+                });
+                
+                // 更新按钮状态
+                updateExcludeButtons();
+            }
+            
+            // 更新排除学号按钮状态
+            function updateExcludeButtons() {
+                const excludeCount = settings.excludeNumbers.length;
+                addExcludeBtn.disabled = excludeCount >= 10;
+                removeExcludeBtn.disabled = excludeCount <= 1;
             }
             
             // 按钮点击事件 - 生成随机学号
@@ -1522,7 +1731,6 @@
                 darkModeSelect.value = settings.darkMode;
                 minNumberInput.value = settings.minNumber;
                 maxNumberInput.value = settings.maxNumber;
-                excludeNumbersInput.value = settings.excludeNumbers.join(', ');
                 settingsModal.classList.add('active');
             });
             
@@ -1555,11 +1763,24 @@
                 saveSettings();
             });
             
-            // 排除学号设置改变
-            excludeNumbersInput.addEventListener('change', function() {
-                settings.excludeNumbers = parseExcludeNumbers(this.value);
-                updateSettingsDisplay();
-                saveSettings();
+            // 添加排除学号按钮
+            addExcludeBtn.addEventListener('click', function() {
+                if (settings.excludeNumbers.length < 10) {
+                    settings.excludeNumbers.push('');
+                    renderExcludeInputs();
+                    updateSettingsDisplay();
+                    saveSettings();
+                }
+            });
+            
+            // 移除排除学号按钮
+            removeExcludeBtn.addEventListener('click', function() {
+                if (settings.excludeNumbers.length > 1) {
+                    settings.excludeNumbers.pop();
+                    renderExcludeInputs();
+                    updateSettingsDisplay();
+                    saveSettings();
+                }
             });
             
             // 重置历史记录
