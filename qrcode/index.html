@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>二维码扫描</title>
+    <title>二维码扫描器</title>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -14,7 +15,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background: linear-gradient(135deg, #e0f7fa 0%, #bbdefb 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -25,14 +26,14 @@
         .container {
             background-color: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 30px rgba(33, 150, 243, 0.2);
             width: 100%;
             max-width: 900px;
             overflow: hidden;
         }
         
         .header {
-            background: linear-gradient(to right, #4776E6, #8E54E9);
+            background: linear-gradient(to right, #29b6f6, #0288d1);
             color: white;
             text-align: center;
             padding: 25px;
@@ -60,11 +61,12 @@
             display: flex;
             justify-content: center;
             margin-bottom: 25px;
-            background: #f0f0f0;
+            background: #e3f2fd;
             border-radius: 50px;
             padding: 5px;
             width: fit-content;
             margin: 0 auto 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         .mode-btn {
@@ -76,12 +78,13 @@
             cursor: pointer;
             border-radius: 50px;
             transition: all 0.3s ease;
+            color: #0288d1;
         }
         
         .mode-btn.active {
-            background: #4776E6;
+            background: #0288d1;
             color: white;
-            box-shadow: 0 4px 8px rgba(71, 118, 230, 0.3);
+            box-shadow: 0 4px 8px rgba(2, 136, 209, 0.3);
         }
         
         .scanner-area {
@@ -95,17 +98,35 @@
             width: 100%;
             max-width: 500px;
             height: 350px;
-            background-color: #000;
+            background-color: #f5f5f5;
             border-radius: 15px;
             overflow: hidden;
             position: relative;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid #bbdefb;
         }
         
         #video {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: none;
+        }
+        
+        .camera-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #e3f2fd;
+            color: #0288d1;
+        }
+        
+        .camera-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 20px;
         }
         
         .scanner-overlay {
@@ -114,29 +135,29 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(0deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.3) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
+            display: none;
         }
         
         .scan-box {
             width: 70%;
             height: 200px;
-            border: 3px solid #4776E6;
+            border: 3px solid #29b6f6;
             border-radius: 10px;
             position: relative;
-            box-shadow: 0 0 20px #4776E6;
+            box-shadow: 0 0 20px rgba(41, 182, 246, 0.5);
         }
         
         .scan-line {
             position: absolute;
             width: 100%;
             height: 4px;
-            background: #4776E6;
+            background: #29b6f6;
             top: 0;
             animation: scan 2.5s infinite;
-            box-shadow: 0 0 10px rgba(71, 118, 230, 0.8);
+            box-shadow: 0 0 10px rgba(41, 182, 246, 0.8);
         }
         
         @keyframes scan {
@@ -150,6 +171,7 @@
             flex-direction: column;
             align-items: center;
             gap: 20px;
+            width: 100%;
         }
         
         .file-upload {
@@ -157,7 +179,7 @@
             width: 100%;
             max-width: 400px;
             height: 200px;
-            border: 3px dashed #4776E6;
+            border: 3px dashed #29b6f6;
             border-radius: 15px;
             display: flex;
             flex-direction: column;
@@ -165,24 +187,25 @@
             align-items: center;
             cursor: pointer;
             transition: all 0.3s;
-            background-color: #f8f9ff;
+            background-color: #e3f2fd;
         }
         
         .file-upload:hover {
-            background-color: #eef2ff;
+            background-color: #bbdefb;
             transform: translateY(-5px);
         }
         
         .file-upload i {
             font-size: 4rem;
-            color: #4776E6;
+            color: #0288d1;
             margin-bottom: 15px;
         }
         
         .file-upload p {
             font-size: 1.2rem;
-            color: #555;
+            color: #0288d1;
             text-align: center;
+            font-weight: 500;
         }
         
         #file-input {
@@ -200,12 +223,15 @@
             max-height: 300px;
             border-radius: 10px;
             display: none;
+            border: 2px solid #bbdefb;
         }
         
         .controls {
             display: flex;
             gap: 15px;
             margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         
         .btn {
@@ -222,35 +248,37 @@
         }
         
         .btn-primary {
-            background: linear-gradient(to right, #4776E6, #8E54E9);
+            background: linear-gradient(to right, #0288d1, #029be5);
             color: white;
-            box-shadow: 0 4px 15px rgba(71, 118, 230, 0.4);
+            box-shadow: 0 4px 15px rgba(2, 136, 209, 0.4);
         }
         
         .btn-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(71, 118, 230, 0.6);
+            box-shadow: 0 6px 20px rgba(2, 136, 209, 0.6);
+            background: linear-gradient(to right, #0277bd, #0288d1);
         }
         
         .btn-secondary {
-            background-color: #f0f0f0;
-            color: #555;
+            background-color: #e3f2fd;
+            color: #0288d1;
         }
         
         .btn-secondary:hover {
-            background-color: #e0e0e0;
+            background-color: #bbdefb;
         }
         
         .result-area {
             margin-top: 30px;
             padding: 25px;
-            background-color: #f8f9ff;
+            background-color: #e3f2fd;
             border-radius: 15px;
             display: none;
+            border: 2px solid #bbdefb;
         }
         
         .result-area h2 {
-            color: #4776E6;
+            color: #0288d1;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
@@ -261,7 +289,7 @@
             padding: 15px;
             background-color: white;
             border-radius: 10px;
-            border-left: 4px solid #4776E6;
+            border-left: 4px solid #0288d1;
             font-size: 1.1rem;
             min-height: 100px;
             word-break: break-all;
@@ -272,11 +300,34 @@
             padding: 15px;
             font-size: 1.1rem;
             font-weight: 500;
-            color: #4776E6;
+            color: #0288d1;
+            min-height: 30px;
         }
         
         .hidden {
             display: none;
+        }
+        
+        .result-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .result-link {
+            color: #0288d1;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            background: #e3f2fd;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .result-link:hover {
+            background: #bbdefb;
         }
         
         @media (max-width: 768px) {
@@ -292,25 +343,43 @@
                 padding: 12px 20px;
                 font-size: 1rem;
             }
+            
+            .mode-switch {
+                width: 100%;
+            }
+            
+            .mode-btn {
+                flex: 1;
+                padding: 10px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>二维码扫描器</h1>
+            <h1><i class="fas fa-qrcode"></i> 二维码扫描器</h1>
             <p>使用摄像头扫描二维码或上传图片进行解析</p>
         </div>
         
         <div class="scanner-container">
             <div class="mode-switch">
-                <button class="mode-btn active" data-mode="camera">摄像头扫描</button>
-                <button class="mode-btn" data-mode="upload">上传图片</button>
+                <button class="mode-btn active" data-mode="camera">
+                    <i class="fas fa-camera"></i> 摄像头扫描
+                </button>
+                <button class="mode-btn" data-mode="upload">
+                    <i class="fas fa-upload"></i> 上传图片
+                </button>
             </div>
             
             <div class="scanner-area">
                 <div class="camera-area">
                     <div id="camera-view">
+                        <div class="camera-placeholder">
+                            <i class="fas fa-camera"></i>
+                            <p>摄像头未启动</p>
+                        </div>
                         <video id="video" playsinline></video>
                         <div class="scanner-overlay">
                             <div class="scan-box">
@@ -322,7 +391,7 @@
                 
                 <div class="upload-area">
                     <div class="file-upload">
-                        <i>📁</i>
+                        <i class="fas fa-cloud-upload-alt"></i>
                         <p>点击或拖拽图片到此处上传</p>
                         <input type="file" id="file-input" accept="image/*">
                     </div>
@@ -331,13 +400,16 @@
                 
                 <div class="controls">
                     <button id="start-btn" class="btn btn-primary">
-                        <span>启动摄像头</span>
+                        <i class="fas fa-play"></i> <span>启动摄像头</span>
                     </button>
                     <button id="stop-btn" class="btn btn-secondary hidden">
-                        <span>停止扫描</span>
+                        <i class="fas fa-stop"></i> <span>停止扫描</span>
                     </button>
                     <button id="reset-btn" class="btn btn-secondary">
-                        <span>重置</span>
+                        <i class="fas fa-redo"></i> <span>重置</span>
+                    </button>
+                    <button id="test-btn" class="btn btn-secondary">
+                        <i class="fas fa-barcode"></i> <span>测试二维码</span>
                     </button>
                 </div>
             </div>
@@ -345,7 +417,7 @@
             <div class="status" id="status">准备就绪，请选择扫描模式</div>
             
             <div class="result-area">
-                <h2>扫描结果</h2>
+                <h2><i class="fas fa-check-circle"></i> 扫描结果</h2>
                 <div id="result-content"></div>
             </div>
         </div>
@@ -357,6 +429,7 @@
         const startBtn = document.getElementById('start-btn');
         const stopBtn = document.getElementById('stop-btn');
         const resetBtn = document.getElementById('reset-btn');
+        const testBtn = document.getElementById('test-btn');
         const statusText = document.getElementById('status');
         const resultContent = document.getElementById('result-content');
         const resultArea = document.querySelector('.result-area');
@@ -365,6 +438,8 @@
         const modeBtns = document.querySelectorAll('.mode-btn');
         const cameraArea = document.querySelector('.camera-area');
         const uploadArea = document.querySelector('.upload-area');
+        const scannerOverlay = document.querySelector('.scanner-overlay');
+        const cameraPlaceholder = document.querySelector('.camera-placeholder');
         
         let stream = null;
         let scanActive = false;
@@ -403,6 +478,11 @@
         // 重置
         resetBtn.addEventListener('click', resetScanner);
         
+        // 测试按钮
+        testBtn.addEventListener('click', () => {
+            showResult("https://github.com/DeepSeek-AI", true);
+        });
+        
         // 文件上传处理
         fileInput.addEventListener('change', handleFileUpload);
         
@@ -415,19 +495,32 @@
                 .then(function(s) {
                     stream = s;
                     video.srcObject = stream;
-                    video.play();
                     
-                    startBtn.classList.add('hidden');
-                    stopBtn.classList.remove('hidden');
-                    scanActive = true;
-                    statusText.textContent = '扫描中...请将二维码对准扫描框';
+                    // 显示视频元素
+                    video.style.display = 'block';
+                    cameraPlaceholder.style.display = 'none';
+                    scannerOverlay.style.display = 'flex';
                     
-                    // 开始扫描
-                    scanQRCode();
+                    video.play().then(() => {
+                        startBtn.classList.add('hidden');
+                        stopBtn.classList.remove('hidden');
+                        scanActive = true;
+                        statusText.textContent = '扫描中...请将二维码对准扫描框';
+                        
+                        // 开始扫描
+                        scanQRCode();
+                    }).catch(err => {
+                        console.error("视频播放错误: ", err);
+                        statusText.textContent = '无法播放视频: ' + err.message;
+                    });
                 })
                 .catch(function(err) {
                     console.error("摄像头访问错误: ", err);
                     statusText.textContent = '无法访问摄像头: ' + err.message;
+                    
+                    if (err.name === 'NotFoundError' || err.name === 'OverconstrainedError') {
+                        statusText.textContent += '。请确保摄像头已连接并授予访问权限。';
+                    }
                 });
         }
         
@@ -444,6 +537,10 @@
                 animationFrame = null;
             }
             
+            video.style.display = 'none';
+            cameraPlaceholder.style.display = 'flex';
+            scannerOverlay.style.display = 'none';
+            
             startBtn.classList.remove('hidden');
             stopBtn.classList.add('hidden');
             statusText.textContent = '扫描已停止';
@@ -453,28 +550,40 @@
         function scanQRCode() {
             if (!scanActive) return;
             
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            
-            // 设置canvas尺寸与视频相同
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            
-            // 绘制当前视频帧
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // 获取图像数据
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            
-            // 使用jsQR解码
-            const code = jsQR(imageData.data, imageData.width, imageData.height);
-            
-            if (code) {
-                // 找到二维码
-                stopScanning();
-                showResult(code.data);
+            // 确保视频已准备好
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                
+                // 设置canvas尺寸与视频相同
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                // 绘制当前视频帧
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                try {
+                    // 获取图像数据
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    
+                    // 使用jsQR解码
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+                    
+                    if (code) {
+                        // 找到二维码
+                        stopScanning();
+                        showResult(code.data);
+                    } else {
+                        // 继续扫描
+                        animationFrame = requestAnimationFrame(scanQRCode);
+                    }
+                } catch (error) {
+                    console.error('扫描过程中出错:', error);
+                    statusText.textContent = '扫描错误: ' + error.message;
+                    animationFrame = requestAnimationFrame(scanQRCode);
+                }
             } else {
-                // 继续扫描
+                // 视频尚未准备好，继续等待
                 animationFrame = requestAnimationFrame(scanQRCode);
             }
         }
@@ -511,33 +620,80 @@
                 // 绘制图片
                 context.drawImage(img, 0, 0, canvas.width, canvas.height);
                 
-                // 获取图像数据
-                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                
-                // 使用jsQR解码
-                const code = jsQR(imageData.data, imageData.width, imageData.height);
-                
-                if (code) {
-                    showResult(code.data);
-                } else {
-                    statusText.textContent = '未检测到二维码，请尝试其他图片';
-                    resultArea.style.display = 'none';
+                try {
+                    // 获取图像数据
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    
+                    // 使用jsQR解码
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+                    
+                    if (code) {
+                        showResult(code.data);
+                    } else {
+                        statusText.textContent = '未检测到二维码，请尝试其他图片';
+                        resultArea.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('图片解码过程中出错:', error);
+                    statusText.textContent = '解码错误: ' + error.message;
                 }
+            };
+            img.onerror = function() {
+                statusText.textContent = '图片加载失败，请重试';
             };
             img.src = src;
         }
         
         // 显示结果
-        function showResult(data) {
-            resultContent.textContent = data;
+        function showResult(data, isTest = false) {
+            resultContent.innerHTML = `<p>${data}</p>`;
             
             // 检查结果是否是URL
-            if (data.startsWith('http://') || data.startsWith('https://')) {
-                resultContent.innerHTML = `${data}<br><br><a href="${data}" target="_blank" class="btn btn-primary" style="display: inline-flex; margin-top: 15px;">访问链接</a>`;
+            const urlPattern = /^(https?:\/\/|www\.)[^\s]+/i;
+            if (urlPattern.test(data)) {
+                let url = data;
+                if (!data.startsWith('http')) {
+                    url = 'https://' + data;
+                }
+                
+                resultContent.innerHTML += `
+                    <div class="result-actions">
+                        <a href="${url}" target="_blank" class="result-link">
+                            <i class="fas fa-external-link-alt"></i> 访问链接
+                        </a>
+                        <button onclick="copyToClipboard('${url}')" class="result-link">
+                            <i class="fas fa-copy"></i> 复制链接
+                        </button>
+                    </div>
+                `;
+            } else {
+                resultContent.innerHTML += `
+                    <div class="result-actions">
+                        <button onclick="copyToClipboard('${data}')" class="result-link">
+                            <i class="fas fa-copy"></i> 复制内容
+                        </button>
+                    </div>
+                `;
             }
             
             resultArea.style.display = 'block';
-            statusText.textContent = '二维码解析成功！';
+            statusText.textContent = isTest ? '测试二维码解析成功！' : '二维码解析成功！';
+        }
+        
+        // 复制到剪贴板
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    const originalText = statusText.textContent;
+                    statusText.textContent = '已复制到剪贴板！';
+                    setTimeout(() => {
+                        statusText.textContent = originalText;
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('复制失败:', err);
+                    statusText.textContent = '复制失败，请手动复制';
+                });
         }
         
         // 重置扫描器
