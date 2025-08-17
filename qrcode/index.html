@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP-二维码扫描器</title>
+    <title>VIP-二维码扫描</title>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-            color: #e6d8a7;
+            background: linear-gradient(135deg, #f9f2e6 0%, #f5e8c9 100%);
+            color: #5c4b37;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -25,10 +26,32 @@
         
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            background: rgba(255, 253, 247, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(175, 145, 85, 0.3);
+            padding: 30px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .vip-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #d4af37 0%, #f9e076 100%);
+            color: #fff;
+            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);
+            z-index: 10;
+            transform: rotate(5deg);
         }
         
         header {
@@ -36,34 +59,65 @@
             margin-bottom: 30px;
             padding: 20px;
             width: 100%;
-            border-bottom: 2px solid #d4af37;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 3.5rem;
+            color: #d4af37;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 10px;
+            color: #8a6d3b;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
             background: linear-gradient(to right, #d4af37, #f9e076, #d4af37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            border-radius: 2px;
         }
         
         .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.8;
+            font-size: 1.3rem;
+            opacity: 0.85;
+            margin-top: 25px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        
+        .main-content {
+            display: flex;
+            width: 100%;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .scanner-section {
+            flex: 1;
+            min-width: 300px;
         }
         
         .scanner-container {
             width: 100%;
-            max-width: 500px;
-            height: 400px;
-            margin: 20px auto;
+            height: 380px;
             position: relative;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            box-shadow: 0 10px 30px rgba(175, 145, 85, 0.25);
             border: 3px solid #d4af37;
-            background: #0f0f0f;
+            background: #f8f4e9;
         }
         
         #video {
@@ -92,7 +146,7 @@
             height: 70%;
             border: 3px solid #d4af37;
             border-radius: 10px;
-            box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.3);
         }
         
         .scan-line {
@@ -121,21 +175,24 @@
         }
         
         .btn {
-            padding: 12px 30px;
+            padding: 14px 35px;
             font-size: 1.1rem;
             border-radius: 50px;
             border: none;
-            background: linear-gradient(45deg, #d4af37, #f9e076, #d4af37);
-            color: #1a1a1a;
+            background: linear-gradient(45deg, #d4af37, #f9e076);
+            color: #5c3d0e;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.6);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
         }
         
         .btn:active {
@@ -143,172 +200,337 @@
         }
         
         .btn:disabled {
-            background: #555;
+            background: #d1d1d1;
+            color: #888;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
         
+        .info-section {
+            flex: 1;
+            min-width: 300px;
+            background: linear-gradient(to bottom, #fdf8ed, #fcf2e1);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(175, 145, 85, 0.2);
+            border: 2px solid #e6d4a9;
+        }
+        
+        .info-section h2 {
+            color: #8a6d3b;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e6d4a9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .instructions {
+            margin-bottom: 25px;
+        }
+        
+        .instructions ul {
+            padding-left: 25px;
+        }
+        
+        .instructions li {
+            margin: 12px 0;
+            line-height: 1.6;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .instructions li i {
+            color: #d4af37;
+            margin-top: 4px;
+        }
+        
         .result-container {
             width: 100%;
-            max-width: 600px;
-            background: rgba(15, 15, 15, 0.8);
+            background: #fdf9f0;
             border: 2px solid #d4af37;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
             display: none;
+            box-shadow: 0 5px 15px rgba(175, 145, 85, 0.1);
         }
         
         .result-container h2 {
             margin-bottom: 15px;
             text-align: center;
-            color: #f9e076;
+            color: #8a6d3b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         #result {
             word-break: break-all;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             line-height: 1.6;
             padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
             max-height: 200px;
             overflow-y: auto;
+            border: 1px solid #e6d4a9;
+            color: #5c4b37;
         }
         
         .error-container {
             width: 100%;
-            max-width: 600px;
-            background: rgba(120, 30, 30, 0.8);
-            border: 2px solid #ff4d4d;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
+            background: rgba(255, 235, 235, 0.9);
+            border: 2px solid #e53935;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
             display: none;
+            box-shadow: 0 5px 15px rgba(229, 57, 53, 0.1);
         }
         
         .error-container h2 {
             margin-bottom: 15px;
             text-align: center;
-            color: #ff9999;
+            color: #c62828;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         #error-message {
             font-size: 1.1rem;
             line-height: 1.6;
             padding: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            border: 1px solid #ffcdd2;
         }
         
         .status {
             margin: 15px 0;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 15px;
+            border-radius: 12px;
             text-align: center;
             font-size: 1.1rem;
             display: none;
+            width: 100%;
         }
         
         .status.loading {
-            background: rgba(212, 175, 55, 0.2);
-            border: 1px solid #d4af37;
+            background: rgba(212, 175, 55, 0.15);
+            border: 2px solid #d4af37;
+            color: #8a6d3b;
         }
         
         .status.error {
-            background: rgba(120, 30, 30, 0.3);
-            border: 1px solid #ff4d4d;
+            background: rgba(229, 57, 53, 0.1);
+            border: 2px solid #e53935;
+            color: #c62828;
         }
         
-        .instructions {
-            max-width: 600px;
-            margin: 20px 0;
-            padding: 15px;
-            background: rgba(15, 15, 15, 0.5);
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.6);
             border-radius: 10px;
-            border-left: 4px solid #d4af37;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #e6d4a9;
+            transition: transform 0.3s ease;
         }
         
-        .instructions h3 {
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(175, 145, 85, 0.2);
+        }
+        
+        .feature i {
+            font-size: 2.5rem;
+            color: #d4af37;
+            margin-bottom: 15px;
+        }
+        
+        .feature h3 {
+            color: #8a6d3b;
             margin-bottom: 10px;
-            color: #f9e076;
-        }
-        
-        .instructions ul {
-            padding-left: 20px;
-        }
-        
-        .instructions li {
-            margin: 8px 0;
-            line-height: 1.5;
         }
         
         footer {
-            margin-top: auto;
+            margin-top: 20px;
             padding: 20px;
             text-align: center;
             font-size: 0.9rem;
-            opacity: 0.7;
+            color: #8a6d3b;
+            opacity: 0.9;
+            width: 100%;
         }
         
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
             .scanner-container {
                 height: 300px;
             }
             
             h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
             .btn {
-                padding: 10px 20px;
+                padding: 12px 25px;
                 font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .scanner-container {
+                height: 250px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="vip-badge">VIP 尊享版</div>
+        
         <header>
-            <h1>VIP-二维码扫描器</h1>
+            <div class="logo">
+                <i class="fas fa-qrcode"></i>
+            </div>
+            <h1>VIP-二维码扫描</h1>
+            <p class="subtitle">专业二维码扫描解决方案，支持所有设备，提供尊贵VIP体验</p>
         </header>
         
-        <div class="scanner-container">
-            <video id="video" playsinline></video>
-            <div class="scan-overlay">
-                <div class="scan-frame">
-                    <div class="scan-line"></div>
+        <div class="main-content">
+            <div class="scanner-section">
+                <div class="scanner-container">
+                    <video id="video" playsinline></video>
+                    <div class="scan-overlay">
+                        <div class="scan-frame">
+                            <div class="scan-line"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="start-btn" class="btn">
+                        <i class="fas fa-play"></i>开始扫描
+                    </button>
+                    <button id="stop-btn" class="btn" disabled>
+                        <i class="fas fa-stop"></i>停止扫描
+                    </button>
+                    <button id="switch-camera" class="btn">
+                        <i class="fas fa-sync-alt"></i>切换摄像头
+                    </button>
+                </div>
+                
+                <div class="status" id="status"></div>
+                
+                <div class="result-container" id="result-container">
+                    <h2><i class="fas fa-check-circle"></i>扫描结果</h2>
+                    <div id="result"></div>
+                </div>
+                
+                <div class="error-container" id="error-container">
+                    <h2><i class="fas fa-exclamation-triangle"></i>错误信息</h2>
+                    <div id="error-message"></div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h2><i class="fas fa-info-circle"></i>使用说明</h2>
+                
+                <div class="instructions">
+                    <ul>
+                        <li>
+                            <i class="fas fa-camera"></i>
+                            <div>点击"开始扫描"按钮启动摄像头</div>
+                        </li>
+                        <li>
+                            <i class="fas fa-qrcode"></i>
+                            <div>将二维码置于扫描框内，保持稳定</div>
+                        </li>
+                        <li>
+                            <i class="fas fa-lightbulb"></i>
+                            <div>在光线充足的环境下使用效果更佳</div>
+                        </li>
+                        <li>
+                            <i class="fas fa-mobile-alt"></i>
+                            <div>支持前后摄像头切换，适配各种设备</div>
+                        </li>
+                        <li>
+                            <i class="fas fa-shield-alt"></i>
+                            <div>所有操作均在本地完成，保护您的隐私</div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <h2><i class="fas fa-star"></i>VIP 专属功能</h2>
+                
+                <div class="feature-grid">
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <h3>极速识别</h3>
+                        <p>毫秒级二维码识别速度</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-sun"></i>
+                        <h3>智能补光</h3>
+                        <p>低光环境自动优化</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-sync"></i>
+                        <h3>多摄像头</h3>
+                        <p>支持前后摄像头切换</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>隐私保护</h3>
+                        <p>数据永不离开设备</p>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="status" id="status"></div>
-        
-        <div class="controls">
-            <button id="start-btn" class="btn">开始扫描</button>
-            <button id="stop-btn" class="btn" disabled>停止扫描</button>
-            <button id="switch-camera" class="btn">切换摄像头</button>
-        </div>
-        
-        <div class="instructions">
-            <h3>使用说明：</h3>
-            <ul>
-                <li>点击"开始扫描"按钮启动摄像头</li>
-                <li>将二维码置于扫描框内，保持稳定</li>
-                <li>识别结果将自动显示在下方</li>
-                <li>如遇问题，请确保已授予摄像头访问权限</li>
-                <li>在光线充足的环境下使用效果更佳</li>
-            </ul>
-        </div>
-        
-        <div class="result-container" id="result-container">
-            <h2>扫描结果</h2>
-            <div id="result"></div>
-        </div>
-        
-        <div class="error-container" id="error-container">
-            <h2>错误信息</h2>
-            <div id="error-message"></div>
-        </div>
+        <footer>
+            VIP-二维码扫描器 © 2023 | 专业版提供尊贵扫描体验
+        </footer>
     </div>
 
     <script>
@@ -329,6 +551,7 @@
         let currentFacingMode = 'environment'; // 默认后置摄像头
         let devices = [];
         let currentDeviceIndex = 0;
+        let animationFrame = null;
         
         // 更新状态显示
         function updateStatus(message, type) {
@@ -350,10 +573,10 @@
             resultContainer.style.display = 'none';
             updateStatus(message, 'error');
             
-            // 5秒后自动隐藏错误
+            // 10秒后自动隐藏错误
             setTimeout(() => {
                 errorContainer.style.display = 'none';
-            }, 5000);
+            }, 10000);
         }
         
         // 显示结果
@@ -365,12 +588,20 @@
         
         // 获取摄像头访问权限
         async function initCamera(facingMode = 'environment') {
-            updateStatus('正在访问摄像头...', 'loading');
+            updateStatus('正在访问摄像头，请稍候...', 'loading');
             
             // 停止当前流
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
             }
+            
+            // 清除之前的扫描循环
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+            
+            // 重置视频元素
+            video.srcObject = null;
             
             const constraints = {
                 video: {
@@ -387,11 +618,13 @@
                 // 启用停止按钮
                 stopBtn.disabled = false;
                 startBtn.disabled = true;
+                switchCameraBtn.disabled = false;
                 scanning = true;
                 
-                // 获取可用设备列表
-                devices = await navigator.mediaDevices.enumerateDevices();
-                devices = devices.filter(device => device.kind === 'videoinput');
+                // 等待视频加载
+                await new Promise((resolve) => {
+                    video.onloadedmetadata = resolve;
+                });
                 
                 // 开始扫描
                 scanQRCode();
@@ -401,24 +634,23 @@
                 
                 // 根据错误类型显示不同的错误信息
                 let errorMsg = '无法访问摄像头: ';
-                switch (err.name) {
-                    case 'NotFoundError':
-                    case 'OverconstrainedError':
-                        errorMsg += '未找到摄像头设备';
-                        break;
-                    case 'NotAllowedError':
-                        errorMsg += '用户拒绝了摄像头访问权限';
-                        break;
-                    case 'NotReadableError':
-                        errorMsg += '摄像头被占用或无法访问';
-                        break;
-                    default:
-                        errorMsg += '未知错误: ' + err.message;
+                
+                if (err.name === 'NotAllowedError') {
+                    errorMsg = '摄像头访问被拒绝。请允许浏览器访问摄像头权限，然后重试。';
+                } else if (err.name === 'NotFoundError' || err.name === 'OverconstrainedError') {
+                    errorMsg = '未找到可用的摄像头设备。请确保您的设备已连接摄像头。';
+                } else if (err.name === 'NotReadableError') {
+                    errorMsg = '摄像头被占用或无法访问。请关闭其他使用摄像头的应用后重试。';
+                } else if (err.name === 'SecurityError') {
+                    errorMsg = '出于安全原因，浏览器禁止访问摄像头。请确保页面通过HTTPS加载。';
+                } else {
+                    errorMsg = `无法访问摄像头: ${err.message || '未知错误'}`;
                 }
                 
                 showError(errorMsg);
                 stopBtn.disabled = true;
                 startBtn.disabled = false;
+                switchCameraBtn.disabled = true;
                 updateStatus();
             }
         }
@@ -440,6 +672,11 @@
                 stream.getTracks().forEach(track => track.stop());
             }
             
+            // 清除之前的扫描循环
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+            
             try {
                 stream = await navigator.mediaDevices.getUserMedia({
                     video: { deviceId: { exact: deviceId } },
@@ -447,16 +684,30 @@
                 });
                 
                 video.srcObject = stream;
+                
+                // 等待视频加载
+                await new Promise((resolve) => {
+                    video.onloadedmetadata = resolve;
+                });
+                
+                // 开始扫描
+                scanQRCode();
                 updateStatus('摄像头已切换，正在扫描二维码...', 'loading');
             } catch (err) {
                 console.error('摄像头切换错误:', err);
-                showError('摄像头切换失败: ' + err.message);
+                showError('摄像头切换失败: ' + (err.message || '未知错误'));
             }
         }
         
         // 二维码扫描
         function scanQRCode() {
             if (!scanning) return;
+            
+            // 确保视频已准备好
+            if (video.readyState < video.HAVE_CURRENT_DATA) {
+                animationFrame = requestAnimationFrame(scanQRCode);
+                return;
+            }
             
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -479,12 +730,11 @@
             // 如果找到二维码
             if (code) {
                 showResult(code.data);
-                
-                // 停止扫描（可选）
-                // stopScanning();
-            } else if (scanning) {
-                // 继续扫描
-                requestAnimationFrame(scanQRCode);
+            }
+            
+            // 继续扫描
+            if (scanning) {
+                animationFrame = requestAnimationFrame(scanQRCode);
             }
         }
         
@@ -500,7 +750,13 @@
             
             startBtn.disabled = false;
             stopBtn.disabled = true;
+            switchCameraBtn.disabled = true;
             updateStatus();
+            
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
         }
         
         // 事件监听
@@ -514,6 +770,7 @@
         
         // 初始状态
         stopBtn.disabled = true;
+        switchCameraBtn.disabled = true;
         
         // 检测浏览器兼容性
         window.addEventListener('load', () => {
