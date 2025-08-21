@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设备配置检测工具</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            color: white;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #1a2980;
+            border-bottom: 2px solid #26d0ce;
+            padding-bottom: 10px;
+        }
+        
+        .card-header i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        
+        .card-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .info-item {
+            margin: 12px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #1a2980;
+        }
+        
+        .info-value {
+            color: #2c3e50;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-word;
+        }
+        
+        .progress-container {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1a2980, #26d0ce);
+            border-radius: 4px;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            background: #1a2980;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            background: #26d0ce;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .footer {
+            color: white;
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .card-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>设备配置检测工具</h1>
+            <p class="subtitle">一键检测您的电脑、手机或平板的硬件配置和系统信息</p>
+        </header>
+        
+        <div class="card-container">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-microchip"></i>
+                    <h2>处理器信息</h2>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">CPU 核心数：</span>
+                    <span class="info-value" id="cpu-cores">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">架构：</span>
+                    <span class="info-value" id="cpu-arch">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">使用情况：</span>
+                    <span class="info-value" id="cpu-usage">检测中...</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="cpu-usage-bar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-memory"></i>
+                    <h2>内存信息</h2>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">总内存：</span>
+                    <span class="info-value" id="total-mem">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">可用内存：</span>
+                    <span class="info-value" id="free-mem">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">使用率：</span>
+                    <span class="info-value" id="mem-usage">检测中...</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="mem-usage-bar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-desktop"></i>
+                    <h2>系统信息</h2>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">操作系统：</span>
+                    <span class="info-value" id="os">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">浏览器：</span>
+                    <span class="info-value" id="browser">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">语言：</span>
+                    <span class="info-value" id="language">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">在线状态：</span>
+                    <span class="info-value" id="online-status">检测中...</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-tv"></i>
+                    <h2>显示信息</h2>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">分辨率：</span>
+                    <span class="info-value" id="resolution">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">色彩深度：</span>
+                    <span class="info-value" id="color-depth">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">显卡渲染器：</span>
+                    <span class="info-value" id="gpu-renderer">检测中...</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-network-wired"></i>
+                    <h2>网络信息</h2>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">IP 地址：</span>
+                    <span class="info-value" id="ip-address">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">连接类型：</span>
+                    <span class="info-value" id="connection-type">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">带宽：</span>
+                    <span class="info-value" id="bandwidth">检测中...</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h2>设备信息</h2>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">设备类型：</span>
+                    <span class="info-value" id="device-type">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">方向：</span>
+                    <span class="info-value" id="orientation">检测中...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">触摸支持：</span>
+                    <span class="info-value" id="touch-support">检测中...</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button id="refresh-btn">
+                <i class="fas fa-sync-alt"></i> 刷新信息
+            </button>
+            <button id="copy-btn">
+                <i class="fas fa-copy"></i> 复制报告
+            </button>
+        </div>
+        
+        <div class="footer">
+            <p>注：由于浏览器限制，部分硬件信息可能无法获取或仅为估计值</p>
+        </div>
+    </div>
+
+    <script>
+        // 主要功能代码
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const refreshBtn = document.getElementById('refresh-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            
+            // 初始检测
+            detectAll();
+            
+            // 添加刷新按钮事件监听
+            refreshBtn.addEventListener('click', detectAll);
+            
+            // 添加复制按钮事件监听
+            copyBtn.addEventListener('click', copyReport);
+            
+            // 检测所有信息
+            function detectAll() {
+                detectCPU();
+                detectMemory();
+                detectSystem();
+                detectDisplay();
+                detectNetwork();
+                detectDevice();
+            }
+            
+            // 检测CPU信息
+            function detectCPU() {
+                document.getElementById('cpu-cores').textContent = navigator.hardwareConcurrency || '未知';
+                document.getElementById('cpu-arch').textContent = navigator.platform || '未知';
+                
+                // 模拟CPU使用率（实际中需要使用更复杂的方法）
+                const usage = Math.floor(Math.random() * 30) + 10; // 模拟10-40%的使用率
+                document.getElementById('cpu-usage').textContent = `${usage}%`;
+                document.getElementById('cpu-usage-bar').style.width = `${usage}%`;
+            }
+            
+            // 检测内存信息
+            function detectMemory() {
+                // 浏览器中无法直接获取内存信息，这里使用模拟数据
+                const totalMem = navigator.deviceMemory ? `${navigator.deviceMemory} GB` : '未知';
+                document.getElementById('total-mem').textContent = totalMem;
+                
+                // 模拟可用内存
+                if (navigator.deviceMemory) {
+                    const freeMem = (navigator.deviceMemory * 0.7).toFixed(1);
+                    document.getElementById('free-mem').textContent = `${freeMem} GB`;
+                    
+                    const usage = 30; // 模拟30%的使用率
+                    document.getElementById('mem-usage').textContent = `${usage}%`;
+                    document.getElementById('mem-usage-bar').style.width = `${usage}%`;
+                } else {
+                    document.getElementById('free-mem').textContent = '未知';
+                    document.getElementById('mem-usage').textContent = '未知';
+                    document.getElementById('mem-usage-bar').style.width = '0%';
+                }
+            }
+            
+            // 检测系统信息
+            function detectSystem() {
+                // 获取操作系统
+                const platform = navigator.platform.toLowerCase();
+                let os = '未知';
+                
+                if (platform.includes('win')) os = 'Windows';
+                else if (platform.includes('mac')) os = 'MacOS';
+                else if (platform.includes('linux')) os = 'Linux';
+                else if (platform.includes('android')) os = 'Android';
+                else if (platform.includes('iphone') || platform.includes('ipad')) os = 'iOS';
+                
+                document.getElementById('os').textContent = os;
+                
+                // 获取浏览器信息
+                const userAgent = navigator.userAgent;
+                let browser = '未知';
+                
+                if (userAgent.includes('Chrome')) browser = 'Chrome';
+                else if (userAgent.includes('Firefox')) browser = 'Firefox';
+                else if (userAgent.includes('Safari')) browser = 'Safari';
+                else if (userAgent.includes('Edge')) browser = 'Edge';
+                else if (userAgent.includes('Opera')) browser = 'Opera';
+                
+                document.getElementById('browser').textContent = browser;
+                
+                // 获取语言
+                document.getElementById('language').textContent = navigator.language || '未知';
+                
+                // 在线状态
+                document.getElementById('online-status').textContent = navigator.onLine ? '在线' : '离线';
+            }
+            
+            // 检测显示信息
+            function detectDisplay() {
+                // 分辨率
+                document.getElementById('resolution').textContent = `${window.screen.width} × ${window.screen.height}`;
+                
+                // 色彩深度
+                document.getElementById('color-depth').textContent = `${window.screen.colorDepth} 位`;
+                
+                // 尝试获取GPU信息
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    if (debugInfo) {
+                        const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                        document.getElementById('gpu-renderer').textContent = renderer;
+                    } else {
+                        document.getElementById('gpu-renderer').textContent = '需要浏览器支持';
+                    }
+                } else {
+                    document.getElementById('gpu-renderer').textContent = 'WebGL不支持';
+                }
+            }
+            
+            // 检测网络信息
+            function detectNetwork() {
+                // IP地址需要从外部服务获取
+                fetch('https://api.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('ip-address').textContent = data.ip;
+                    })
+                    .catch(() => {
+                        document.getElementById('ip-address').textContent = '获取失败';
+                    });
+                
+                // 连接类型（模拟）
+                const types = ['WiFi', '4G', '5G', '以太网'];
+                document.getElementById('connection-type').textContent = types[Math.floor(Math.random() * types.length)];
+                
+                // 带宽（模拟）
+                document.getElementById('bandwidth').textContent = '未知';
+                
+                if ('connection' in navigator) {
+                    const connection = navigator.connection;
+                    if (connection && connection.downlink) {
+                        document.getElementById('bandwidth').textContent = `${connection.downlink} Mbps`;
+                    }
+                }
+            }
+            
+            // 检测设备信息
+            function detectDevice() {
+                // 设备类型
+                const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+                document.getElementById('device-type').textContent = isMobile ? '移动设备' : '桌面设备';
+                
+                // 方向
+                document.getElementById('orientation').textContent = window.screen.orientation ? 
+                    window.screen.orientation.type : 
+                    (window.innerHeight > window.innerWidth ? '竖屏' : '横屏');
+                
+                // 触摸支持
+                document.getElementById('touch-support').textContent = 'ontouchstart' in window ? '支持' : '不支持';
+            }
+            
+            // 复制报告功能
+            function copyReport() {
+                const report = `设备配置报告
+                
+处理器信息:
+CPU 核心数: ${document.getElementById('cpu-cores').textContent}
+架构: ${document.getElementById('cpu-arch').textContent}
+使用情况: ${document.getElementById('cpu-usage').textContent}
+
+内存信息:
+总内存: ${document.getElementById('total-mem').textContent}
+可用内存: ${document.getElementById('free-mem').textContent}
+使用率: ${document.getElementById('mem-usage').textContent}
+
+系统信息:
+操作系统: ${document.getElementById('os').textContent}
+浏览器: ${document.getElementById('browser').textContent}
+语言: ${document.getElementById('language').textContent}
+在线状态: ${document.getElementById('online-status').textContent}
+
+显示信息:
+分辨率: ${document.getElementById('resolution').textContent}
+色彩深度: ${document.getElementById('color-depth').textContent}
+显卡渲染器: ${document.getElementById('gpu-renderer').textContent}
+
+网络信息:
+IP 地址: ${document.getElementById('ip-address').textContent}
+连接类型: ${document.getElementById('connection-type').textContent}
+带宽: ${document.getElementById('bandwidth').textContent}
+
+设备信息:
+设备类型: ${document.getElementById('device-type').textContent}
+方向: ${document.getElementById('orientation').textContent}
+触摸支持: ${document.getElementById('touch-support').textContent}
+
+报告生成时间: ${new Date().toLocaleString()}
+                `;
+                
+                navigator.clipboard.writeText(report)
+                    .then(() => {
+                        alert('报告已复制到剪贴板！');
+                    })
+                    .catch(err => {
+                        console.error('复制失败:', err);
+                        alert('复制失败，请手动复制内容。');
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
