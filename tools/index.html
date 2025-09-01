@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快捷工具</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: #333;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 20px rgba(0, 0, 100, 0.15);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: #1a2980;
+            font-size: 28px;
+            margin-left: 12px;
+        }
+        
+        .logo-icon {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .search-box {
+            display: flex;
+            background: white;
+            border-radius: 50px;
+            overflow: hidden;
+            border: 2px solid #1a2980;
+            width: 300px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 10px 20px;
+            outline: none;
+            font-size: 16px;
+        }
+        
+        .search-box button {
+            background: #1a2980;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .search-box button:hover {
+            background: #26d0ce;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            color: white;
+        }
+        
+        .hero h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .tools-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .tool-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .tool-header {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .tool-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .tool-content {
+            padding: 25px;
+        }
+        
+        .tool-content p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: #1a2980;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .download-btn:hover {
+            background: #26d0ce;
+            transform: scale(1.05);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #1a2980;
+            color: #1a2980;
+        }
+        
+        .btn-outline:hover {
+            background: #1a2980;
+            color: white;
+        }
+        
+        .tool-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #26d0ce;
+        }
+        
+        .tool-info h4 {
+            color: #1a2980;
+            margin-bottom: 8px;
+        }
+        
+        .tool-info ul {
+            padding-left: 20px;
+            color: #555;
+        }
+        
+        .tool-info li {
+            margin-bottom: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding: 20px;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-box {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .hero h2 {
+                font-size: 32px;
+            }
+            
+            .tools-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .tool-card {
+                margin: 0 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h1>快捷工具</h1>
+                </div>
+                <div class="search-box">
+                    <input type="text" placeholder="搜索工具..." id="searchInput">
+                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="hero">
+            <h2>一站式系统工具解决方案</h2>
+        </div>
+
+        <div class="tools-container">
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <h3>禁用Windows更新</h3>
+                </div>
+                <div class="tool-content">
+                    <p>通过注册表方法解除Windows自动更新暂停35天限制，让您完全掌控系统更新时机，避免不必要的更新干扰。</p>
+                    
+                    <div class="tool-info">
+                        <h4>功能特点：</h4>
+                        <ul>
+                            <li>一键禁用Windows自动更新3650天</li>
+                            <li>基于注册表修改，安全可靠</li>
+                            <li>不影响系统其他功能</li>
+                            <li>可随时恢复更新功能</li>
+                        </ul>
+                    </div>
+                    
+                    <a href="https://magicphy.github.io/BANWindowsUpdate3650.reg" class="download-btn">
+                        <i class="fas fa-download"></i> 下载注册表文件
+                    </a>
+                    <a href="#" class="download-btn btn-outline">
+                        <i class="fas fa-info-circle"></i> 使用说明
+                    </a>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3>Nsudo 提权工具</h3>
+                </div>
+                <div class="tool-content">
+                    <p>Nsudo 8.2 是一款强大的系统权限提升工具，可以帮助您以更高权限运行应用程序。</p>
+                    <div class="tool-info">
+                        <h4>功能特点：</h4>
+                        <ul>
+                            <li>以TrustedInstaller、System等权限运行程序</li>
+                            <li>支持命令行和图形界面操作</li>
+                            <li>无需安装，绿色单文件</li>
+                            <li>兼容Windows 7/8/10/11系统</li>
+                        </ul>
+                    </div>
+                    
+                    <a href="https://magicphy.github.io/NSudo8.2.exe" class="download-btn">
+                        <i class="fas fa-download"></i> 下载应用程序
+                    </a>
+                    <a href="#" class="download-btn btn-outline">
+                        <i class="fas fa-info-circle"></i> 使用说明
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>©MagicPHY 快捷工具 | 提供专业Windows系统工具下载</p>
+            <p>免责声明：请谨慎使用系统工具，使用前备份重要数据。作者不对使用这些工具造成的任何问题负责</p>
+        </div>
+    </footer>
+
+    <script>
+        // 搜索功能
+        document.getElementById('searchBtn').addEventListener('click', searchTools);
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchTools();
+            }
+        });
+
+        function searchTools() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const toolCards = document.querySelectorAll('.tool-card');
+            let found = false;
+            
+            toolCards.forEach(tool => {
+                const title = tool.querySelector('h3').textContent.toLowerCase();
+                const description = tool.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    tool.style.display = 'block';
+                    found = true;
+                    // 添加高亮效果
+                    tool.style.animation = 'highlight 1s';
+                } else {
+                    tool.style.display = 'none';
+                }
+            });
+            
+            // 添加高亮动画
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes highlight {
+                    0% { box-shadow: 0 0 0 0 rgba(38, 208, 206, 0.5); }
+                    70% { box-shadow: 0 0 0 15px rgba(38, 208, 206, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(38, 208, 206, 0); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            if (!found) {
+                alert('没有找到匹配的工具，请尝试其他关键词。');
+                // 显示所有工具
+                toolCards.forEach(tool => {
+                    tool.style.display = 'block';
+                });
+            }
+        }
+        
+        // 添加工具提示
+        const downloadButtons = document.querySelectorAll('.download-btn');
+        downloadButtons.forEach(button => {
+            button.addEventListener('mouseover', function() {
+                this.title = this.textContent.includes('注册表') ? 
+                    '下载注册表文件，双击即可应用' : 
+                    '下载应用程序，直接打开即可使用';
+            });
+        });
+    </script>
+</body>
+</html>
