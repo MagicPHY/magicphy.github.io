@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP-MagicPHY随机学号生成器</title>
+    <title>Pro-MagicPHY随机学号生成器</title>
     <link rel="icon" href="https://magicphy.github.io/PHY.png" type="image/jpg">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -167,6 +167,11 @@
             margin: 30px 0;
             position: relative;
             z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         
         #random-btn {
@@ -185,7 +190,6 @@
             outline: none;
             font-family: 'Montserrat', sans-serif;
             letter-spacing: 1px;
-            margin-top: 10px;
             min-width: 260px;
         }
         
@@ -226,6 +230,62 @@
         
         .fa-random {
             margin-right: 10px;
+        }
+        
+        .multi-select-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .multi-select-label {
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+        
+        .multi-select {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .multi-select-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .multi-select-btn:hover:not(:disabled) {
+            background: var(--button-hover);
+            transform: scale(1.1);
+        }
+        
+        .multi-select-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        #multi-count {
+            width: 60px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 8px;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text-color);
         }
         
         .settings-indicator {
@@ -840,13 +900,17 @@
             font-size: 1.2rem;
         }
         
+        .auth-input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
         #auth-input {
             width: 100%;
             padding: 15px;
             border-radius: 12px;
             border: 2px solid var(--primary-color);
             font-size: 1.1rem;
-            margin-bottom: 20px;
             background: rgba(255, 255, 255, 0.1);
             color: var(--text-color);
             text-align: center;
@@ -854,6 +918,19 @@
         
         .dark-mode #auth-input {
             background: rgba(30, 30, 25, 0.5);
+        }
+        
+        .password-hint {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: help;
         }
         
         #auth-submit {
@@ -890,6 +967,7 @@
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 15px;
+            position: relative;
         }
         
         .dark-mode .vip-features {
@@ -909,6 +987,119 @@
         .vip-features li {
             margin-bottom: 10px;
             color: var(--text-color);
+        }
+        
+        /* 结果弹窗样式 */
+        .result-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .result-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .result-modal-content {
+            background: var(--container-bg);
+            border-radius: 25px;
+            padding: 50px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.4s ease;
+        }
+        
+        .result-modal.active .result-modal-content {
+            transform: scale(1);
+        }
+        
+        .result-modal-number {
+            font-size: 6rem;
+            font-weight: 900;
+            color: var(--vip-color);
+            margin: 30px 0;
+            text-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+            font-family: 'Montserrat', sans-serif;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .result-modal-text {
+            font-size: 2rem;
+            color: var(--text-color);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .result-modal-close {
+            background: var(--vip-gradient);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 15px 40px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.4);
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .result-modal-close:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 152, 0, 0.5);
+        }
+        
+        /* 滚动数字效果 */
+        .rolling {
+            animation: rollNumber 0.1s infinite;
+        }
+        
+        @keyframes rollNumber {
+            0% { transform: translateY(-50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        .highlight {
+            animation: highlightNumber 1s ease-out;
+            color: var(--vip-color) !important;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            transform: scale(1.2);
+        }
+        
+        @keyframes highlightNumber {
+            0% { 
+                transform: scale(1);
+                text-shadow: 0 0 0 rgba(255, 215, 0, 0);
+            }
+            50% { 
+                transform: scale(1.5);
+                text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            }
+            100% { 
+                transform: scale(1.2);
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            }
         }
         
         /* 响应式优化 */
@@ -982,6 +1173,28 @@
             
             .exclude-item input {
                 padding: 8px;
+            }
+            
+            /* 结果弹窗响应式 */
+            .result-modal-content {
+                padding: 30px 20px;
+            }
+            
+            .result-modal-number {
+                font-size: 4rem;
+            }
+            
+            .result-modal-text {
+                font-size: 1.5rem;
+            }
+            
+            /* 多选按钮响应式 */
+            .button-container {
+                flex-direction: column;
+            }
+            
+            .multi-select-container {
+                margin-top: 15px;
             }
         }
         
@@ -1098,6 +1311,31 @@
                 height: 28px;
                 font-size: 0.9rem;
             }
+            
+            /* 结果弹窗响应式 */
+            .result-modal-number {
+                font-size: 3.5rem;
+                margin: 20px 0;
+            }
+            
+            .result-modal-text {
+                font-size: 1.3rem;
+                margin-bottom: 20px;
+            }
+            
+            .result-modal-close {
+                font-size: 1.1rem;
+                padding: 12px 30px;
+            }
+            
+            /* 密码提示响应式 */
+            .password-hint {
+                position: relative;
+                display: block;
+                margin-top: 10px;
+                right: auto;
+                transform: none;
+            }
         }
     </style>
 </head>
@@ -1105,23 +1343,36 @@
     <!-- 卡密验证界面 -->
     <div id="auth-overlay">
         <div class="auth-container">
-            <h1 class="auth-title">VIP-MagicPHY随机学号</h1>
-            <p class="auth-subtitle">请输入卡密以使用 VIP-MagicPHY 随机学号生成器</p>
+            <h1 class="auth-title">Pro-MagicPHY随机学号</h1>
+            <p class="auth-subtitle">请输入卡密以使用 Pro-MagicPHY 随机学号生成器</p>
             
-            <input type="password" id="auth-input" placeholder="请输入卡密...">
+            <div class="auth-input-container">
+                <input type="password" id="auth-input" placeholder="请输入卡密...">
+                <div class="password-hint" id="password-hint" title="密码提示">提示: ?</div>
+            </div>
+            
             <button id="auth-submit">验证</button>
             <p id="auth-error">卡密错误</p>
             
             <div class="vip-features">
-                <h3>VIP 功能特点</h3>
+                <h3>Pro 功能特点</h3>
                 <ul>
                     <li>自定义随机学号范围（1-100）</li>
                     <li>设置需要排除的学号</li>
                     <li>深色模式与主题颜色自定义</li>
-                    <li>无广告干扰的纯净体验</li>
+                    <li>一次性抽取多个学号</li>
                     <li>优先体验最新功能</li>
                 </ul>
             </div>
+        </div>
+    </div>
+    
+    <!-- 结果弹窗 -->
+    <div class="result-modal" id="result-modal">
+        <div class="result-modal-content">
+            <div class="result-modal-text" id="result-modal-text">恭喜！抽中学号：</div>
+            <div class="result-modal-number" id="result-modal-number">0</div>
+            <button class="result-modal-close" id="result-modal-close">确定</button>
         </div>
     </div>
     
@@ -1132,14 +1383,14 @@
             <i class="fas fa-cog"></i>
         </div>
         
-        <!-- VIP标识 -->
-        <div class="vip-badge">VIP EDITION</div>
+        <!-- Pro标识 -->
+        <div class="vip-badge">Pro EDITION</div>
         
         <!-- 气泡背景 -->
         <div id="bubbles"></div>
         
         <!-- 主标题 -->
-        <h1 class="title">VIP-MagicPHY随机学号</h1>
+        <h1 class="title">Pro-MagicPHY随机学号</h1>
         
         <!-- 结果展示区域 -->
         <div class="result-container">
@@ -1157,6 +1408,15 @@
                 <i class="fas fa-random"></i>
                 <span id="button-text">生成随机学号</span>
             </button>
+            
+            <div class="multi-select-container">
+                <div class="multi-select-label">一次性抽取数量</div>
+                <div class="multi-select">
+                    <button class="multi-select-btn" id="decrease-btn" disabled>-</button>
+                    <input type="number" id="multi-count" value="1" min="1" max="10">
+                    <button class="multi-select-btn" id="increase-btn">+</button>
+                </div>
+            </div>
         </div>
         
         <!-- 历史记录区域 -->
@@ -1178,14 +1438,29 @@
             <div class="announcement-list" id="announcement-list">
                 <div class="announcement-item">
                     <div class="announcement-header">
+                        <span class="announcement-version">版本 2.1.0</span>
+                        <span class="announcement-date">2025-08-25</span>
+                    </div>
+                    <div class="announcement-content">
+                        <p>Pro专享版本更新内容：</p>
+                        <ul>
+                            <li>新增一次性抽取多个学号功能</li>
+                            <li>增强密码验证安全性</li>
+                            <li>优化滚动数字动画效果</li>
+                            <li>修复已知问题，提升稳定性</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="announcement-item">
+                    <div class="announcement-header">
                         <span class="announcement-version">版本 2.0.0</span>
                         <span class="announcement-date">2025-08-20</span>
                     </div>
                     <div class="announcement-content">
-                        <p>VIP专享版本更新内容：</p>
+                        <p>Pro专享版本更新内容：</p>
                         <ul>
                             <li>新增自定义随机学号范围功能（1-100）</li>
-                            <li>VIP专属视觉标识和主题</li>
+                            <li>Pro专属视觉标识和主题</li>
                             <li>优化性能和体验</li>
                         </ul>
                     </div>
@@ -1195,8 +1470,9 @@
         
         <!-- 信息区域  -->
         <div class="info">
-            <h3><i class="fas fa-star"></i> VIP使用说明</h3>
+            <h3><i class="fas fa-star"></i> Pro使用说明</h3>
             <p>• 点击"生成随机学号"按钮在设定范围内随机获得学号</p>
+            <p>• 可以一次性抽取多个学号（最多10个）</p>
             <p>• 右上角设置按钮可修改抽取选项和范围</p>
             <p>• 可设置排除特定学号</p>
             <p>• 历史记录最多保存10条，达到后自动清空</p>
@@ -1213,7 +1489,7 @@
             </div>
             
             <div class="modal-header">
-                <h2><i class="fas fa-cog"></i> VIP 抽取设置</h2>
+                <h2><i class="fas fa-cog"></i> Pro 抽取设置</h2>
                 <p>配置随机选项与主题</p>
             </div>
             
@@ -1290,18 +1566,28 @@
     </div>
 
     <script>
-        // VIP卡密验证逻辑
+        // Pro卡密验证逻辑
         document.addEventListener('DOMContentLoaded', function() {
             const authOverlay = document.getElementById('auth-overlay');
             const authInput = document.getElementById('auth-input');
             const authSubmit = document.getElementById('auth-submit');
             const authError = document.getElementById('auth-error');
             const mainContainer = document.querySelector('.container');
+            const passwordHint = document.getElementById('password-hint');
+            
+            // 生成1-1000的随机数作为密码提示
+            const hintNumber = Math.floor(Math.random() * 1000) + 1;
+            passwordHint.textContent = `提示: ${hintNumber}`;
+            
+            // 根据提示数字确定正确密码
+            function getCorrectPassword() {
+                return hintNumber % 2 === 1 ? "557698932" : "MagicPHY";
+            }
             
             // 修复后的卡密验证逻辑
             function validateKey(key) {
                 // 正确的卡密
-                const correctKey = "MagicPHY";
+                const correctKey = getCorrectPassword();
                 return key === correctKey;
             }
             
@@ -1313,6 +1599,9 @@
                     // 验证成功
                     authOverlay.style.display = 'none';
                     mainContainer.style.display = 'block';
+                    
+                    // 保存验证状态
+                    localStorage.setItem('isAuthenticated', 'true');
                 } else {
                     // 验证失败
                     authError.style.display = 'block';
@@ -1339,14 +1628,20 @@
             style.textContent = `
                 @keyframes shake {
                     0%, 100% { transform: translateX(0); }
-                    20%, 60% { transform: translateX(-5px); }
-                    40%, 80% { transform: translateX(5px); }
+                    20%, 60% { transform: translateY(-5px); }
+                    40%, 80% { transform: translateY(5px); }
                 }
             `;
             document.head.appendChild(style);
             
             // 设置初始焦点
             authInput.focus();
+            
+            // 检查是否已经验证过
+            if (localStorage.getItem('isAuthenticated') === 'true') {
+                authOverlay.style.display = 'none';
+                mainContainer.style.display = 'block';
+            }
         });
         
         // 主应用逻辑
@@ -1375,6 +1670,17 @@
             const addExcludeBtn = document.getElementById('add-exclude-btn');
             const removeExcludeBtn = document.getElementById('remove-exclude-btn');
             
+            // 结果弹窗相关元素
+            const resultModal = document.getElementById('result-modal');
+            const resultModalNumber = document.getElementById('result-modal-number');
+            const resultModalText = document.getElementById('result-modal-text');
+            const resultModalClose = document.getElementById('result-modal-close');
+            
+            // 多选功能相关元素
+            const multiCountInput = document.getElementById('multi-count');
+            const decreaseBtn = document.getElementById('decrease-btn');
+            const increaseBtn = document.getElementById('increase-btn');
+            
             // 初始化设置
             let settings = {
                 allowDuplicates: true,
@@ -1391,6 +1697,12 @@
             // 冷却状态
             let isCooldown = false;
             let originalButtonText = "生成随机学号";
+            
+            // 滚动动画相关变量
+            let rollingInterval = null;
+            let rollingSpeed = 50; // 初始滚动速度(ms)
+            let rollingDuration = 2000; // 滚动总时长(ms)
+            let rollingStartTime = 0;
             
             // 创建气泡背景
             function createBubbles() {
@@ -1435,23 +1747,126 @@
                 // 确保最小值不大于最大值
                 if (min > max) [min, max] = [max, min];
                 
-                let randomNum;
-                let attempts = 0;
-                const maxAttempts = 100; // 避免无限循环
-                
-                do {
-                    // 生成min到max之间的随机整数
-                    randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
-                    attempts++;
-                    
-                    // 如果尝试次数过多，则清空排除列表
-                    if (attempts > maxAttempts) {
-                        exclude = [];
-                        break;
+                // 创建所有可能的数字数组
+                const allNumbers = [];
+                for (let i = min; i <= max; i++) {
+                    if (!exclude.includes(i)) {
+                        allNumbers.push(i);
                     }
-                } while (exclude.includes(randomNum));
+                }
                 
-                return randomNum;
+                // 如果没有可用数字，返回null
+                if (allNumbers.length === 0) {
+                    return null;
+                }
+                
+                // 随机选择一个数字
+                const randomIndex = Math.floor(Math.random() * allNumbers.length);
+                return allNumbers[randomIndex];
+            }
+            
+            // 开始滚动数字动画
+            function startRollingAnimation(finalNumbers) {
+                // 清除现有的滚动动画
+                if (rollingInterval) {
+                    clearInterval(rollingInterval);
+                }
+                
+                // 移除浮动动画和高亮效果
+                resultElement.classList.remove('floating');
+                resultElement.classList.remove('highlight');
+                
+                // 添加滚动动画类
+                resultElement.classList.add('rolling');
+                
+                // 记录开始时间
+                rollingStartTime = Date.now();
+                
+                // 开始滚动数字
+                rollingInterval = setInterval(() => {
+                    const elapsedTime = Date.now() - rollingStartTime;
+                    const progress = Math.min(elapsedTime / rollingDuration, 1);
+                    
+                    // 计算当前速度（逐渐变慢）
+                    const currentSpeed = Math.max(rollingSpeed, rollingSpeed * (1 - progress * 0.9));
+                    
+                    // 生成随机数字（在最终数字附近波动）
+                    let displayText;
+                    if (progress < 0.8) {
+                        // 前80%时间显示随机数字
+                        const min = settings.minNumber;
+                        const max = settings.maxNumber;
+                        const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+                        displayText = randomNum.toString();
+                    } else {
+                        // 最后20%时间逐渐接近最终数字
+                        if (finalNumbers.length === 1) {
+                            const deviation = Math.floor((1 - progress) * 10);
+                            const targetNum = finalNumbers[0];
+                            const randomNum = targetNum + Math.floor(Math.random() * (deviation * 2 + 1)) - deviation;
+                            const boundedNum = Math.max(settings.minNumber, Math.min(settings.maxNumber, randomNum));
+                            displayText = boundedNum.toString();
+                        } else {
+                            // 多个数字的情况
+                            displayText = "抽取中...";
+                        }
+                    }
+                    
+                    resultElement.textContent = displayText;
+                    
+                    // 如果滚动完成，停止并显示最终结果
+                    if (progress >= 1) {
+                        stopRollingAnimation(finalNumbers);
+                    }
+                }, rollingSpeed);
+            }
+            
+            // 停止滚动动画并显示最终结果
+            function stopRollingAnimation(finalNumbers) {
+                if (rollingInterval) {
+                    clearInterval(rollingInterval);
+                    rollingInterval = null;
+                }
+                
+                // 移除滚动动画
+                resultElement.classList.remove('rolling');
+                
+                // 显示最终数字
+                if (finalNumbers.length === 1) {
+                    resultElement.textContent = finalNumbers[0];
+                    resultElement.classList.add('highlight');
+                } else {
+                    resultElement.textContent = finalNumbers.join(", ");
+                    resultElement.style.fontSize = "2.5rem";
+                }
+                
+                // 显示结果弹窗
+                showResultModal(finalNumbers);
+                
+                // 添加到历史记录
+                finalNumbers.forEach(num => {
+                    if (history.length >= 10) {
+                        history.shift(); // 移除最早的历史记录
+                    }
+                    history.push(num);
+                });
+                updateHistoryDisplay();
+                
+                // 更新多选数量限制
+                updateMultiSelectLimit();
+            }
+            
+            // 显示结果弹窗
+            function showResultModal(numbers) {
+                if (numbers.length === 1) {
+                    resultModalText.textContent = "恭喜！抽中学号：";
+                    resultModalNumber.textContent = numbers[0];
+                } else {
+                    resultModalText.textContent = `恭喜！抽中 ${numbers.length} 个学号：`;
+                    resultModalNumber.textContent = numbers.join(", ");
+                    resultModalNumber.style.fontSize = "3rem";
+                }
+                resultModal.classList.add('active');
             }
             
             // 开始冷却计时器（3秒）
@@ -1482,56 +1897,35 @@
                 // 开始冷却计时
                 startCooldownTimer();
                 
-                // 移除浮动动画
-                resultElement.classList.remove('floating');
+                // 获取要抽取的数量
+                const count = parseInt(multiCountInput.value) || 1;
                 
-                // 添加缩小动画效果
-                resultElement.style.transform = 'scale(0.7)';
-                resultElement.style.opacity = '0.2';
+                // 生成随机数
+                const randomNumbers = [];
                 
-                // 0.3秒后显示新数字
-                setTimeout(() => {
-                    // 生成新随机数
+                for (let i = 0; i < count; i++) {
                     let randomNum;
+                    let attempts = 0;
                     
-                    if (!settings.allowDuplicates) {
-                        // 不允许重复的情况下，确保生成新数字
-                        let attempts = 0;
-                        do {
-                            randomNum = generateRandomNumber();
-                            attempts++;
-                            
-                            // 如果尝试次数过多（理论上不可能，但以防万一）
-                            if (attempts > 100) {
-                                // 重置历史记录
-                                history = [];
-                                break;
-                            }
-                        } while (history.includes(randomNum));
-                    } else {
+                    do {
                         randomNum = generateRandomNumber();
+                        attempts++;
+                        
+                        // 如果尝试次数过多或没有可用数字
+                        if (attempts > 100 || randomNum === null) {
+                            // 重置历史记录
+                            history = [];
+                            break;
+                        }
+                    } while (!settings.allowDuplicates && history.includes(randomNum));
+                    
+                    if (randomNum !== null) {
+                        randomNumbers.push(randomNum);
                     }
-                    
-                    // 检查历史记录是否达到10条
-                    if (history.length >= 10) {
-                        history = []; // 清空历史记录
-                    }
-                    
-                    // 添加到历史记录
-                    history.push(randomNum);
-                    
-                    // 更新历史记录显示
-                    updateHistoryDisplay();
-                    
-                    // 更新显示的数字
-                    resultElement.textContent = randomNum;
-                    resultElement.style.fontSize = "8rem"; // 恢复数字大小
-                    
-                    // 恢复动画效果
-                    resultElement.style.transform = 'scale(1)';
-                    resultElement.style.opacity = '1';
-                    resultElement.classList.add('floating');
-                }, 300);
+                }
+                
+                // 开始滚动动画
+                startRollingAnimation(randomNumbers);
             }
             
             // 更新历史记录显示
@@ -1548,6 +1942,24 @@
                 
                 // 更新历史记录计数
                 historyCountElement.textContent = history.length;
+                
+                // 更新多选数量限制
+                updateMultiSelectLimit();
+            }
+            
+            // 更新多选数量限制
+            function updateMultiSelectLimit() {
+                const maxAllowed = 10 - history.length;
+                multiCountInput.max = Math.max(1, maxAllowed);
+                
+                // 如果当前值超过最大值，调整当前值
+                if (parseInt(multiCountInput.value) > maxAllowed) {
+                    multiCountInput.value = Math.max(1, maxAllowed);
+                }
+                
+                // 更新按钮状态
+                decreaseBtn.disabled = parseInt(multiCountInput.value) <= 1;
+                increaseBtn.disabled = parseInt(multiCountInput.value) >= maxAllowed;
             }
             
             // 更新设置显示
@@ -1657,6 +2069,9 @@
                 
                 // 更新设置显示
                 updateSettingsDisplay();
+                
+                // 更新多选数量限制
+                updateMultiSelectLimit();
             }
             
             // 渲染排除学号输入框
@@ -1737,6 +2152,43 @@
             // 关闭设置弹窗
             closeModalButton.addEventListener('click', function() {
                 settingsModal.classList.remove('active');
+            });
+            
+            // 关闭结果弹窗
+            resultModalClose.addEventListener('click', function() {
+                resultModal.classList.remove('active');
+                resultModalNumber.style.fontSize = "6rem"; // 恢复默认大小
+            });
+            
+            // 多选数量控制
+            decreaseBtn.addEventListener('click', function() {
+                let value = parseInt(multiCountInput.value) || 1;
+                if (value > 1) {
+                    multiCountInput.value = value - 1;
+                    updateMultiSelectLimit();
+                }
+            });
+            
+            increaseBtn.addEventListener('click', function() {
+                let value = parseInt(multiCountInput.value) || 1;
+                const maxAllowed = parseInt(multiCountInput.max) || 10;
+                if (value < maxAllowed) {
+                    multiCountInput.value = value + 1;
+                    updateMultiSelectLimit();
+                }
+            });
+            
+            multiCountInput.addEventListener('change', function() {
+                let value = parseInt(this.value) || 1;
+                const maxAllowed = parseInt(this.max) || 10;
+                
+                if (value < 1) {
+                    this.value = 1;
+                } else if (value > maxAllowed) {
+                    this.value = maxAllowed;
+                }
+                
+                updateMultiSelectLimit();
             });
             
             // 设置开关即时生效
