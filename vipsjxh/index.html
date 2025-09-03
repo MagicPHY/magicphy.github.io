@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* 样式优化和精简 */
         :root {
             --primary-color: #D4AF37;
             --primary-gradient: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
@@ -167,6 +166,11 @@
             margin: 20px 0;
             position: relative;
             z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         
         #random-btn {
@@ -226,6 +230,42 @@
         
         .fa-random {
             margin-right: 8px;
+        }
+        
+        .batch-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px 15px;
+            border-radius: 25px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark-mode .batch-container {
+            background: rgba(40, 40, 35, 0.8);
+        }
+        
+        .batch-container label {
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+        
+        #batch-count {
+            width: 50px;
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 0.9rem;
+            background: white;
+            color: var(--text-color);
+        }
+        
+        .dark-mode #batch-count {
+            background: #2d3748;
+            border-color: #4a5568;
         }
         
         .settings-indicator {
@@ -912,6 +952,109 @@
             color: var(--text-color);
             font-size: 0.9rem;
         }
+
+        /* 批量结果弹窗 */
+        .batch-result-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .batch-result-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .batch-result-content {
+            background: var(--container-bg);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
+            transform: translateY(25px);
+            transition: transform 0.4s ease;
+        }
+        
+        .batch-result-modal.active .batch-result-content {
+            transform: translateY(0);
+        }
+        
+        .batch-result-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .batch-result-header h2 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+        
+        .batch-numbers {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .batch-number {
+            background: var(--history-item-gradient);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .batch-number:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .batch-result-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .batch-result-btn {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 10px 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .batch-result-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
         
         /* 响应式优化 */
         @media (max-width: 768px) {
@@ -983,6 +1126,14 @@
             
             .exclude-item input {
                 padding: 6px;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+            
+            .batch-container {
+                margin-top: 15px;
             }
         }
         
@@ -1098,6 +1249,20 @@
                 height: 25px;
                 font-size: 0.8rem;
             }
+
+            .batch-number {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+            
+            .batch-result-content {
+                padding: 20px 15px;
+            }
+            
+            .batch-result-header h2 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -1120,6 +1285,7 @@
                     <li>深色模式与主题颜色自定义</li>
                     <li>无广告干扰的纯净体验</li>
                     <li>优先体验最新功能</li>
+                    <li>批量抽取功能（最多10个）</li>
                 </ul>
             </div>
         </div>
@@ -1157,6 +1323,11 @@
                 <i class="fas fa-random"></i>
                 <span id="button-text">生成随机学号</span>
             </button>
+            
+            <div class="batch-container">
+                <label for="batch-count">数量:</label>
+                <input type="number" id="batch-count" min="1" max="10" value="1">
+            </div>
         </div>
         
         <!-- 历史记录区域 -->
@@ -1176,6 +1347,21 @@
                 <i class="fas fa-bullhorn"></i> 版本更新公告：
             </div>
             <div class="announcement-list" id="announcement-list">
+                <div class="announcement-item">
+                    <div class="announcement-header">
+                        <span class="announcement-version">版本 2.1.0</span>
+                        <span class="announcement-date">2025-08-25</span>
+                    </div>
+                    <div class="announcement-content">
+                        <p>Pro专享版本更新内容：</p>
+                        <ul>
+                            <li>新增批量抽取功能（最多10个）</li>
+                            <li>优化抽取特效（数字滚动效果）</li>
+                            <li>新增批量结果弹窗显示</li>
+                            <li>修复已知问题，提升稳定性</li>
+                        </ul>
+                    </div>
+                </div>
                 <div class="announcement-item">
                     <div class="announcement-header">
                         <span class="announcement-version">版本 2.0.0</span>
@@ -1202,6 +1388,7 @@
             <p>• 历史记录最多保存10条，达到后自动清空</p>
             <p>• 随机按钮有3秒冷却时间</p>
             <p>• 自定义结果框背景色和整体主题</p>
+            <p>• 新增批量抽取功能（最多10个）</p>
         </div>
     </div>
     
@@ -1289,6 +1476,33 @@
         </div>
     </div>
 
+    <!-- 批量结果弹窗 -->
+    <div class="batch-result-modal" id="batch-result-modal">
+        <div class="batch-result-content">
+            <div class="close-btn" id="close-batch-modal">
+                <i class="fas fa-times"></i>
+            </div>
+            
+            <div class="batch-result-header">
+                <h2><i class="fas fa-check-circle"></i> 批量抽取结果</h2>
+                <p>已成功生成 <span id="batch-result-count">0</span> 个随机学号</p>
+            </div>
+            
+            <div class="batch-numbers" id="batch-numbers">
+                <!-- 动态添加的批量数字 -->
+            </div>
+            
+            <div class="batch-result-actions">
+                <button class="batch-result-btn" id="copy-batch-result">
+                    <i class="fas fa-copy"></i> 复制结果
+                </button>
+                <button class="batch-result-btn" id="close-batch-result">
+                    <i class="fas fa-check"></i> 确定
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Pro卡密验证逻辑
         document.addEventListener('DOMContentLoaded', function() {
@@ -1305,7 +1519,7 @@
             // 修复后的卡密验证逻辑
             function validateKey(key) {
                 // 正确的卡密
-                const correctKey = "MagicPHY";
+                const correctKey = "MagicPHY557698932";
                 return key === correctKey;
             }
             
@@ -1347,6 +1561,15 @@
                     20%, 60% { transform: translateX(-5px); }
                     40%, 80% { transform: translateX(5px); }
                 }
+                
+                @keyframes numberRoll {
+                    0% { transform: translateY(50px); opacity: 0; }
+                    100% { transform: translateY(0); opacity: 1; }
+                }
+                
+                .rolling {
+                    animation: numberRoll 0.1s ease-out;
+                }
             `;
             document.head.appendChild(style);
             
@@ -1371,6 +1594,15 @@
             const customColorInput = document.getElementById('custom-color');
             const minNumberInput = document.getElementById('min-number');
             const maxNumberInput = document.getElementById('max-number');
+            const batchCountInput = document.getElementById('batch-count');
+            
+            // 批量结果弹窗相关元素
+            const batchResultModal = document.getElementById('batch-result-modal');
+            const batchNumbersContainer = document.getElementById('batch-numbers');
+            const batchResultCount = document.getElementById('batch-result-count');
+            const closeBatchModalBtn = document.getElementById('close-batch-modal');
+            const closeBatchResultBtn = document.getElementById('close-batch-result');
+            const copyBatchResultBtn = document.getElementById('copy-batch-result');
             
             // 新增的排除学号元素
             const excludeInputsContainer = document.getElementById('exclude-inputs-container');
@@ -1456,6 +1688,38 @@
                 return randomNum;
             }
             
+            // 批量生成随机学号
+            function generateBatchRandomNumbers(count) {
+                const numbers = [];
+                
+                for (let i = 0; i < count; i++) {
+                    let randomNum;
+                    let attempts = 0;
+                    const maxAttempts = 100;
+                    
+                    do {
+                        randomNum = generateRandomNumber();
+                        attempts++;
+                        
+                        // 如果不允许重复，且已经存在该数字，则重新生成
+                        if (!settings.allowDuplicates && numbers.includes(randomNum)) {
+                            randomNum = null;
+                        }
+                        
+                        // 如果尝试次数过多，则跳出循环
+                        if (attempts > maxAttempts) {
+                            break;
+                        }
+                    } while (!settings.allowDuplicates && randomNum !== null && numbers.includes(randomNum));
+                    
+                    if (randomNum !== null) {
+                        numbers.push(randomNum);
+                    }
+                }
+                
+                return numbers;
+            }
+            
             // 开始冷却计时器（3秒）
             function startCooldownTimer() {
                 isCooldown = true;
@@ -1476,14 +1740,8 @@
                 }, 1000);
             }
             
-            // 显示随机学号（带动画效果）
-            function displayRandomNumber() {
-                // 如果处于冷却状态，则不执行
-                if (isCooldown) return;
-                
-                // 开始冷却计时
-                startCooldownTimer();
-                
+            // 显示随机数字滚动效果
+            function showNumberRollingEffect(finalNumbers) {
                 // 移除浮动动画
                 resultElement.classList.remove('floating');
                 
@@ -1491,9 +1749,84 @@
                 resultElement.style.transform = 'scale(0.7)';
                 resultElement.style.opacity = '0.2';
                 
-                // 0.3秒后显示新数字
-                setTimeout(() => {
-                    // 生成新随机数
+                // 获取批量数量
+                const batchCount = parseInt(batchCountInput.value) || 1;
+                
+                // 如果是批量抽取，显示第一个数字并弹窗显示所有结果
+                if (batchCount > 1) {
+                    // 0.3秒后显示第一个数字
+                    setTimeout(() => {
+                        resultElement.textContent = finalNumbers[0];
+                        resultElement.style.fontSize = "6rem";
+                        resultElement.style.transform = 'scale(1)';
+                        resultElement.style.opacity = '1';
+                        resultElement.classList.add('rolling');
+                        
+                        // 1秒后显示批量结果弹窗
+                        setTimeout(() => {
+                            showBatchResult(finalNumbers);
+                        }, 1000);
+                    }, 300);
+                } else {
+                    // 单个数字的情况，保持原有逻辑
+                    setTimeout(() => {
+                        resultElement.textContent = finalNumbers[0];
+                        resultElement.style.fontSize = "6rem";
+                        resultElement.style.transform = 'scale(1)';
+                        resultElement.style.opacity = '1';
+                        resultElement.classList.add('floating');
+                    }, 300);
+                }
+                
+                // 添加到历史记录
+                finalNumbers.forEach(num => {
+                    // 检查历史记录是否达到10条
+                    if (history.length >= 10) {
+                        history = []; // 清空历史记录
+                    }
+                    
+                    // 添加到历史记录
+                    history.push(num);
+                });
+                
+                // 更新历史记录显示
+                updateHistoryDisplay();
+            }
+            
+            // 显示批量结果弹窗
+            function showBatchResult(numbers) {
+                batchNumbersContainer.innerHTML = '';
+                batchResultCount.textContent = numbers.length;
+                
+                // 添加数字到弹窗
+                numbers.forEach(num => {
+                    const numberElement = document.createElement('div');
+                    numberElement.classList.add('batch-number');
+                    numberElement.textContent = num;
+                    batchNumbersContainer.appendChild(numberElement);
+                });
+                
+                // 显示弹窗
+                batchResultModal.classList.add('active');
+            }
+            
+            // 生成随机学号（支持批量）
+            function generateRandomNumbers() {
+                // 如果处于冷却状态，则不执行
+                if (isCooldown) return;
+                
+                // 开始冷却计时
+                startCooldownTimer();
+                
+                // 获取批量数量
+                const batchCount = parseInt(batchCountInput.value) || 1;
+                const finalCount = Math.min(Math.max(1, batchCount), 10); // 限制在1-10之间
+                
+                // 生成随机数字
+                let finalNumbers;
+                
+                if (finalCount === 1) {
+                    // 单个数字的情况
                     let randomNum;
                     
                     if (!settings.allowDuplicates) {
@@ -1514,26 +1847,14 @@
                         randomNum = generateRandomNumber();
                     }
                     
-                    // 检查历史记录是否达到10条
-                    if (history.length >= 10) {
-                        history = []; // 清空历史记录
-                    }
-                    
-                    // 添加到历史记录
-                    history.push(randomNum);
-                    
-                    // 更新历史记录显示
-                    updateHistoryDisplay();
-                    
-                    // 更新显示的数字
-                    resultElement.textContent = randomNum;
-                    resultElement.style.fontSize = "6rem"; // 恢复数字大小
-                    
-                    // 恢复动画效果
-                    resultElement.style.transform = 'scale(1)';
-                    resultElement.style.opacity = '1';
-                    resultElement.classList.add('floating');
-                }, 300);
+                    finalNumbers = [randomNum];
+                } else {
+                    // 批量生成数字
+                    finalNumbers = generateBatchRandomNumbers(finalCount);
+                }
+                
+                // 显示数字滚动效果
+                showNumberRollingEffect(finalNumbers);
             }
             
             // 更新历史记录显示
@@ -1728,7 +2049,7 @@
             }
             
             // 按钮点击事件 - 生成随机学号
-            randomButton.addEventListener('click', displayRandomNumber);
+            randomButton.addEventListener('click', generateRandomNumbers);
             
             // 设置按钮点击事件
             settingsButton.addEventListener('click', function() {
@@ -1762,6 +2083,43 @@
                 }
             });
             
+            // 关闭批量结果弹窗
+            closeBatchModalBtn.addEventListener('click', function() {
+                batchResultModal.classList.remove('active');
+            });
+            
+            closeBatchResultBtn.addEventListener('click', function() {
+                batchResultModal.classList.remove('active');
+            });
+            
+            // 点击批量结果弹窗背景关闭
+            batchResultModal.addEventListener('click', function(e) {
+                if (e.target === batchResultModal) {
+                    batchResultModal.classList.remove('active');
+                }
+            });
+            
+            // 复制批量结果
+            copyBatchResultBtn.addEventListener('click', function() {
+                const numbers = Array.from(batchNumbersContainer.querySelectorAll('.batch-number'))
+                    .map(el => el.textContent)
+                    .join(', ');
+                
+                navigator.clipboard.writeText(numbers)
+                    .then(() => {
+                        // 显示复制成功提示
+                        const originalText = copyBatchResultBtn.innerHTML;
+                        copyBatchResultBtn.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                        
+                        setTimeout(() => {
+                            copyBatchResultBtn.innerHTML = originalText;
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('复制失败:', err);
+                    });
+            });
+            
             // 设置开关即时生效
             allowDuplicatesCheckbox.addEventListener('change', function() {
                 settings.allowDuplicates = this.checked;
@@ -1784,6 +2142,13 @@
                 if (settings.maxNumber > 100) settings.maxNumber = 100;
                 updateSettingsDisplay();
                 saveSettings();
+            });
+            
+            // 批量数量输入限制
+            batchCountInput.addEventListener('change', function() {
+                let value = parseInt(this.value) || 1;
+                value = Math.min(Math.max(1, value), 10); // 限制在1-10之间
+                this.value = value;
             });
             
             // 添加排除学号按钮
