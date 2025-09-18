@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* 样式保持不变 */
         :root {
             --primary-color: #D4AF37;
             --primary-gradient: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
@@ -792,7 +793,7 @@
         .exclude-control-btn {
             width: 25px;
             height: 25px;
-            border-radius: 50%;
+            borderRadius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1135,6 +1136,7 @@
         .single-result-header {
             text-align: center;
             margin-bottom: 25px;
+            position: relative;
         }
         
         .single-result-header h2 {
@@ -2347,15 +2349,7 @@
                     // 更新历史记录显示
                     updateHistoryDisplay();
                     
-                    // 显示结果弹窗
-                    setTimeout(() => {
-                        if (finalNumbers.length === 1) {
-                            showSingleResult(finalNumbers[0]);
-                        } else {
-                            showBatchResult(finalNumbers);
-                        }
-                    }, 800); // 等待跳跃动画完成
-                    
+                    // 返回成功状态
                     return Promise.resolve(true);
                 }
             }
@@ -2444,7 +2438,19 @@
                 }
                 
                 // 显示数字跳跃效果
-                await showNumberJumpEffect(finalNumbers);
+                const success = await showNumberJumpEffect(finalNumbers);
+                
+                // 如果成功添加了所有数字，显示结果弹窗
+                if (success) {
+                    // 等待跳跃动画完成
+                    setTimeout(() => {
+                        if (finalNumbers.length === 1) {
+                            showSingleResult(finalNumbers[0]);
+                        } else {
+                            showBatchResult(finalNumbers);
+                        }
+                    }, 800);
+                }
             }
             
             // 更新历史记录显示
