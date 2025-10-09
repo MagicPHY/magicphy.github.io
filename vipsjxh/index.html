@@ -1713,7 +1713,7 @@
             <div class="history-title">历史记录</div>
             <div class="history-items" id="history-items"></div>
             <div class="history-counter">
-                <span>已记录: <span id="history-count">0</span>/10</span>
+                <span>已记录: <span id="history-count">0</span></span>
                 <button class="reset-history-btn" id="reset-history">
                     <i class="fas fa-trash-alt"></i> 重置历史记录
                 </button>
@@ -1763,7 +1763,7 @@
             <p>• 点击"生成随机学号"按钮在设定范围内随机获得学号</p>
             <p>• 右上角设置按钮可修改抽取选项和范围</p>
             <p>• 可设置排除特定学号</p>
-            <p>• 历史记录最多保存10条，达到后自动清空</p>
+            <p>• 历史记录无限制保存</p>
             <p>• 随机按钮有3秒冷却时间</p>
             <p>• 自定义结果框背景色和整体主题</p>
             <p>• 新增批量抽取功能（最多10个）</p>
@@ -1953,7 +1953,7 @@
             </div>
             <h2 class="confirm-title">历史记录已满</h2>
             <div class="confirm-message" id="confirm-message">
-                历史记录区域已满，无法添加更多记录。是否清除历史记录？
+                所有可能的数字都已被抽取，无法继续抽取。是否清除历史记录？
             </div>
             <div class="confirm-actions">
                 <button class="confirm-btn" id="confirm-yes">是</button>
@@ -2101,7 +2101,7 @@
                 excludeNumbers: []
             };
             
-            // 历史记录（最多10条）
+            // 历史记录（无限制）
             let history = [];
             
             // 冷却状态
@@ -2291,67 +2291,16 @@
                 // 添加跳跃动画
                 resultElement.classList.add('jump-animation');
                 
-                // 检查历史记录是否还有空间
-                const remainingSpace = 10 - history.length;
+                // 添加到历史记录
+                finalNumbers.forEach(num => {
+                    history.push(num);
+                });
                 
-                if (finalNumbers.length > remainingSpace) {
-                    // 如果空间不足，显示确认弹窗
-                    confirmMessage.textContent = `历史记录区域只能再容纳 ${remainingSpace} 个数字，但您抽取了 ${finalNumbers.length} 个。是否清除历史记录？`;
-                    confirmModal.classList.add('active');
-                    
-                    // 等待用户确认
-                    return new Promise((resolve) => {
-                        confirmYes.onclick = () => {
-                            // 用户选择清除历史记录
-                            history = [];
-                            updateHistoryDisplay();
-                            confirmModal.classList.remove('active');
-                            
-                            // 添加到历史记录
-                            finalNumbers.forEach(num => {
-                                history.push(num);
-                            });
-                            
-                            // 更新历史记录显示
-                            updateHistoryDisplay();
-                            resolve(true);
-                        };
-                        
-                        confirmNo.onclick = () => {
-                            // 用户选择不清除，只添加能容纳的部分
-                            confirmModal.classList.remove('active');
-                            
-                            // 只添加能容纳的部分
-                            const numbersToAdd = finalNumbers.slice(0, remainingSpace);
-                            numbersToAdd.forEach(num => {
-                                history.push(num);
-                            });
-                            
-                            // 更新历史记录显示
-                            updateHistoryDisplay();
-                            
-                            // 显示提示信息
-                            if (remainingSpace > 0) {
-                                showError([`历史记录已满，只添加了前 ${remainingSpace} 个数字`]);
-                            } else {
-                                showError(["历史记录已满，无法添加更多记录"]);
-                            }
-                            
-                            resolve(false);
-                        };
-                    });
-                } else {
-                    // 空间足够，直接添加到历史记录
-                    finalNumbers.forEach(num => {
-                        history.push(num);
-                    });
-                    
-                    // 更新历史记录显示
-                    updateHistoryDisplay();
-                    
-                    // 返回成功状态
-                    return Promise.resolve(true);
-                }
+                // 更新历史记录显示
+                updateHistoryDisplay();
+                
+                // 返回成功状态
+                return Promise.resolve(true);
             }
             
             // 显示批量结果弹窗
@@ -2384,6 +2333,50 @@
                 singleResultModal.classList.add('active');
             }
             
+            // 检查是否还有可用的数字
+            function hasAvailableNumbers() {
+                if (settings.allowDuplicates) {
+                    return true; // 如果允许重复，总是有数字可用
+                }
+                
+                const min = settings.minNumber;
+                const max = settings.maxNumber;
+                const excludeNumbers = settings.excludeNumbers.filter(num => num !== '');
+                
+                // 计算所有可能的数字
+                const allPossibleNumbers = [];
+                for (let i = min; i <= max; i++) {
+                    if (!excludeNumbers.includes(i)) {
+                        allPossibleNumbers.push(i);
+                    }
+                }
+                
+                // 检查是否所有可能的数字都在历史记录中
+                return allPossibleNumbers.some(num => !history.includes(num));
+            }
+            
+            // 显示无可用数字提示
+            function showNoAvailableNumbersPrompt() {
+                confirmMessage.textContent = "所有可能的数字都已被抽取，无法继续抽取。是否清除历史记录？";
+                confirmModal.classList.add('active');
+                
+                return new Promise((resolve) => {
+                    confirmYes.onclick = () => {
+                        // 用户选择清除历史记录
+                        history = [];
+                        updateHistoryDisplay();
+                        confirmModal.classList.remove('active');
+                        resolve(true);
+                    };
+                    
+                    confirmNo.onclick = () => {
+                        // 用户选择不清除
+                        confirmModal.classList.remove('active');
+                        resolve(false);
+                    };
+                });
+            }
+            
             // 生成随机学号（支持批量）
             async function generateRandomNumbers() {
                 // 如果处于冷却状态，则不执行
@@ -2394,6 +2387,14 @@
                 if (validationErrors.length > 0) {
                     showError(validationErrors);
                     return;
+                }
+                
+                // 检查是否还有可用的数字（如果不允许重复）
+                if (!settings.allowDuplicates && !hasAvailableNumbers()) {
+                    const cleared = await showNoAvailableNumbersPrompt();
+                    if (!cleared) {
+                        return; // 用户选择不清除历史记录，取消抽取
+                    }
                 }
                 
                 // 开始冷却计时
@@ -2457,7 +2458,7 @@
             function updateHistoryDisplay() {
                 historyItemsContainer.innerHTML = '';
                 
-                // 显示最多10条历史记录
+                // 显示所有历史记录
                 history.forEach(num => {
                     const item = document.createElement('div');
                     item.classList.add('history-item');
@@ -2555,11 +2556,14 @@
             // 保存设置到本地存储
             function saveSettings() {
                 localStorage.setItem('randomNumberSettings', JSON.stringify(settings));
+                localStorage.setItem('randomNumberHistory', JSON.stringify(history));
             }
             
             // 从本地存储加载设置
             function loadSettings() {
                 const savedSettings = localStorage.getItem('randomNumberSettings');
+                const savedHistory = localStorage.getItem('randomNumberHistory');
+                
                 if (savedSettings) {
                     settings = JSON.parse(savedSettings);
                     
@@ -2591,8 +2595,13 @@
                     renderExcludeInputs();
                 }
                 
+                if (savedHistory) {
+                    history = JSON.parse(savedHistory);
+                }
+                
                 // 更新设置显示
                 updateSettingsDisplay();
+                updateHistoryDisplay();
             }
             
             // 渲染排除学号输入框
@@ -2652,6 +2661,7 @@
             // 清除所有存储
             function clearAllStorage() {
                 localStorage.removeItem('randomNumberSettings');
+                localStorage.removeItem('randomNumberHistory');
                 sessionStorage.clear();
                 
                 // 显示清除成功消息
@@ -2705,11 +2715,21 @@
                     return;
                 }
                 
+                // 检查范围是否改变
+                const rangeChanged = settings.minNumber !== min || settings.maxNumber !== max;
+                
                 // 保存设置
                 settings.minNumber = min;
                 settings.maxNumber = max;
                 saveSettings();
                 updateSettingsDisplay();
+                
+                // 如果范围改变，清空历史记录
+                if (rangeChanged) {
+                    history = [];
+                    updateHistoryDisplay();
+                    saveSettings();
+                }
                 
                 settingsModal.classList.remove('active');
                 // 如果是首次设置，则显示主界面
@@ -2737,11 +2757,21 @@
                         return;
                     }
                     
+                    // 检查范围是否改变
+                    const rangeChanged = settings.minNumber !== min || settings.maxNumber !== max;
+                    
                     // 保存设置
                     settings.minNumber = min;
                     settings.maxNumber = max;
                     saveSettings();
                     updateSettingsDisplay();
+                    
+                    // 如果范围改变，清空历史记录
+                    if (rangeChanged) {
+                        history = [];
+                        updateHistoryDisplay();
+                        saveSettings();
+                    }
                     
                     settingsModal.classList.remove('active');
                     // 如果是首次设置，则显示主界面
@@ -2883,6 +2913,7 @@
             resetHistoryButton.addEventListener('click', function() {
                 history = [];
                 updateHistoryDisplay();
+                saveSettings();
             });
             
             // 深色模式选择改变
