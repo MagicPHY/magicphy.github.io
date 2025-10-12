@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* 样式保持不变 */
         :root {
             --primary-color: #D4AF37;
             --primary-gradient: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
@@ -297,9 +296,6 @@
             background: var(--history-bg);
             border-radius: 12px;
             padding: 20px;
-            max-height: 250px;
-            overflow-y: auto;
-            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--history-border);
         }
         
@@ -325,10 +321,25 @@
             border-radius: 2px;
         }
         
+        .history-scroll-container {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        
         .history-items {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
             gap: 10px;
+        }
+        
+        .history-items.list-mode {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
         
         .history-item {
@@ -346,13 +357,21 @@
             transition: all 0.3s ease;
         }
         
+        .history-item.list-item {
+            width: auto;
+            height: auto;
+            border-radius: 25px;
+            padding: 8px 15px;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        
         .history-item:hover {
             transform: scale(1.1);
             box-shadow: 0 5px 10px rgba(212, 175, 55, 0.4);
         }
         
         .history-counter {
-            margin-top: 12px;
             color: var(--primary-color);
             font-weight: 500;
             font-size: 1rem;
@@ -376,6 +395,14 @@
         .reset-history-btn:hover {
             background: rgba(231, 76, 60, 0.2);
             transform: translateY(-2px);
+        }
+        
+        .count-badge {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            margin-left: 8px;
         }
         
         .info {
@@ -1103,7 +1130,7 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
             display: flex;
-            justify-content: center;
+            justify: center;
             align-items: center;
             z-index: 2000;
             opacity: 0;
@@ -1663,7 +1690,7 @@
                     <li>深色模式与主题颜色自定义</li>
                     <li>无广告干扰的纯净体验</li>
                     <li>优先体验最新功能</li>
-                    <li>批量抽取功能（最多10个）</li>
+                    <li>批量抽取功能（最多25个）</li>
                 </ul>
             </div>
         </div>
@@ -1704,16 +1731,18 @@
             
             <div class="batch-container">
                 <label for="batch-count">数量:</label>
-                <input type="number" id="batch-count" min="1" max="10" value="1">
+                <input type="number" id="batch-count" min="1" max="25" value="1">
             </div>
         </div>
         
         <!-- 历史记录区域 -->
         <div class="history-container">
             <div class="history-title">历史记录</div>
-            <div class="history-items" id="history-items"></div>
+            <div class="history-scroll-container">
+                <div class="history-items" id="history-items"></div>
+            </div>
             <div class="history-counter">
-                <span>已记录: <span id="history-count">0</span></span>
+                <span>已记录: <span id="history-count">0</span>/<span id="history-limit">0</span></span>
                 <button class="reset-history-btn" id="reset-history">
                     <i class="fas fa-trash-alt"></i> 重置历史记录
                 </button>
@@ -1733,7 +1762,7 @@
                     <div class="announcement-content">
                         <p>Pro专享版本更新内容：</p>
                         <ul>
-                            <li>新增批量抽取功能（最多10个）</li>
+                            <li>新增批量抽取功能（最多25个）</li>
                             <li>优化抽取特效（数字跳跃效果）</li>
                             <li>新增批量结果弹窗显示</li>
                             <li>修复已知问题，提升稳定性</li>
@@ -1766,7 +1795,7 @@
             <p>• 历史记录无限制保存</p>
             <p>• 随机按钮有3秒冷却时间</p>
             <p>• 自定义结果框背景色和整体主题</p>
-            <p>• 新增批量抽取功能（最多10个）</p>
+            <p>• 新增批量抽取功能（最多25个）</p>
         </div>
     </div>
     
@@ -2047,6 +2076,7 @@
             const currentSettingsElement = document.getElementById('current-settings');
             const historyItemsContainer = document.getElementById('history-items');
             const historyCountElement = document.getElementById('history-count');
+            const historyLimitElement = document.getElementById('history-limit');
             const resetHistoryButton = document.getElementById('reset-history');
             const darkModeSelect = document.getElementById('dark-mode');
             const colorOptions = document.querySelectorAll('.color-option');
@@ -2101,8 +2131,12 @@
                 excludeNumbers: []
             };
             
-            // 历史记录（无限制）
-            let history = [];
+            // 历史记录（允许重复时使用对象记录次数，不允许重复时使用数组）
+            let history = {};
+            let historyArray = []; // 用于不允许重复的情况
+            
+            // 历史记录上限
+            let historyLimit = 0;
             
             // 冷却状态
             let isCooldown = false;
@@ -2142,8 +2176,55 @@
                 }
             }
             
+            // 计算历史记录上限
+            function calculateHistoryLimit() {
+                if (settings.allowDuplicates) {
+                    // 如果允许重复，则没有上限
+                    historyLimit = 0;
+                } else {
+                    const min = settings.minNumber;
+                    const max = settings.maxNumber;
+                    
+                    if (min === null || max === null) {
+                        historyLimit = 0;
+                        return;
+                    }
+                    
+                    // 计算范围内的数字总数
+                    const totalNumbers = max - min + 1;
+                    
+                    // 计算有效的排除数字（在范围内且不为空）
+                    const validExcludeNumbers = settings.excludeNumbers.filter(num => 
+                        num !== '' && num >= min && num <= max
+                    );
+                    
+                    // 使用Set去除重复的排除数字
+                    const uniqueExcludeNumbers = [...new Set(validExcludeNumbers)];
+                    
+                    // 历史记录上限 = 范围内数字总数 - 排除数字数量
+                    historyLimit = totalNumbers - uniqueExcludeNumbers.length;
+                    
+                    // 确保上限不为负数
+                    if (historyLimit < 0) {
+                        historyLimit = 0;
+                    }
+                }
+                
+                // 更新显示
+                updateHistoryLimitDisplay();
+            }
+            
+            // 更新历史记录上限显示
+            function updateHistoryLimitDisplay() {
+                if (settings.allowDuplicates) {
+                    historyLimitElement.textContent = "∞";
+                } else {
+                    historyLimitElement.textContent = historyLimit;
+                }
+            }
+            
             // 生成随机学号函数
-            function generateRandomNumber() {
+            function generateRandomNumber(excludeArray = []) {
                 let min = settings.minNumber;
                 let max = settings.maxNumber;
                 let exclude = settings.excludeNumbers.filter(num => num !== '');
@@ -2151,9 +2232,19 @@
                 // 验证设置
                 const validationErrors = validateSettings();
                 if (validationErrors.length > 0) {
-                    showError(validationErrors);
                     return null;
                 }
+                
+                // 如果不允许重复，将历史记录添加到排除列表中
+                if (!settings.allowDuplicates) {
+                    exclude = exclude.concat(historyArray);
+                }
+                
+                // 添加额外的排除数组
+                exclude = exclude.concat(excludeArray);
+                
+                // 去重
+                exclude = [...new Set(exclude)];
                 
                 let randomNum;
                 let attempts = 0;
@@ -2164,10 +2255,9 @@
                     randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
                     attempts++;
                     
-                    // 如果尝试次数过多，则清空排除列表
+                    // 如果尝试次数过多，则返回null
                     if (attempts > maxAttempts) {
-                        exclude = [];
-                        break;
+                        return null;
                     }
                 } while (exclude.includes(randomNum));
                 
@@ -2229,29 +2319,12 @@
                 const numbers = [];
                 
                 for (let i = 0; i < count; i++) {
-                    let randomNum;
-                    let attempts = 0;
-                    const maxAttempts = 100;
-                    
-                    do {
-                        randomNum = generateRandomNumber();
-                        if (randomNum === null) return []; // 验证失败
-                        attempts++;
-                        
-                        // 如果不允许重复，且已经存在该数字，则重新生成
-                        if (!settings.allowDuplicates && numbers.includes(randomNum)) {
-                            randomNum = null;
-                        }
-                        
-                        // 如果尝试次数过多，则跳出循环
-                        if (attempts > maxAttempts) {
-                            break;
-                        }
-                    } while (!settings.allowDuplicates && randomNum !== null && numbers.includes(randomNum));
-                    
-                    if (randomNum !== null) {
-                        numbers.push(randomNum);
+                    let randomNum = generateRandomNumber(numbers);
+                    if (randomNum === null) {
+                        // 无法生成新的数字，跳出循环
+                        break;
                     }
+                    numbers.push(randomNum);
                 }
                 
                 return numbers;
@@ -2292,9 +2365,23 @@
                 resultElement.classList.add('jump-animation');
                 
                 // 添加到历史记录
-                finalNumbers.forEach(num => {
-                    history.push(num);
-                });
+                if (settings.allowDuplicates) {
+                    // 允许重复时，使用对象记录次数
+                    finalNumbers.forEach(num => {
+                        if (history[num]) {
+                            history[num]++;
+                        } else {
+                            history[num] = 1;
+                        }
+                    });
+                } else {
+                    // 不允许重复时，使用数组记录
+                    finalNumbers.forEach(num => {
+                        if (!historyArray.includes(num)) {
+                            historyArray.push(num);
+                        }
+                    });
+                }
                 
                 // 更新历史记录显示
                 updateHistoryDisplay();
@@ -2339,20 +2426,8 @@
                     return true; // 如果允许重复，总是有数字可用
                 }
                 
-                const min = settings.minNumber;
-                const max = settings.maxNumber;
-                const excludeNumbers = settings.excludeNumbers.filter(num => num !== '');
-                
-                // 计算所有可能的数字
-                const allPossibleNumbers = [];
-                for (let i = min; i <= max; i++) {
-                    if (!excludeNumbers.includes(i)) {
-                        allPossibleNumbers.push(i);
-                    }
-                }
-                
-                // 检查是否所有可能的数字都在历史记录中
-                return allPossibleNumbers.some(num => !history.includes(num));
+                // 如果不允许重复，检查历史记录是否已达到上限
+                return historyArray.length < historyLimit;
             }
             
             // 显示无可用数字提示
@@ -2363,7 +2438,11 @@
                 return new Promise((resolve) => {
                     confirmYes.onclick = () => {
                         // 用户选择清除历史记录
-                        history = [];
+                        if (settings.allowDuplicates) {
+                            history = {};
+                        } else {
+                            historyArray = [];
+                        }
                         updateHistoryDisplay();
                         confirmModal.classList.remove('active');
                         resolve(true);
@@ -2402,40 +2481,26 @@
                 
                 // 获取批量数量
                 const batchCount = parseInt(batchCountInput.value) || 1;
-                const finalCount = Math.min(Math.max(1, batchCount), 10); // 限制在1-10之间
+                const finalCount = Math.min(Math.max(1, batchCount), 25); // 限制在1-25之间
                 
                 // 生成随机数字
                 let finalNumbers;
                 
                 if (finalCount === 1) {
                     // 单个数字的情况
-                    let randomNum;
-                    
-                    if (!settings.allowDuplicates) {
-                        // 不允许重复的情况下，确保生成新数字
-                        let attempts = 0;
-                        do {
-                            randomNum = generateRandomNumber();
-                            if (randomNum === null) return; // 验证失败
-                            attempts++;
-                            
-                            // 如果尝试次数过多（理论上不可能，但以防万一）
-                            if (attempts > 100) {
-                                // 重置历史记录
-                                history = [];
-                                break;
-                            }
-                        } while (history.includes(randomNum));
-                    } else {
-                        randomNum = generateRandomNumber();
-                        if (randomNum === null) return; // 验证失败
+                    const randomNum = generateRandomNumber();
+                    if (randomNum === null) {
+                        showError(["无法生成随机数字，请检查设置"]);
+                        return;
                     }
-                    
                     finalNumbers = [randomNum];
                 } else {
                     // 批量生成数字
                     finalNumbers = generateBatchRandomNumbers(finalCount);
-                    if (finalNumbers.length === 0) return; // 验证失败
+                    if (finalNumbers.length === 0) {
+                        showError(["无法生成任何数字，请检查设置"]);
+                        return;
+                    }
                 }
                 
                 // 显示数字跳跃效果
@@ -2458,16 +2523,52 @@
             function updateHistoryDisplay() {
                 historyItemsContainer.innerHTML = '';
                 
-                // 显示所有历史记录
-                history.forEach(num => {
-                    const item = document.createElement('div');
-                    item.classList.add('history-item');
-                    item.textContent = num;
-                    historyItemsContainer.appendChild(item);
-                });
+                // 根据是否允许重复选择不同的显示方式
+                if (settings.allowDuplicates) {
+                    // 允许重复：使用列表模式，显示每个数字及其抽取次数
+                    historyItemsContainer.classList.add('list-mode');
+                    
+                    // 获取所有数字并按抽取次数排序
+                    const sortedNumbers = Object.keys(history).sort((a, b) => history[b] - history[a]);
+                    
+                    // 显示所有历史记录
+                    sortedNumbers.forEach(num => {
+                        const item = document.createElement('div');
+                        item.classList.add('history-item', 'list-item');
+                        
+                        const numberSpan = document.createElement('span');
+                        numberSpan.textContent = num;
+                        
+                        const countSpan = document.createElement('span');
+                        countSpan.classList.add('count-badge');
+                        countSpan.textContent = `x${history[num]}`;
+                        
+                        item.appendChild(numberSpan);
+                        item.appendChild(countSpan);
+                        historyItemsContainer.appendChild(item);
+                    });
+                    
+                    // 更新历史记录计数（总抽取次数）
+                    const totalCount = Object.values(history).reduce((sum, count) => sum + count, 0);
+                    historyCountElement.textContent = totalCount;
+                } else {
+                    // 不允许重复：使用网格模式
+                    historyItemsContainer.classList.remove('list-mode');
+                    
+                    // 显示所有历史记录
+                    historyArray.forEach(num => {
+                        const item = document.createElement('div');
+                        item.classList.add('history-item');
+                        item.textContent = num;
+                        historyItemsContainer.appendChild(item);
+                    });
+                    
+                    // 更新历史记录计数（不重复的数字数量）
+                    historyCountElement.textContent = historyArray.length;
+                }
                 
-                // 更新历史记录计数
-                historyCountElement.textContent = history.length;
+                // 保存历史记录
+                saveSettings();
             }
             
             // 更新设置显示
@@ -2489,6 +2590,9 @@
                 }
                 
                 currentSettingsElement.textContent = settingsText;
+                
+                // 计算历史记录上限
+                calculateHistoryLimit();
             }
             
             // 应用深色模式设置
@@ -2555,17 +2659,29 @@
             
             // 保存设置到本地存储
             function saveSettings() {
-                localStorage.setItem('randomNumberSettings', JSON.stringify(settings));
-                localStorage.setItem('randomNumberHistory', JSON.stringify(history));
+                const saveData = {
+                    settings: settings,
+                    history: settings.allowDuplicates ? history : historyArray
+                };
+                localStorage.setItem('randomNumberData', JSON.stringify(saveData));
             }
             
             // 从本地存储加载设置
             function loadSettings() {
-                const savedSettings = localStorage.getItem('randomNumberSettings');
-                const savedHistory = localStorage.getItem('randomNumberHistory');
+                const savedData = localStorage.getItem('randomNumberData');
                 
-                if (savedSettings) {
-                    settings = JSON.parse(savedSettings);
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    settings = data.settings;
+                    
+                    // 根据当前设置加载历史记录
+                    if (settings.allowDuplicates) {
+                        history = data.history || {};
+                        historyArray = [];
+                    } else {
+                        historyArray = data.history || [];
+                        history = {};
+                    }
                     
                     // 更新UI
                     allowDuplicatesCheckbox.checked = settings.allowDuplicates;
@@ -2593,10 +2709,6 @@
                     
                     // 加载排除学号设置
                     renderExcludeInputs();
-                }
-                
-                if (savedHistory) {
-                    history = JSON.parse(savedHistory);
                 }
                 
                 // 更新设置显示
@@ -2660,8 +2772,7 @@
             
             // 清除所有存储
             function clearAllStorage() {
-                localStorage.removeItem('randomNumberSettings');
-                localStorage.removeItem('randomNumberHistory');
+                localStorage.removeItem('randomNumberData');
                 sessionStorage.clear();
                 
                 // 显示清除成功消息
@@ -2726,7 +2837,11 @@
                 
                 // 如果范围改变，清空历史记录
                 if (rangeChanged) {
-                    history = [];
+                    if (settings.allowDuplicates) {
+                        history = {};
+                    } else {
+                        historyArray = [];
+                    }
                     updateHistoryDisplay();
                     saveSettings();
                 }
@@ -2768,7 +2883,11 @@
                     
                     // 如果范围改变，清空历史记录
                     if (rangeChanged) {
-                        history = [];
+                        if (settings.allowDuplicates) {
+                            history = {};
+                        } else {
+                            historyArray = [];
+                        }
                         updateHistoryDisplay();
                         saveSettings();
                     }
@@ -2856,7 +2975,26 @@
             
             // 设置开关即时生效
             allowDuplicatesCheckbox.addEventListener('change', function() {
-                settings.allowDuplicates = this.checked;
+                const newValue = this.checked;
+                
+                // 如果设置改变，清空历史记录
+                if (settings.allowDuplicates !== newValue) {
+                    if (newValue) {
+                        // 从不允许重复切换到允许重复
+                        history = {};
+                        historyArray.forEach(num => {
+                            history[num] = 1;
+                        });
+                        historyArray = [];
+                    } else {
+                        // 从允许重复切换到不允许重复
+                        historyArray = Object.keys(history).map(Number);
+                        history = {};
+                    }
+                    updateHistoryDisplay();
+                }
+                
+                settings.allowDuplicates = newValue;
                 updateSettingsDisplay();
                 saveSettings();
             });
@@ -2887,7 +3025,7 @@
             // 批量数量输入限制
             batchCountInput.addEventListener('change', function() {
                 let value = parseInt(this.value) || 1;
-                value = Math.min(Math.max(1, value), 10); // 限制在1-10之间
+                value = Math.min(Math.max(1, value), 25); // 限制在1-25之间
                 this.value = value;
             });
             
@@ -2911,7 +3049,11 @@
             
             // 重置历史记录
             resetHistoryButton.addEventListener('click', function() {
-                history = [];
+                if (settings.allowDuplicates) {
+                    history = {};
+                } else {
+                    historyArray = [];
+                }
                 updateHistoryDisplay();
                 saveSettings();
             });
