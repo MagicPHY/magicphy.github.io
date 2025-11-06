@@ -371,17 +371,28 @@
             box-shadow: 0 5px 10px rgba(212, 175, 55, 0.4);
         }
         
+        .history-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 8px;
+            margin-top: 10px;
+        }
+        
         .history-counter {
             color: var(--primary-color);
             font-weight: 500;
             font-size: 1rem;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 0 8px;
         }
         
-        .reset-history-btn {
+        .history-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .reset-history-btn, .export-history-btn {
             background: rgba(231, 76, 60, 0.1);
             border: 1px solid rgba(231, 76, 60, 0.3);
             color: #e74c3c;
@@ -392,9 +403,19 @@
             transition: all 0.3s ease;
         }
         
-        .reset-history-btn:hover {
+        .export-history-btn {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            color: #3498db;
+        }
+        
+        .reset-history-btn:hover, .export-history-btn:hover {
             background: rgba(231, 76, 60, 0.2);
             transform: translateY(-2px);
+        }
+        
+        .export-history-btn:hover {
+            background: rgba(52, 152, 219, 0.2);
         }
         
         .count-badge {
@@ -1130,7 +1151,7 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
             display: flex;
-            justify: center;
+            justify-content: center;
             align-items: center;
             z-index: 2000;
             opacity: 0;
@@ -1420,6 +1441,136 @@
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
         }
         
+        /* 导出格式选择弹窗 */
+        .export-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .export-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .export-content {
+            background: var(--container-bg);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
+            transform: translateY(25px);
+            transition: transform 0.4s ease;
+            text-align: center;
+        }
+
+        .export-modal.active .export-content {
+            transform: translateY(0);
+        }
+
+        .export-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .export-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .export-message {
+            color: var(--text-color);
+            margin-bottom: 25px;
+            text-align: center;
+            line-height: 1.5;
+            font-size: 1.1rem;
+        }
+
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .export-option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode .export-option {
+            background: rgba(40, 40, 35, 0.3);
+        }
+
+        .export-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .dark-mode .export-option:hover {
+            background: rgba(40, 40, 35, 0.5);
+        }
+
+        .export-option input {
+            margin-right: 10px;
+        }
+
+        .export-option label {
+            font-weight: 600;
+            color: var(--text-color);
+            cursor: pointer;
+            flex: 1;
+            text-align: left;
+        }
+
+        .export-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .export-btn {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 10px 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .export-btn.cancel {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        
         /* 响应式优化 */
         @media (max-width: 768px) {
             .container {
@@ -1520,6 +1671,17 @@
             .batch-result-header p,
             .single-result-header p {
                 font-size: 1rem;
+            }
+
+            .history-actions {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .history-buttons {
+                width: 100%;
+                justify-content: space-between;
             }
         }
         
@@ -1668,6 +1830,21 @@
                 font-size: 0.9rem;
                 padding: 10px 20px;
             }
+
+            .history-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .history-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .reset-history-btn, .export-history-btn {
+                padding: 8px 12px;
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
@@ -1741,11 +1918,18 @@
             <div class="history-scroll-container">
                 <div class="history-items" id="history-items"></div>
             </div>
-            <div class="history-counter">
-                <span>已记录: <span id="history-count">0</span>/<span id="history-limit">0</span></span>
-                <button class="reset-history-btn" id="reset-history">
-                    <i class="fas fa-trash-alt"></i> 重置历史记录
-                </button>
+            <div class="history-actions">
+                <div class="history-counter">
+                    <span>已记录: <span id="history-count">0</span>/<span id="history-limit">0</span></span>
+                </div>
+                <div class="history-buttons">
+                    <button class="reset-history-btn" id="reset-history">
+                        <i class="fas fa-trash-alt"></i> 清除记录
+                    </button>
+                    <button class="export-history-btn" id="export-history">
+                        <i class="fas fa-download"></i> 导出结果
+                    </button>
+                </div>
             </div>
         </div>
         
@@ -1792,7 +1976,7 @@
             <p>• 点击"生成随机学号"按钮在设定范围内随机获得学号</p>
             <p>• 右上角设置按钮可修改抽取选项和范围</p>
             <p>• 可设置排除特定学号</p>
-            <p>• 历史记录无限制保存</p>
+            <p>• 历史记录仅在当前会话中保存，刷新或关闭页面后自动清除</p>
             <p>• 随机按钮有3秒冷却时间</p>
             <p>• 自定义结果框背景色和整体主题</p>
             <p>• 新增批量抽取功能（最多25个）</p>
@@ -1991,6 +2175,43 @@
         </div>
     </div>
 
+    <!-- 导出格式选择弹窗 -->
+    <div class="export-modal" id="export-modal">
+        <div class="export-content">
+            <div class="close-btn" id="close-export-modal">
+                <i class="fas fa-times"></i>
+            </div>
+            
+            <div class="export-icon">
+                <i class="fas fa-file-export"></i>
+            </div>
+            <h2 class="export-title">导出历史记录</h2>
+            <div class="export-message">
+                请选择导出格式：
+            </div>
+            
+            <div class="export-options">
+                <div class="export-option">
+                    <input type="radio" id="export-txt" name="export-format" value="txt" checked>
+                    <label for="export-txt">TXT 格式 (纯文本)</label>
+                </div>
+                <div class="export-option">
+                    <input type="radio" id="export-html" name="export-format" value="html">
+                    <label for="export-html">HTML 格式 (包含网页样式)</label>
+                </div>
+                <div class="export-option">
+                    <input type="radio" id="export-docx" name="export-format" value="docx">
+                    <label for="export-docx">DOCX 格式 (Microsoft Word)</label>
+                </div>
+            </div>
+            
+            <div class="export-actions">
+                <button class="export-btn" id="export-confirm">导出</button>
+                <button class="export-btn cancel" id="export-cancel">取消</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Pro卡密验证逻辑
         document.addEventListener('DOMContentLoaded', function() {
@@ -2007,7 +2228,7 @@
             // 修复后的卡密验证逻辑
             function validateKey(key) {
                 // 正确的卡密
-                const correctKey = "MagicPHY557698932";
+                const correctKey = "";
                 return key === correctKey;
             }
             
@@ -2078,6 +2299,7 @@
             const historyCountElement = document.getElementById('history-count');
             const historyLimitElement = document.getElementById('history-limit');
             const resetHistoryButton = document.getElementById('reset-history');
+            const exportHistoryButton = document.getElementById('export-history');
             const darkModeSelect = document.getElementById('dark-mode');
             const colorOptions = document.querySelectorAll('.color-option');
             const customColorInput = document.getElementById('custom-color');
@@ -2120,6 +2342,12 @@
             const confirmMessage = document.getElementById('confirm-message');
             const confirmYes = document.getElementById('confirm-yes');
             const confirmNo = document.getElementById('confirm-no');
+            
+            // 导出格式选择弹窗相关元素
+            const exportModal = document.getElementById('export-modal');
+            const closeExportModalBtn = document.getElementById('close-export-modal');
+            const exportConfirmBtn = document.getElementById('export-confirm');
+            const exportCancelBtn = document.getElementById('export-cancel');
             
             // 初始化设置
             let settings = {
@@ -2481,7 +2709,7 @@
                 
                 // 获取批量数量
                 const batchCount = parseInt(batchCountInput.value) || 1;
-                const finalCount = Math.min(Math.max(1, batchCount), 25); // 限制在1-25之间
+                const finalCount = Math.min(Math.max(1, batchCount), 30); // 限制在1-30之间
                 
                 // 生成随机数字
                 let finalNumbers;
@@ -2567,8 +2795,8 @@
                     historyCountElement.textContent = historyArray.length;
                 }
                 
-                // 保存历史记录
-                saveSettings();
+                // 保存历史记录到sessionStorage
+                saveHistoryToSession();
             }
             
             // 更新设置显示
@@ -2660,28 +2888,18 @@
             // 保存设置到本地存储
             function saveSettings() {
                 const saveData = {
-                    settings: settings,
-                    history: settings.allowDuplicates ? history : historyArray
+                    settings: settings
                 };
-                localStorage.setItem('randomNumberData', JSON.stringify(saveData));
+                localStorage.setItem('randomNumberSettings', JSON.stringify(saveData));
             }
             
             // 从本地存储加载设置
             function loadSettings() {
-                const savedData = localStorage.getItem('randomNumberData');
+                const savedData = localStorage.getItem('randomNumberSettings');
                 
                 if (savedData) {
                     const data = JSON.parse(savedData);
                     settings = data.settings;
-                    
-                    // 根据当前设置加载历史记录
-                    if (settings.allowDuplicates) {
-                        history = data.history || {};
-                        historyArray = [];
-                    } else {
-                        historyArray = data.history || [];
-                        history = {};
-                    }
                     
                     // 更新UI
                     allowDuplicatesCheckbox.checked = settings.allowDuplicates;
@@ -2713,7 +2931,34 @@
                 
                 // 更新设置显示
                 updateSettingsDisplay();
-                updateHistoryDisplay();
+            }
+            
+            // 保存历史记录到sessionStorage
+            function saveHistoryToSession() {
+                const historyData = {
+                    history: settings.allowDuplicates ? history : historyArray
+                };
+                sessionStorage.setItem('randomNumberHistory', JSON.stringify(historyData));
+            }
+            
+            // 从sessionStorage加载历史记录
+            function loadHistoryFromSession() {
+                const savedHistory = sessionStorage.getItem('randomNumberHistory');
+                
+                if (savedHistory) {
+                    const data = JSON.parse(savedHistory);
+                    
+                    // 根据当前设置加载历史记录
+                    if (settings.allowDuplicates) {
+                        history = data.history || {};
+                        historyArray = [];
+                    } else {
+                        historyArray = data.history || [];
+                        history = {};
+                    }
+                    
+                    updateHistoryDisplay();
+                }
             }
             
             // 渲染排除学号输入框
@@ -2772,8 +3017,8 @@
             
             // 清除所有存储
             function clearAllStorage() {
-                localStorage.removeItem('randomNumberData');
-                sessionStorage.clear();
+                localStorage.removeItem('randomNumberSettings');
+                sessionStorage.removeItem('randomNumberHistory');
                 
                 // 显示清除成功消息
                 clearStorageModal.classList.remove('active');
@@ -2783,6 +3028,312 @@
                     alert('所有设置已清除，页面将刷新');
                     window.location.reload();
                 }, 300);
+            }
+            
+            // 导出历史记录
+            function exportHistory() {
+                // 显示导出格式选择弹窗
+                exportModal.classList.add('active');
+            }
+            
+            // 执行导出操作
+            function performExport(format) {
+                let content = '';
+                let filename = '';
+                let mimeType = '';
+                
+                // 获取当前时间
+                const now = new Date();
+                const timestamp = now.toISOString().slice(0, 19).replace(/:/g, '-');
+                
+                if (format === 'txt') {
+                    // TXT格式
+                    if (settings.allowDuplicates) {
+                        // 允许重复的情况
+                        content = 'Pro-MagicPHY随机学号生成器 - 历史记录\n';
+                        content += `导出时间: ${now.toLocaleString()}\n`;
+                        content += `设置: ${settings.allowDuplicates ? '允许重复' : '不允许重复'}, 范围: ${settings.minNumber || '未设置'}-${settings.maxNumber || '未设置'}\n\n`;
+                        
+                        // 按抽取次数排序
+                        const sortedNumbers = Object.keys(history).sort((a, b) => history[b] - history[a]);
+                        
+                        sortedNumbers.forEach(num => {
+                            content += `学号 ${num}: ${history[num]}次\n`;
+                        });
+                        
+                        content += `\n总计: ${Object.values(history).reduce((sum, count) => sum + count, 0)}次抽取`;
+                    } else {
+                        // 不允许重复的情况
+                        content = 'Pro-MagicPHY随机学号生成器 - 历史记录\n';
+                        content += `导出时间: ${now.toLocaleString()}\n`;
+                        content += `设置: ${settings.allowDuplicates ? '允许重复' : '不允许重复'}, 范围: ${settings.minNumber || '未设置'}-${settings.maxNumber || '未设置'}\n\n`;
+                        
+                        historyArray.forEach(num => {
+                            content += `学号 ${num}\n`;
+                        });
+                        
+                        content += `\n总计: ${historyArray.length}个不重复学号`;
+                    }
+                    
+                    filename = `随机学号历史记录_${timestamp}.txt`;
+                    mimeType = 'text/plain';
+                } else if (format === 'html') {
+                    // HTML格式
+                    if (settings.allowDuplicates) {
+                        // 允许重复的情况
+                        content = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro-MagicPHY随机学号生成器 - 历史记录</title>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+            color: #2c3e50;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #D4AF37;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #D4AF37;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .history-container {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .history-title {
+            color: #D4AF37;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">Pro-MagicPHY随机学号生成器</h1>
+        <div class="subtitle">历史记录导出</div>
+    </div>
+    
+    <div class="info">
+        <p><strong>导出时间:</strong> ${now.toLocaleString()}</p>
+                        <p><strong>设置:</strong> ${settings.allowDuplicates ? '允许重复' : '不允许重复'}, 范围: ${settings.minNumber || '未设置'}-${settings.maxNumber || '未设置'}</p>
+                    </div>
+                    
+                    <div class="history-container">
+                        <h2 class="history-title">抽取历史记录</h2>`;
+                        
+                        // 按抽取次数排序
+                        const sortedNumbers = Object.keys(history).sort((a, b) => history[b] - history[a]);
+                        
+                        sortedNumbers.forEach(num => {
+                            content += `<div class="history-item">
+                                <span>学号 ${num}</span>
+                                <span>${history[num]}次</span>
+                            </div>`;
+                        });
+                        
+                        content += `<div class="footer">
+                            <p>总计: ${Object.values(history).reduce((sum, count) => sum + count, 0)}次抽取</p>
+                        </div>
+                    </div>
+                </body>
+                </html>`;
+                    } else {
+                        // 不允许重复的情况
+                        content = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro-MagicPHY随机学号生成器 - 历史记录</title>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+            color: #2c3e50;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #D4AF37;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #D4AF37;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .history-container {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .history-title {
+            color: #D4AF37;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 15px;
+        }
+        .history-item {
+            background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            color: white;
+            font-size: 1.2rem;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">Pro-MagicPHY随机学号生成器</h1>
+        <div class="subtitle">历史记录导出</div>
+    </div>
+    
+    <div class="info">
+        <p><strong>导出时间:</strong> ${now.toLocaleString()}</p>
+                        <p><strong>设置:</strong> ${settings.allowDuplicates ? '允许重复' : '不允许重复'}, 范围: ${settings.minNumber || '未设置'}-${settings.maxNumber || '未设置'}</p>
+                    </div>
+                    
+                    <div class="history-container">
+                        <h2 class="history-title">抽取历史记录</h2>
+                        <div class="history-grid">`;
+                        
+                        historyArray.forEach(num => {
+                            content += `<div class="history-item">${num}</div>`;
+                        });
+                        
+                        content += `</div>
+                        <div class="footer">
+                            <p>总计: ${historyArray.length}个不重复学号</p>
+                        </div>
+                    </div>
+                </body>
+                </html>`;
+                    }
+                    
+                    filename = `随机学号历史记录_${timestamp}.html`;
+                    mimeType = 'text/html';
+                } else if (format === 'docx') {
+                    // DOCX格式 - 由于浏览器限制，我们生成一个简单的文本格式，用户可以在Word中打开
+                    if (settings.allowDuplicates) {
+                        // 允许重复的情况
+                        content = 'Pro-MagicPHY随机学号生成器 - 历史记录\n\n';
+                        content += `导出时间: ${now.toLocaleString()}\n`;
+                        content += `设置: ${settings.allowDuplicates ? '允许重复' : '不允许重复'}, 范围: ${settings.minNumber || '未设置'}-${settings.maxNumber || '未设置'}\n\n`;
+                        
+                        // 按抽取次数排序
+                        const sortedNumbers = Object.keys(history).sort((a, b) => history[b] - history[a]);
+                        
+                        content += '抽取历史记录:\n';
+                        sortedNumbers.forEach(num => {
+                            content += `学号 ${num}: ${history[num]}次\n`;
+                        });
+                        
+                        content += `\n总计: ${Object.values(history).reduce((sum, count) => sum + count, 0)}次抽取`;
+                    } else {
+                        // 不允许重复的情况
+                        content = 'Pro-MagicPHY随机学号生成器 - 历史记录\n\n';
+                        content += `导出时间: ${now.toLocaleString()}\n`;
+                        content += `设置: ${settings.allowDuplicates ? '允许重复' : '不允许重复'}, 范围: ${settings.minNumber || '未设置'}-${settings.maxNumber || '未设置'}\n\n`;
+                        
+                        content += '抽取历史记录:\n';
+                        historyArray.forEach(num => {
+                            content += `学号 ${num}\n`;
+                        });
+                        
+                        content += `\n总计: ${historyArray.length}个不重复学号`;
+                    }
+                    
+                    filename = `随机学号历史记录_${timestamp}.docx`;
+                    mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                }
+                
+                // 创建Blob并下载
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                // 关闭导出弹窗
+                exportModal.classList.remove('active');
             }
             
             // 按钮点击事件 - 生成随机学号
@@ -2843,7 +3394,7 @@
                         historyArray = [];
                     }
                     updateHistoryDisplay();
-                    saveSettings();
+                    saveHistoryToSession();
                 }
                 
                 settingsModal.classList.remove('active');
@@ -2889,7 +3440,7 @@
                             historyArray = [];
                         }
                         updateHistoryDisplay();
-                        saveSettings();
+                        saveHistoryToSession();
                     }
                     
                     settingsModal.classList.remove('active');
@@ -3055,7 +3606,33 @@
                     historyArray = [];
                 }
                 updateHistoryDisplay();
-                saveSettings();
+                saveHistoryToSession();
+            });
+            
+            // 导出历史记录
+            exportHistoryButton.addEventListener('click', exportHistory);
+            
+            // 关闭导出弹窗
+            closeExportModalBtn.addEventListener('click', function() {
+                exportModal.classList.remove('active');
+            });
+            
+            // 点击导出弹窗背景关闭
+            exportModal.addEventListener('click', function(e) {
+                if (e.target === exportModal) {
+                    exportModal.classList.remove('active');
+                }
+            });
+            
+            // 取消导出
+            exportCancelBtn.addEventListener('click', function() {
+                exportModal.classList.remove('active');
+            });
+            
+            // 确认导出
+            exportConfirmBtn.addEventListener('click', function() {
+                const selectedFormat = document.querySelector('input[name="export-format"]:checked').value;
+                performExport(selectedFormat);
             });
             
             // 深色模式选择改变
@@ -3145,8 +3722,25 @@
             // 加载设置
             loadSettings();
             
+            // 加载历史记录
+            loadHistoryFromSession();
+            
             // 初始化设置显示
             updateSettingsDisplay();
+            
+            // 页面卸载前提示导出
+            window.addEventListener('beforeunload', function(e) {
+                const historyCount = settings.allowDuplicates ? 
+                    Object.values(history).reduce((sum, count) => sum + count, 0) : 
+                    historyArray.length;
+                
+                if (historyCount > 0) {
+                    // 显示确认对话框
+                    const confirmationMessage = '您有未导出的历史记录，确定要离开吗？';
+                    e.returnValue = confirmationMessage;
+                    return confirmationMessage;
+                }
+            });
         });
     </script>
 </body>
