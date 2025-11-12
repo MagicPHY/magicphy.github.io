@@ -3,1267 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MagicPHY随机学号生成器</title>
-    <link rel="icon" href="https://magicphy.github.io/PHY.png" type="image/jpg">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>404 Not Found</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 样式 */
-        :root {
-            --primary-color: #3498db;
-            --primary-gradient: linear-gradient(135deg, #3498db 0%, #1a5d9e 100%);
-            --result-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
-            --background-gradient: linear-gradient(135deg, #e6f7ff 0%, #c2e9fb 100%);
-            --text-color: #2c3e50;
-            --container-bg: rgba(255, 255, 255, 0.95);
-            --history-bg: rgba(255, 255, 255, 0.7);
-            --info-bg: rgba(255, 255, 255, 0.7);
-            --history-border: rgba(52, 152, 219, 0.2);
-            --shadow-color: rgba(0, 100, 200, 0.15);
-            --button-hover: #2980b9;
-            --button-active: #1f6ab4;
-            --history-item-gradient: linear-gradient(135deg, #3498db 0%, #1a5d9e 100%);
-        }
-
-        /* 深色模式变量 */
-        .dark-mode {
-            --primary-color: #4da6ff;
-            --primary-gradient: linear-gradient(135deg, #4da6ff 0%, #0066cc 100%);
-            --result-gradient: linear-gradient(135deg, #5a7fca 0%, #3a5f8a 100%);
-            --background-gradient: linear-gradient(135deg, #1a2a40 0%, #0d1b2a 100%);
-            --text-color: #f0f8ff;
-            --container-bg: rgba(30, 41, 59, 0.95);
-            --history-bg: rgba(30, 41, 59, 0.7);
-            --info-bg: rgba(30, 41, 59, 0.7);
-            --history-border: rgba(77, 166, 255, 0.2);
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --button-hover: #3d8fd9;
-            --button-active: #2c7bc0;
-            --history-item-gradient: linear-gradient(135deg, #4da6ff 0%, #0066cc 100%);
-        }
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            font-family: 'Nunito', sans-serif;
-            background: var(--background-gradient);
+            background: linear-gradient(135deg, #e6f7ff 0%, #c2e9fb 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            color: #2c3e50;
+            overflow: hidden;
             padding: 20px;
-            color: var(--text-color);
         }
         
         .container {
-            background: var(--container-bg);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px var(--shadow-color);
+            max-width: 800px;
             width: 100%;
-            max-width: 900px;
-            padding: 40px 30px;
             text-align: center;
             position: relative;
-            overflow: hidden;
-            z-index: 10;
-        }
-        
-        .title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 3.2rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 1;
-            text-shadow: 0 2px 5px rgba(52, 152, 219, 0.2);
-            letter-spacing: 1px;
-        }
-        
-        .subtitle {
-            font-size: 1.3rem;
-            color: var(--primary-color);
-            margin-bottom: 40px;
-            font-weight: 400;
-        }
-        
-        .settings-btn {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 100;
-            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
-        }
-        
-        .settings-btn:hover {
-            transform: rotate(45deg);
-            background: var(--button-hover);
-            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
-        }
-        
-        .result-container {
-            background: var(--result-gradient);
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
-            padding: 40px 20px;
-            margin: 30px 0;
-            position: relative;
+            box-shadow: 0 15px 35px rgba(0, 100, 200, 0.15);
             overflow: hidden;
-            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.5), 0 10px 25px rgba(0, 100, 200, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.6);
-            min-height: 200px;
+            z-index: 2;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(52, 152, 219, 0.1) 0%, rgba(52, 152, 219, 0) 70%);
+            z-index: -1;
+        }
+        
+        .error-code {
+            font-size: 12rem;
+            font-weight: 900;
+            line-height: 1;
+            margin: 20px 0;
+            position: relative;
+            color: #3498db;
+            text-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #2c3e50;
+        }
+        
+        .search-box {
             display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        #result {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: var(--text-color);
-            font-family: 'Montserrat', sans-serif;
-            transition: all 0.5s ease;
-            position: relative;
-            z-index: 1;
-            text-shadow: 0 3px 10px rgba(44, 62, 80, 0.2);
-        }
-        
-        .button-container {
-            margin: 30px 0;
-            position: relative;
-            z-index: 1;
-        }
-        
-        #random-btn {
-            background: var(--primary-gradient);
-            border: none;
+            max-width: 500px;
+            margin: 30px auto;
+            background: rgba(52, 152, 219, 0.1);
             border-radius: 50px;
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 600;
-            padding: 18px 60px;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
-            transition: all 0.3s ease;
-            position: relative;
             overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+        
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 15px 20px;
+            background: transparent;
+            color: #2c3e50;
+            font-size: 1rem;
             outline: none;
-            font-family: 'Montserrat', sans-serif;
-            letter-spacing: 1px;
+        }
+        
+        .search-box input::placeholder {
+            color: rgba(44, 62, 80, 0.7);
+        }
+        
+        .search-box button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .home-button {
+            display: inline-block;
+            padding: 12px 35px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
             margin-top: 10px;
-            min-width: 260px;
+            border: none;
+            cursor: pointer;
         }
         
-        #random-btn:hover:not(:disabled) {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(52, 152, 219, 0.5);
-            background: linear-gradient(135deg, var(--button-hover) 0%, var(--button-active) 100%);
+        .home-button:hover {
+            background: #1a5d9e;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
         }
         
-        #random-btn:active:not(:disabled) {
-            transform: translateY(0);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        .animation-container {
+            position: relative;
+            height: 180px;
+            margin: 40px 0;
         }
         
-        #random-btn:disabled {
-            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
-            cursor: not-allowed;
-            opacity: 0.8;
-        }
-        
-        #random-btn::after {
-            content: "";
+        .spaceman {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
             transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
+            width: 80px;
+            height: 80px;
+            animation: float 6s ease-in-out infinite;
         }
         
-        #random-btn:active:not(:disabled)::after {
-            width: 300px;
-            height: 300px;
-        }
-        
-        .fa-random {
-            margin-right: 10px;
-        }
-        
-        .settings-indicator {
-            background: rgba(52, 152, 219, 0.15);
-            border-radius: 10px;
-            padding: 10px 20px;
-            display: inline-block;
-            margin-top: 20px;
-            font-weight: 500;
-            color: var(--text-color);
-            border: 1px solid rgba(52, 152, 219, 0.3);
-        }
-        
-        .history-container {
-            margin-top: 40px;
-            background: var(--history-bg);
-            border-radius: 15px;
-            padding: 25px;
-            max-height: 300px;
-            overflow-y: auto;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--history-border);
-        }
-        
-        .history-title {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-            text-align: center;
-            font-weight: 600;
-            position: relative;
-            padding-bottom: 10px;
-        }
-        
-        .history-title::after {
-            content: "";
+        .planet {
             position: absolute;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-color), #a1c4fd);
-            border-radius: 3px;
-        }
-        
-        .history-items {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-            gap: 12px;
-        }
-        
-        .history-item {
-            background: var(--history-item-gradient);
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 600;
-            color: white;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
-            transition: all 0.3s ease;
+            background: radial-gradient(circle at 30% 30%, #a1c4fd, #3498db);
+            box-shadow: 0 0 50px rgba(52, 152, 219, 0.5);
         }
         
-        .history-item:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) translateY(0px); }
+            50% { transform: translate(-50%, -50%) translateY(-20px); }
+            100% { transform: translate(-50%, -50%) translateY(0px); }
         }
         
-        .history-counter {
-            margin-top: 15px;
-            color: var(--primary-color);
-            font-weight: 500;
-            font-size: 1.1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 10px;
-        }
-        
-        .reset-history-btn {
-            background: rgba(231, 76, 60, 0.1);
-            border: 1px solid rgba(231, 76, 60, 0.3);
-            color: #e74c3c;
-            border-radius: 20px;
-            padding: 6px 15px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .reset-history-btn:hover {
-            background: rgba(231, 76, 60, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .info {
-            background: var(--info-bg);
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 40px;
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            border: 1px solid var(--history-border);
-        }
-        
-        .info h3 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-        }
-        
-        .info p {
-            margin-bottom: 15px;
-            line-height: 1.6;
-            color: var(--text-color);
-            font-size: 1.1rem;
-        }
-        
-        .floating {
-            animation: floating 3s ease-in-out infinite;
-        }
-        
-        @keyframes floating {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        .bubble {
+        .stars {
             position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.6);
-            z-index: 0;
-            animation: bubbleAnim linear infinite;
-        }
-        
-        @keyframes bubbleAnim {
-            to {
-                transform: translateY(-100px) scale(0.8);
-                opacity: 0;
-            }
-        }
-        
-        .settings-modal {
-            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background: #3498db;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.8; }
+        }
+        
+        .social-links {
+            margin-top: 30px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s ease;
+            gap: 20px;
         }
         
-        .settings-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 20px 50px rgba(0, 100, 200, 0.3);
-            position: relative;
-            transform: translateY(30px);
-            transition: transform 0.4s ease;
-        }
-        
-        .dark-mode .modal-content {
-            background: var(--container-bg);
-        }
-        
-        .settings-modal.active .modal-content {
-            transform: translateY(0);
-        }
-        
-        .modal-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .modal-header h2 {
-            font-size: 2.2rem;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-        
-        .modal-header p {
-            color: #7f8c8d;
-            font-size: 1.1rem;
-        }
-        
-        .setting-option {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid #ecf0f1;
-        }
-        
-        .dark-mode .setting-option {
-            border-bottom: 1px solid #2d3748;
-        }
-        
-        .setting-option:last-child {
-            border-bottom: none;
-        }
-        
-        .setting-option label {
-            font-size: 1.2rem;
-            color: var(--text-color);
-            cursor: pointer;
-            font-weight: 500;
-        }
-        
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #bdc3c7;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
+        .social-links a {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: var(--primary-color);
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-        
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            color: #95a5a6;
-            font-size: 1.8rem;
-            cursor: pointer;
+            background: rgba(52, 152, 219, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3498db;
+            font-size: 1.5rem;
             transition: all 0.3s ease;
+            border: 1px solid rgba(52, 152, 219, 0.2);
         }
         
-        .close-btn:hover {
-            color: #e74c3c;
-            transform: rotate(90deg);
+        .social-links a:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-5px);
         }
         
-        /* 版本更新公告样式 */
-        .announcement {
-            margin-top: 40px;
-            background: var(--history-bg);
+        .info {
+            background: rgba(255, 255, 255, 0.7);
             border-radius: 15px;
             padding: 25px;
-            border: 1px solid var(--history-border);
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        
-        .announcement-title {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-            text-align: center;
-            font-weight: 600;
+            margin-top: 30px;
             position: relative;
-            padding-bottom: 10px;
+            z-index: 1;
+            text-align: center;
+            border: 1px solid rgba(52, 152, 219, 0.2);
         }
         
-        .announcement-title::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-color), #a1c4fd);
-            border-radius: 3px;
-        }
-        
-        .announcement-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .announcement-item {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
-            padding: 15px;
-            border-left: 4px solid var(--primary-color);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            text-align: left;
-            transition: all 0.3s ease;
-        }
-        
-        .dark-mode .announcement-item {
-            background: rgba(30, 41, 59, 0.9);
-        }
-        
-        .announcement-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .announcement-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        
-        .announcement-version {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        .announcement-date {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
-        
-        .announcement-content {
-            color: var(--text-color);
-            line-height: 1.5;
-        }
-        
-        .announcement-content li {
-            margin-left: 20px;
-            margin-bottom: 5px;
-        }
-        
-        /* 新增的深色模式设置 */
-        .dark-mode-option {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        
-        .dark-mode-select {
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            background: white;
-            color: #333;
-            font-size: 1rem;
-            cursor: pointer;
-            width: 180px;
-        }
-        
-        .dark-mode .dark-mode-select {
-            background: #2d3748;
-            color: #f0f8ff;
-            border-color: #4a5568;
-        }
-        
-        /* 主题颜色选择器 */
-        .theme-colors {
-            margin-top: 20px;
-        }
-        
-        .theme-title {
-            text-align: left;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-        
-        .color-options {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+        .info h3 {
+            color: #3498db;
             margin-bottom: 15px;
+            font-size: 1.5rem;
         }
         
-        .color-option {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s ease;
-        }
-        
-        .color-option:hover {
-            transform: scale(1.1);
-        }
-        
-        .color-option.active {
-            border-color: white;
-            box-shadow: 0 0 0 2px var(--primary-color);
-        }
-        
-        .custom-color-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        #custom-color {
-            width: 50px;
-            height: 40px;
-            padding: 0;
-            border: none;
-            cursor: pointer;
-            background: transparent;
-        }
-        
-        #custom-color-label {
-            color: var(--text-color);
-            font-size: 0.9rem;
+        .info p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            color: #2c3e50;
+            font-size: 1rem;
         }
         
         @media (max-width: 768px) {
-            .container {
-                padding: 30px 20px;
+            .error-code {
+                font-size: 8rem;
             }
             
-            .title {
-                font-size: 2.5rem;
-            }
-            
-            .subtitle {
-                font-size: 1.1rem;
-                margin-bottom: 30px;
-            }
-            
-            #result {
-                font-size: 3rem;
-            }
-            
-            #random-btn {
-                font-size: 1.3rem;
-                padding: 16px 50px;
-                min-width: 220px;
-            }
-            
-            .history-item {
-                width: 45px;
-                height: 45px;
-                font-size: 1.1rem;
-            }
-            
-            .modal-content {
-                padding: 30px 20px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .container {
-                padding: 25px 15px;
-            }
-            
-            .title {
+            h1 {
                 font-size: 2rem;
             }
             
-            .result-container {
-                padding: 30px 15px;
-            }
-            
-            #result {
-                font-size: 2.5rem;
-            }
-            
-            #random-btn {
-                font-size: 1.1rem;
-                padding: 14px 30px;
-                min-width: 180px;
-            }
-            
-            .history-item {
-                width: 40px;
-                height: 40px;
+            p {
                 font-size: 1rem;
             }
             
-            .modal-content {
+            .container {
                 padding: 30px 20px;
             }
             
-            .announcement-item {
+            .search-box {
+                flex-direction: column;
+                border-radius: 30px;
+            }
+            
+            .search-box input {
+                padding: 12px 20px;
+            }
+            
+            .search-box button {
                 padding: 12px;
-            }
-            
-            .announcement-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-            
-            .dark-mode-option {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            
-            .dark-mode-select {
-                width: 100%;
+                border-radius: 0 0 30px 30px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 设置按钮 -->
-        <div class="settings-btn">
-            <i class="fas fa-cog"></i>
-        </div>
-        
-        <!-- 气泡背景 -->
-        <div id="bubbles"></div>
-        
-        <!-- 主标题 -->
-        <h1 class="title">MagicPHY随机学号</h1>
-        
-        <!-- 结果展示区域 -->
-        <div class="result-container">
-            <div id="result" class="floating">等待进入随机</div>
-        </div>
-        
-        <!-- 当前设置指示器 -->
-        <div class="settings-indicator">
-            <i class="fas fa-info-circle"></i> 当前设置: <span id="current-settings">允许重复抽取</span>
-        </div>
-        
-        <!-- 按钮容器 -->
-        <div class="button-container">
-            <button id="random-btn">
-                <i class="fas fa-random"></i>
-                <span id="button-text">生成随机学号</span>
-            </button>
-        </div>
-        
-        <!-- 历史记录区域 -->
-        <div class="history-container">
-            <div class="history-title">历史记录</div>
-            <div class="history-items" id="history-items"></div>
-            <div class="history-counter">
-                <span>已记录: <span id="history-count">0</span>/10</span>
-                <button class="reset-history-btn" id="reset-history">
-                    <i class="fas fa-trash-alt"></i> 重置历史记录
-                </button>
-            </div>
-        </div>
-        
-        <div class="announcement">
-            <div class="announcement-title">
-                <i class="fas fa-bullhorn"></i> 版本更新公告：
-            </div>
-            <div class="announcement-list" id="announcement-list">
-                <div class="announcement-item">
-                    <div class="announcement-header">
-                        <span class="announcement-version">版本 1.5.0</span>
-                        <span class="announcement-date">2025-08-15</span>
-                    </div>
-                    <div class="announcement-content">
-                        <p>本次更新内容：</p>
-                        <ul>
-                            <li>结果框背景色现在支持主题自定义</li>
-                            <li>新增多种结果框渐变效果</li>
-                            <li>优化了主题颜色选择器</li>
-                            <li>增强整体视觉效果</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="announcement-item">
-                    <div class="announcement-header">
-                        <span class="announcement-version">版本 1.4.0</span>
-                        <span class="announcement-date">2025-08-12</span>
-                    </div>
-                    <div class="announcement-content">
-                        <p>本次更新内容：</p>
-                        <ul>
-                            <li>新增深色模式功能（开启/关闭/跟随系统）</li>
-                            <li>添加主题颜色自定义功能</li>
-                            <li>提供多种预设主题颜色选择</li>
-                            <li>优化界面视觉效果</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="announcement-item">
-                    <div class="announcement-header">
-                        <span class="announcement-version">版本 1.3.0</span>
-                        <span class="announcement-date">2025-07-01</span>
-                    </div>
-                    <div class="announcement-content">
-                        <p>本次更新内容：</p>
-                        <ul>
-                            <li>更新域名，上线八年级二班版本，替换旧版本为404错误页面</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 信息区域 -->
-        <div class="info">
-            <h3><i class="fas fa-star"></i> 使用说明</h3>
-            <p>• 点击"生成随机学号"按钮随机获得1-51之间的学号</p>
-            <p>• 右上角设置按钮可修改抽取选项</p>
-            <p>• 可选择是否允许重复抽取同一学号</p>
-            <p>• 历史记录最多保存10条，达到后自动清空</p>
-            <p>• 随机按钮有3秒冷却时间</p>
-            <p>• 新增结果框背景色主题自定义功能</p>
-        </div>
-    </div>
+    <div class="stars" id="stars"></div>
     
-    <!-- 设置弹窗 -->
-    <div class="settings-modal" id="settings-modal">
-        <div class="modal-content">
-            <div class="close-btn" id="close-modal">
-                <i class="fas fa-times"></i>
-            </div>
-            
-            <div class="modal-header">
-                <h2><i class="fas fa-cog"></i> 抽取设置</h2>
-                <p>配置随机选项与主题</p>
-            </div>
-            
-            <div class="setting-option">
-                <label for="allow-duplicates">允许重复抽取</label>
-                <label class="switch">
-                    <input type="checkbox" id="allow-duplicates" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <!-- 深色模式设置 -->
-            <div class="setting-option">
-                <label for="dark-mode">深色模式</label>
-                <select id="dark-mode" class="dark-mode-select">
-                    <option value="auto">跟随系统</option>
-                    <option value="on">开启</option>
-                    <option value="off">关闭</option>
-                </select>
-            </div>
-            
-            <!-- 主题颜色设置 -->
-            <div class="theme-colors">
-                <div class="theme-title">主题颜色:</div>
-                <div class="color-options">
-                    <div class="color-option active" style="background-color: #3498db;" data-color="#3498db"></div>
-                    <div class="color-option" style="background-color: #27ae60;" data-color="#27ae60"></div>
-                    <div class="color-option" style="background-color: #e74c3c;" data-color="#e74c3c"></div>
-                    <div class="color-option" style="background-color: #9b59b6;" data-color="#9b59b6"></div>
-                    <div class="color-option" style="background-color: #f39c12;" data-color="#f39c12"></div>
-                    <div class="color-option" style="background-color: #1abc9c;" data-color="#1abc9c"></div>
-                </div>
-                
-                <div class="custom-color-container">
-                    <input type="color" id="custom-color" value="#3498db">
-                    <label id="custom-color-label">自定义颜色</label>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="container">
+        <div class="error-code">404</div>
+        <h1>哎呀！页面走丢了</h1>
+        <h1>随机学号X版本已于2025-10-01替换为新版本</h1>
+        <a href="https://magicphy.github.io/so" class="home-button"><i class="fas fa-home"></i> 返回首页</a>
 
     <script>
-        // 当页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', function() {
-            // 获取DOM元素
-            const resultElement = document.getElementById('result');
-            const randomButton = document.getElementById('random-btn');
-            const buttonText = document.getElementById('button-text');
-            const bubblesContainer = document.getElementById('bubbles');
-            const settingsButton = document.querySelector('.settings-btn');
-            const settingsModal = document.getElementById('settings-modal');
-            const closeModalButton = document.getElementById('close-modal');
-            const allowDuplicatesCheckbox = document.getElementById('allow-duplicates');
-            const currentSettingsElement = document.getElementById('current-settings');
-            const historyItemsContainer = document.getElementById('history-items');
-            const historyCountElement = document.getElementById('history-count');
-            const resetHistoryButton = document.getElementById('reset-history');
-            const darkModeSelect = document.getElementById('dark-mode');
-            const colorOptions = document.querySelectorAll('.color-option');
-            const customColorInput = document.getElementById('custom-color');
+        // 创建星星背景
+        const starsContainer = document.getElementById('stars');
+        const starCount = 150;
+        
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
             
-            // 初始化设置
-            let settings = {
-                allowDuplicates: true,
-                darkMode: 'auto',
-                themeColor: '#3498db'
-            };
+            // 随机位置和大小
+            const size = Math.random() * 3;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
             
-            // 历史记录（最多10条）
-            let history = [];
+            // 随机动画持续时间
+            const duration = 2 + Math.random() * 5;
+            star.style.setProperty('--duration', `${duration}s`);
             
-            // 冷却状态
-            let isCooldown = false;
-            let originalButtonText = "生成随机学号";
+            // 随机延迟
+            star.style.animationDelay = `${Math.random() * 5}s`;
             
-            // 创建气泡背景
-            function createBubbles() {
-                // 清除现有气泡
-                bubblesContainer.innerHTML = '';
-                
-                // 创建30个气泡
-                for (let i = 0; i < 30; i++) {
-                    const bubble = document.createElement('div');
-                    bubble.classList.add('bubble');
-                    
-                    // 随机设置气泡大小 (20-80px)
-                    const size = Math.random() * 60 + 20;
-                    bubble.style.width = `${size}px`;
-                    bubble.style.height = `${size}px`;
-                    
-                    // 随机设置气泡位置
-                    bubble.style.left = `${Math.random() * 100}%`;
-                    bubble.style.top = `${Math.random() * 100 + 100}%`;
-                    
-                    // 随机设置动画时长 (10-30秒)
-                    const duration = Math.random() * 20 + 10;
-                    bubble.style.animationDuration = `${duration}s`;
-                    
-                    // 随机设置动画延迟
-                    bubble.style.animationDelay = `${Math.random() * 5}s`;
-                    
-                    // 随机设置透明度
-                    bubble.style.opacity = Math.random() * 0.4 + 0.3;
-                    
-                    // 添加到气泡容器
-                    bubblesContainer.appendChild(bubble);
-                }
-            }
-            
-            // 生成随机学号函数（排除27）
-            function generateRandomNumber() {
-                let randomNum;
-                // 循环直到生成的数字不是27
-                do {
-                    // 生成1-51之间的随机整数
-                    randomNum = Math.floor(Math.random() * 51) + 1;
-                } while (randomNum === 27); // 排除27
-                
-                return randomNum;
-            }
-            
-            // 开始冷却计时器（3秒）
-            function startCooldownTimer() {
-                isCooldown = true;
-                randomButton.disabled = true;
-                
-                let seconds = 3;
-                
-                const countdown = setInterval(() => {
-                    buttonText.textContent = `冷却中: ${seconds}秒`;
-                    seconds--;
-                    
-                    if (seconds < 0) {
-                        clearInterval(countdown);
-                        isCooldown = false;
-                        randomButton.disabled = false;
-                        buttonText.textContent = originalButtonText;
-                    }
-                }, 1000);
-            }
-            
-            // 显示随机学号（带动画效果）
-            function displayRandomNumber() {
-                // 如果处于冷却状态，则不执行
-                if (isCooldown) return;
-                
-                // 开始冷却计时
-                startCooldownTimer();
-                
-                // 移除浮动动画
-                resultElement.classList.remove('floating');
-                
-                // 添加缩小动画效果
-                resultElement.style.transform = 'scale(0.7)';
-                resultElement.style.opacity = '0.2';
-                
-                // 0.3秒后显示新数字
-                setTimeout(() => {
-                    // 生成新随机数
-                    let randomNum;
-                    
-                    if (!settings.allowDuplicates) {
-                        // 不允许重复的情况下，确保生成新数字
-                        let attempts = 0;
-                        do {
-                            randomNum = generateRandomNumber();
-                            attempts++;
-                            
-                            // 如果尝试次数过多（理论上不可能，但以防万一）
-                            if (attempts > 100) {
-                                // 重置历史记录
-                                history = [];
-                                break;
-                            }
-                        } while (history.includes(randomNum));
-                    } else {
-                        randomNum = generateRandomNumber();
-                    }
-                    
-                    // 检查历史记录是否达到10条
-                    if (history.length >= 10) {
-                        history = []; // 清空历史记录
-                    }
-                    
-                    // 添加到历史记录
-                    history.push(randomNum);
-                    
-                    // 更新历史记录显示
-                    updateHistoryDisplay();
-                    
-                    // 更新显示的数字
-                    resultElement.textContent = randomNum;
-                    resultElement.style.fontSize = "8rem"; // 恢复数字大小
-                    
-                    // 恢复动画效果
-                    resultElement.style.transform = 'scale(1)';
-                    resultElement.style.opacity = '1';
-                    resultElement.classList.add('floating');
-                }, 300);
-            }
-            
-            // 更新历史记录显示
-            function updateHistoryDisplay() {
-                historyItemsContainer.innerHTML = '';
-                
-                // 显示最多10条历史记录
-                history.forEach(num => {
-                    const item = document.createElement('div');
-                    item.classList.add('history-item');
-                    item.textContent = num;
-                    historyItemsContainer.appendChild(item);
-                });
-                
-                // 更新历史记录计数
-                historyCountElement.textContent = history.length;
-            }
-            
-            // 更新设置显示
-            function updateSettingsDisplay() {
-                currentSettingsElement.textContent = settings.allowDuplicates ? 
-                    "允许重复抽取" : "不允许重复抽取";
-            }
-            
-            // 应用深色模式设置
-            function applyDarkMode() {
-                const body = document.body;
-                const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                
-                // 移除现有模式类
-                body.classList.remove('dark-mode');
-                
-                // 应用深色模式
-                if (settings.darkMode === 'on' || (settings.darkMode === 'auto' && prefersDarkScheme)) {
-                    body.classList.add('dark-mode');
-                }
-            }
-            
-            // 应用主题颜色
-            function applyThemeColor() {
-                // 更新CSS变量
-                document.documentElement.style.setProperty('--primary-color', settings.themeColor);
-                
-                // 更新按钮渐变
-                const primaryColor = settings.themeColor;
-                const darkerColor = shadeColor(primaryColor, -30);
-                document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(135deg, ${primaryColor} 0%, ${darkerColor} 100%)`);
-                
-                // 更新结果框渐变
-                const lightColor = shadeColor(primaryColor, 40); // 增加40%亮度
-                const lighterColor = shadeColor(primaryColor, 70); // 增加70%亮度
-                document.documentElement.style.setProperty('--result-gradient', `linear-gradient(135deg, ${lightColor} 0%, ${lighterColor} 100%)`);
-                
-                // 更新历史项渐变
-                document.documentElement.style.setProperty('--history-item-gradient', `linear-gradient(135deg, ${primaryColor} 0%, ${darkerColor} 100%)`);
-            }
-            
-            // 辅助函数：调整颜色深浅
-            function shadeColor(color, percent) {
-                let R = parseInt(color.substring(1, 3), 16);
-                let G = parseInt(color.substring(3, 5), 16);
-                let B = parseInt(color.substring(5, 7), 16);
-                
-                R = parseInt(R * (100 + percent) / 100);
-                G = parseInt(G * (100 + percent) / 100);
-                B = parseInt(B * (100 + percent) / 100);
-                
-                R = (R < 255) ? R : 255;
-                G = (G < 255) ? G : 255;
-                B = (B < 255) ? B : 255;
-                
-                R = Math.round(R);
-                G = Math.round(G);
-                B = Math.round(B);
-                
-                const RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
-                const GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
-                const BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
-                
-                return "#" + RR + GG + BB;
-            }
-            
-            // 保存设置到本地存储
-            function saveSettings() {
-                localStorage.setItem('randomNumberSettings', JSON.stringify(settings));
-            }
-            
-            // 从本地存储加载设置
-            function loadSettings() {
-                const savedSettings = localStorage.getItem('randomNumberSettings');
-                if (savedSettings) {
-                    settings = JSON.parse(savedSettings);
-                    
-                    // 更新UI
-                    allowDuplicatesCheckbox.checked = settings.allowDuplicates;
-                    darkModeSelect.value = settings.darkMode;
-                    
-                    // 应用设置
-                    applyDarkMode();
-                    applyThemeColor();
-                    
-                    // 更新颜色选择器的活动状态
-                    colorOptions.forEach(option => {
-                        option.classList.remove('active');
-                        if (option.dataset.color === settings.themeColor) {
-                            option.classList.add('active');
-                        }
-                    });
-                }
-                
-                // 更新设置显示
-                updateSettingsDisplay();
-            }
-            
-            // 按钮点击事件 - 生成随机学号
-            randomButton.addEventListener('click', displayRandomNumber);
-            
-            // 设置按钮点击事件
-            settingsButton.addEventListener('click', function() {
-                // 更新设置弹窗中的值
-                allowDuplicatesCheckbox.checked = settings.allowDuplicates;
-                darkModeSelect.value = settings.darkMode;
-                settingsModal.classList.add('active');
-            });
-            
-            // 关闭设置弹窗
-            closeModalButton.addEventListener('click', function() {
-                settingsModal.classList.remove('active');
-            });
-            
-            // 设置开关即时生效
-            allowDuplicatesCheckbox.addEventListener('change', function() {
-                settings.allowDuplicates = this.checked;
-                updateSettingsDisplay();
-                saveSettings();
-            });
-            
-            // 重置历史记录
-            resetHistoryButton.addEventListener('click', function() {
-                history = [];
-                updateHistoryDisplay();
-            });
-            
-            // 深色模式选择改变
-            darkModeSelect.addEventListener('change', function() {
-                settings.darkMode = this.value;
-                applyDarkMode();
-                saveSettings();
-            });
-            
-            // 颜色选项点击
-            colorOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    // 移除所有active类
-                    colorOptions.forEach(opt => opt.classList.remove('active'));
-                    
-                    // 添加active类到当前选项
-                    this.classList.add('active');
-                    
-                    // 更新主题颜色
-                    settings.themeColor = this.dataset.color;
-                    applyThemeColor();
-                    saveSettings();
-                });
-            });
-            
-            // 自定义颜色改变
-            customColorInput.addEventListener('input', function() {
-                settings.themeColor = this.value;
-                
-                // 移除所有预设颜色的active类
-                colorOptions.forEach(opt => opt.classList.remove('active'));
-                
-                applyThemeColor();
-                saveSettings();
-            });
-            
-            // 监听系统颜色模式变化
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-                if (settings.darkMode === 'auto') {
-                    applyDarkMode();
-                }
-            });
-            
-            // 页面加载时创建气泡背景
-            createBubbles();
-            
-            // 加载设置
-            loadSettings();
-            
-            // 初始化设置显示
-            updateSettingsDisplay();
-        });
+            starsContainer.appendChild(star);
+        }
     </script>
 </body>
 </html>
