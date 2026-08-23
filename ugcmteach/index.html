@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+    <title>PHYの绿洲共创教程</title>
+    <style>
+        /* ===== CSS 变量 ===== */
+        :root {
+            --glass-alpha: 0.22;
+            --glass-blur: 20px;
+            --glass-blur-light: 12px;
+            --glass-border: rgba(255, 255, 255, 0.45);
+            --glass-bg: rgba(255, 255, 255, var(--glass-alpha));
+            --glass-bg-hover: rgba(255, 255, 255, calc(var(--glass-alpha) + 0.18));
+            --glass-shadow: 0 8px 32px rgba(30, 60, 130, 0.06);
+            --primary-blue: #2a6fd4;
+            --primary-light: #4a8af4;
+            --text-dark: #0a2647;
+            --text-muted: #3a5a8a;
+        }
+
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            background: #dce6f5;
+            transition: background 0.6s ease;
+        }
+
+        /* ===== 背景层 ===== */
+        #bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background-image 1.2s ease;
+            filter: brightness(1.04) saturate(1.08);
+        }
+        #bg-layer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 1;
+        }
+
+        /* ===== 主容器 ===== */
+        .app-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            max-height: 96vh;
+            overflow-y: auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-radius: 40px;
+            padding: 26px 28px 28px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            scroll-behavior: smooth;
+            opacity: 0;
+            animation: fadeIn 0.7s ease forwards 0.15s;
+        }
+        .app-container::-webkit-scrollbar {
+            width: 5px;
+        }
+        .app-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+        }
+        .app-container::-webkit-scrollbar-thumb {
+            background: rgba(70, 130, 255, 0.25);
+            border-radius: 10px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ===== 液态玻璃增强（所有UI元素） ===== */
+        .app-container.glass-liquid {
+            background: rgba(255, 255, 255, calc(var(--glass-alpha) * 0.85));
+            backdrop-filter: blur(calc(var(--glass-blur) + 4px));
+            -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 4px));
+            border-color: rgba(255, 255, 255, 0.30);
+            box-shadow: 0 30px 80px rgba(30, 60, 130, 0.10), 0 8px 32px rgba(30, 60, 130, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .app-container.glass-liquid::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 28% 42%, rgba(120, 200, 255, 0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 72% 78%, rgba(80, 140, 255, 0.05) 0%, transparent 45%);
+            pointer-events: none;
+            z-index: 0;
+            animation: liquidFlow 18s ease-in-out infinite alternate;
+        }
+        .app-container.glass-liquid::after {
+            content: '';
+            position: absolute;
+            top: -70%;
+            left: -70%;
+            width: 240%;
+            height: 240%;
+            background: radial-gradient(circle at 55% 28%, rgba(255, 255, 255, 0.06) 0%, transparent 38%);
+            pointer-events: none;
+            z-index: 0;
+            animation: liquidShine 22s ease-in-out infinite alternate;
+        }
+        @keyframes liquidFlow {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            33% {
+                transform: translate(3%, 2%) rotate(1.5deg);
+            }
+            66% {
+                transform: translate(-2%, 3%) rotate(-1deg);
+            }
+            100% {
+                transform: translate(2%, -2%) rotate(0.8deg);
+            }
+        }
+        @keyframes liquidShine {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(4%, -4%) scale(1.08);
+            }
+            100% {
+                transform: translate(-3%, 3%) scale(0.94);
+            }
+        }
+        .app-container.glass-liquid>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== 所有UI元素液态玻璃 ===== */
+        .app-container.glass-liquid .root-node,
+        .app-container.glass-liquid .child-node,
+        .app-container.glass-liquid .search-wrap,
+        .app-container.glass-liquid .feedback-btn,
+        .app-container.glass-liquid .glass-toggle-wrap,
+        .app-container.glass-liquid .transparency-control,
+        .app-container.glass-liquid .header,
+        .app-container.glass-liquid .footer,
+        .app-container.glass-liquid .empty-state {
+            background: rgba(255, 255, 255, calc(var(--glass-alpha) * 0.9));
+            backdrop-filter: blur(var(--glass-blur-light));
+            -webkit-backdrop-filter: blur(var(--glass-blur-light));
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .app-container.glass-liquid .child-node:hover,
+        .app-container.glass-liquid .feedback-btn:hover {
+            background: rgba(255, 255, 255, calc(var(--glass-alpha) * 1.3 + 0.15));
+        }
+        .app-container.glass-liquid .search-wrap:focus-within {
+            background: rgba(255, 255, 255, calc(var(--glass-alpha) * 1.2 + 0.15));
+        }
+        .app-container.glass-liquid .root-node {
+            background: linear-gradient(135deg, rgba(60, 130, 255, calc(var(--glass-alpha) * 0.5)), rgba(100, 180, 255, calc(var(--glass-alpha) * 0.25)));
+            backdrop-filter: blur(calc(var(--glass-blur-light) - 2px));
+            -webkit-backdrop-filter: blur(calc(var(--glass-blur-light) - 2px));
+        }
+        .app-container.glass-liquid .root-node:hover {
+            background: linear-gradient(135deg, rgba(60, 130, 255, calc(var(--glass-alpha) * 0.7 + 0.08)), rgba(100, 180, 255, calc(var(--glass-alpha) * 0.4 + 0.05)));
+        }
+
+        /* ===== 头部 ===== */
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.40);
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 0 1 auto;
+        }
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 16px rgba(40, 80, 180, 0.08);
+            background: rgba(200, 220, 255, 0.2);
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+        .author-avatar:hover {
+            transform: scale(1.04);
+        }
+        .author-avatar-fallback {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6a9eff, #3a7bd5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            flex-shrink: 0;
+        }
+        .author-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .author-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+        .author-name span {
+            background: linear-gradient(135deg, #1a5fb4, #4a8af4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        /* 副标题已删除，保留空占位或直接去掉 */
+        .author-sub {
+            display: none;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex: 1 1 auto;
+            justify-content: flex-end;
+        }
+
+        /* ===== 搜索框 ===== */
+        .search-wrap {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 60px;
+            padding: 0 16px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 0 4px 16px rgba(30, 60, 130, 0.03);
+            transition: all 0.3s ease;
+            min-width: 150px;
+            flex: 1 1 160px;
+        }
+        .search-wrap:focus-within {
+            border-color: rgba(70, 130, 255, 0.35);
+            box-shadow: 0 4px 24px rgba(70, 130, 255, 0.06);
+            background: rgba(255, 255, 255, 0.60);
+        }
+        .search-wrap .search-icon {
+            color: #4a7ab0;
+            font-size: 17px;
+            margin-right: 6px;
+            opacity: 0.5;
+            flex-shrink: 0;
+        }
+        .search-wrap input {
+            border: none;
+            background: transparent;
+            padding: 9px 0;
+            font-size: 14px;
+            color: var(--text-dark);
+            width: 100%;
+            outline: none;
+            font-weight: 400;
+            min-width: 60px;
+        }
+        .search-wrap input::placeholder {
+            color: #8aacd0;
+            font-weight: 300;
+            letter-spacing: 0.2px;
+        }
+        .search-wrap .clear-btn {
+            background: none;
+            border: none;
+            color: #7a9ac0;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0 0 0 4px;
+            display: none;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+        .search-wrap .clear-btn:hover {
+            color: #1a5fb4;
+        }
+        .search-wrap .clear-btn.visible {
+            display: block;
+        }
+
+        /* ===== 反馈按钮 ===== */
+        .feedback-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: 60px;
+            padding: 7px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a4a7a;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(30, 60, 130, 0.03);
+            white-space: nowrap;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .feedback-btn:hover {
+            background: rgba(255, 255, 255, 0.70);
+            border-color: rgba(70, 130, 255, 0.25);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 28px rgba(70, 130, 255, 0.07);
+        }
+        .feedback-btn .icon {
+            font-size: 16px;
+        }
+
+        /* ===== 透明度控制 ===== */
+        .transparency-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 60px;
+            padding: 4px 14px 4px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 4px 16px rgba(30, 60, 130, 0.02);
+            flex-shrink: 0;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .transparency-control:hover {
+            background: rgba(255, 255, 255, 0.50);
+            border-color: rgba(255, 255, 255, 0.45);
+        }
+        .transparency-control label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            opacity: 0.8;
+        }
+        .transparency-control input[type="range"] {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(to right, rgba(70, 130, 255, 0.2), rgba(70, 130, 255, 0.6));
+            border-radius: 4px;
+            outline: none;
+            transition: background 0.2s;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .transparency-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4a8af4, #2a6fd4);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 8px rgba(30, 60, 130, 0.15);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .transparency-control input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.12);
+        }
+        .transparency-control input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4a8af4, #2a6fd4);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 8px rgba(30, 60, 130, 0.15);
+            cursor: pointer;
+        }
+        .transparency-value {
+            font-size: 12px;
+            font-weight: 600;
+            color: #2a6fd4;
+            min-width: 36px;
+            text-align: center;
+            letter-spacing: 0.2px;
+            opacity: 0.8;
+        }
+
+        /* ===== 思维导图 ===== */
+        .mindmap {
+            margin-top: 4px;
+            padding: 4px 0 2px;
+        }
+
+        /* ===== 根节点 ===== */
+        .root-node {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+            padding: 16px 28px;
+            border-radius: 60px;
+            background: linear-gradient(135deg, rgba(60, 130, 255, 0.10), rgba(100, 180, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.40);
+            box-shadow: 0 4px 20px rgba(40, 80, 200, 0.03);
+            transition: all 0.3s ease;
+            margin: 0 auto 10px;
+            max-width: 480px;
+            position: relative;
+        }
+        .root-node:hover {
+            background: linear-gradient(135deg, rgba(60, 130, 255, 0.16), rgba(100, 180, 255, 0.06));
+            transform: scale(1.01);
+            box-shadow: 0 8px 32px rgba(40, 80, 200, 0.06);
+        }
+        .root-node:active {
+            transform: scale(0.97);
+        }
+        .root-node .icon {
+            font-size: 26px;
+            color: var(--primary-blue);
+            flex-shrink: 0;
+        }
+        .root-node .title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: 0.8px;
+            background: linear-gradient(135deg, #1a5fb4, #4a8af4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .root-node .toggle-icon {
+            font-size: 18px;
+            color: #4a7ab0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            -webkit-text-fill-color: #4a7ab0;
+            flex-shrink: 0;
+        }
+        .root-node .toggle-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+        .root-node .badge {
+            font-size: 12px;
+            background: rgba(70, 130, 255, 0.10);
+            padding: 2px 14px;
+            border-radius: 40px;
+            color: var(--primary-blue);
+            font-weight: 500;
+            -webkit-text-fill-color: var(--primary-blue);
+            background-clip: unset;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* ===== 子节点容器 ===== */
+        .children-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px;
+            padding: 18px 6px 6px;
+            transition: all 0.45s cubic-bezier(0.34, 1.0, 0.64, 1);
+            opacity: 1;
+            max-height: 3000px;
+            overflow: hidden;
+            position: relative;
+        }
+        .children-container.hidden {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin: 0;
+            pointer-events: none;
+        }
+        .children-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 18px;
+            background: linear-gradient(to bottom, rgba(70, 130, 255, 0.20), transparent);
+            transform: translateX(-50%);
+            border-radius: 2px;
+            transition: opacity 0.4s ease;
+        }
+        .children-container.hidden::before {
+            opacity: 0;
+        }
+
+        /* ===== 子节点卡片 ===== */
+        .child-node {
+            flex: 0 1 calc(50% - 14px);
+            min-width: 180px;
+            max-width: 460px;
+            padding: 14px 18px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.40);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.40);
+            box-shadow: 0 4px 20px rgba(30, 60, 130, 0.03);
+            transition: all 0.3s cubic-bezier(0.34, 1.0, 0.64, 1);
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .child-node::before {
+            content: '';
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            width: 2px;
+            height: 18px;
+            background: linear-gradient(to bottom, rgba(70, 130, 255, 0.12), rgba(70, 130, 255, 0.03));
+            transform: translateX(-50%);
+            border-radius: 2px;
+            transition: opacity 0.3s ease;
+        }
+        .child-node:hover {
+            background: rgba(255, 255, 255, 0.65);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 12px 40px rgba(40, 80, 200, 0.06);
+            border-color: rgba(70, 130, 255, 0.15);
+        }
+        .child-node:active {
+            transform: scale(0.97);
+        }
+        .child-node .node-index {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(70, 130, 255, 0.08), rgba(70, 130, 255, 0.02));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #3a7ab0;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+        }
+        .child-node .node-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            line-height: 1.3;
+            flex: 1;
+            letter-spacing: 0.1px;
+        }
+        .child-node .node-arrow {
+            color: var(--primary-light);
+            font-size: 18px;
+            opacity: 0.25;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        .child-node:hover .node-arrow {
+            opacity: 0.7;
+            transform: translateX(3px);
+        }
+        .child-node .node-tag {
+            font-size: 9px;
+            background: rgba(70, 130, 255, 0.06);
+            padding: 1px 10px;
+            border-radius: 30px;
+            color: #4a7ab0;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+        }
+
+        .child-node.search-hidden {
+            display: none;
+        }
+
+        /* ===== 空状态 ===== */
+        .empty-state {
+            text-align: center;
+            padding: 36px 20px;
+            color: #5a7a9a;
+            font-size: 15px;
+            width: 100%;
+            display: none;
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .empty-state.visible {
+            display: block;
+        }
+        .empty-state .emoji {
+            font-size: 44px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* ===== 底部 ===== */
+        .footer {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.30);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: #4a6a8a;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+        .footer .count {
+            opacity: 0.7;
+        }
+        .footer .count strong {
+            color: #1a4a7a;
+            font-weight: 600;
+        }
+        .footer .links {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .footer .links a {
+            color: #4a7ab0;
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 400;
+            border-bottom: 1px solid transparent;
+        }
+        .footer .links a:hover {
+            color: #1a5fb4;
+            border-bottom-color: rgba(70, 130, 255, 0.20);
+        }
+
+        /* ===== 液态玻璃开关 & 透明度控制（浮动） ===== */
+        .controls-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        .controls-float .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 60px;
+            padding: 6px 16px 6px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.40);
+            box-shadow: 0 8px 28px rgba(30, 60, 130, 0.04);
+            font-size: 12px;
+            color: #1a3a6a;
+            font-weight: 500;
+            user-select: none;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .controls-float .control-group:hover {
+            background: rgba(255, 255, 255, 0.65);
+            border-color: rgba(255, 255, 255, 0.55);
+        }
+        .controls-float .control-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .controls-float .control-group input[type="checkbox"] {
+            width: 34px;
+            height: 18px;
+            border-radius: 20px;
+            background: rgba(200, 215, 240, 0.5);
+            appearance: none;
+            -webkit-appearance: none;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            flex-shrink: 0;
+        }
+        .controls-float .control-group input[type="checkbox"]::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ffffff;
+            transition: transform 0.3s ease, background 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        }
+        .controls-float .control-group input[type="checkbox"]:checked {
+            background: #4a8af4;
+        }
+        .controls-float .control-group input[type="checkbox"]:checked::after {
+            transform: translateX(16px);
+            background: #ffffff;
+        }
+        .controls-float .control-group .toggle-label {
+            color: var(--text-muted);
+            letter-spacing: 0.2px;
+            font-size: 12px;
+        }
+
+        /* 透明度滑块（浮动版） */
+        .controls-float .control-group .range-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .controls-float .control-group .range-wrap input[type="range"] {
+            width: 72px;
+            height: 3px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(to right, rgba(70, 130, 255, 0.15), rgba(70, 130, 255, 0.5));
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .controls-float .control-group .range-wrap input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4a8af4, #2a6fd4);
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 2px 8px rgba(30, 60, 130, 0.12);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .controls-float .control-group .range-wrap input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+        .controls-float .control-group .range-wrap input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4a8af4, #2a6fd4);
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 2px 8px rgba(30, 60, 130, 0.12);
+            cursor: pointer;
+        }
+        .controls-float .control-group .range-value {
+            font-size: 11px;
+            font-weight: 600;
+            color: #2a6fd4;
+            min-width: 30px;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 820px) {
+            .app-container {
+                padding: 20px 16px 22px;
+                border-radius: 28px;
+                max-height: 98vh;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .header-left {
+                gap: 10px;
+            }
+            .header-right {
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: flex-start;
+            }
+            .search-wrap {
+                min-width: 120px;
+                flex: 1 1 140px;
+            }
+            .search-wrap input {
+                font-size: 13px;
+                padding: 7px 0;
+            }
+            .feedback-btn {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+            .transparency-control {
+                padding: 3px 10px 3px 14px;
+            }
+            .transparency-control input[type="range"] {
+                width: 60px;
+            }
+            .root-node {
+                padding: 14px 20px;
+                max-width: 100%;
+            }
+            .root-node .title {
+                font-size: 19px;
+            }
+            .root-node .icon {
+                font-size: 22px;
+            }
+            .child-node {
+                flex: 0 1 100%;
+                max-width: 100%;
+                padding: 12px 14px;
+            }
+            .child-node .node-title {
+                font-size: 13px;
+            }
+            .author-name {
+                font-size: 19px;
+            }
+            .controls-float {
+                bottom: 14px;
+                right: 14px;
+                gap: 8px;
+            }
+            .controls-float .control-group {
+                padding: 4px 12px 4px 16px;
+                font-size: 11px;
+            }
+            .controls-float .control-group .range-wrap input[type="range"] {
+                width: 56px;
+            }
+            .footer {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 6px;
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            body {
+                padding: 8px;
+            }
+            .app-container {
+                padding: 14px 10px 16px;
+                border-radius: 20px;
+            }
+            .root-node .title {
+                font-size: 16px;
+            }
+            .root-node {
+                padding: 10px 14px;
+                gap: 6px;
+            }
+            .root-node .icon {
+                font-size: 18px;
+            }
+            .root-node .badge {
+                font-size: 10px;
+                padding: 1px 8px;
+            }
+            .child-node {
+                padding: 10px 12px;
+                gap: 6px;
+            }
+            .child-node .node-title {
+                font-size: 12px;
+            }
+            .child-node .node-index {
+                width: 22px;
+                height: 22px;
+                font-size: 10px;
+            }
+            .author-name {
+                font-size: 16px;
+            }
+            .author-avatar,
+            .author-avatar-fallback {
+                width: 38px;
+                height: 38px;
+            }
+            .search-wrap {
+                min-width: 80px;
+                padding: 0 10px;
+                flex: 1 1 100px;
+            }
+            .search-wrap input {
+                font-size: 12px;
+                padding: 5px 0;
+            }
+            .feedback-btn {
+                padding: 4px 10px;
+                font-size: 11px;
+            }
+            .feedback-btn .icon {
+                font-size: 13px;
+            }
+            .transparency-control {
+                padding: 2px 8px 2px 12px;
+            }
+            .transparency-control input[type="range"] {
+                width: 44px;
+            }
+            .transparency-value {
+                font-size: 10px;
+                min-width: 28px;
+            }
+            .controls-float {
+                bottom: 10px;
+                right: 10px;
+                gap: 6px;
+            }
+            .controls-float .control-group {
+                padding: 3px 8px 3px 12px;
+                font-size: 10px;
+                border-radius: 40px;
+            }
+            .controls-float .control-group .range-wrap input[type="range"] {
+                width: 40px;
+            }
+            .controls-float .control-group input[type="checkbox"] {
+                width: 28px;
+                height: 16px;
+            }
+            .controls-float .control-group input[type="checkbox"]::after {
+                width: 10px;
+                height: 10px;
+            }
+            .controls-float .control-group input[type="checkbox"]:checked::after {
+                transform: translateX(12px);
+            }
+            .controls-float .control-group .range-value {
+                font-size: 10px;
+                min-width: 24px;
+            }
+            .footer {
+                font-size: 10px;
+            }
+            .empty-state {
+                padding: 24px 14px;
+                font-size: 13px;
+            }
+            .empty-state .emoji {
+                font-size: 34px;
+            }
+        }
+
+        /* ===== 工具 ===== */
+        .hidden {
+            display: none !important;
+        }
+        .text-ellipsis {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 背景淡入 */
+        #bg-layer {
+            opacity: 0;
+            animation: bgFadeIn 1s ease forwards 0.1s;
+        }
+        @keyframes bgFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 背景层 ===== -->
+    <div id="bg-layer"></div>
+
+    <!-- ===== 浮动控制区（液态玻璃开关 + 透明度滑块） ===== -->
+    <div class="controls-float">
+        <div class="control-group">
+            <label>
+                <span class="toggle-label">✨ 液态</span>
+                <input type="checkbox" id="glassToggle" checked />
+            </label>
+            <span style="opacity:0.2;margin:0 2px;">|</span>
+            <div class="range-wrap">
+                <label style="font-size:11px;color:var(--text-muted);">透明</label>
+                <input type="range" id="alphaSlider" min="0.04" max="0.85" step="0.01" value="0.22" />
+                <span class="range-value" id="alphaDisplay">22%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 主容器 ===== -->
+    <div class="app-container glass-liquid" id="appContainer">
+
+        <!-- ===== 头部 ===== -->
+        <header class="header">
+            <div class="header-left">
+                <!-- 头像修改为新链接 -->
+                <img class="author-avatar" id="avatarImg"
+                src="http://p4.a.yximgs.com/uhead/AB/2026/08/23/21/BMjAyNjA4MjMyMTAzMzdfMzk4ODk5Mjg2Nl8yX2hkNjIzXzM2Mg==_s.jpg"
+                alt="PHY头像"
+                onerror="this.onerror=null; this.style.display='none'; document.getElementById('avatarFallback').style.display='flex';"
+                referrerpolicy="no-referrer"
+                crossorigin="anonymous"
+                loading="lazy" />
+                <div class="author-avatar-fallback" id="avatarFallback" style="display:none;">PHY</div>
+                <div class="author-info">
+                    <div class="author-name"><span>PHYの绿洲共创教程</span></div>
+                    <!-- 副标题已删除，不显示任何文字 -->
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="搜索教程..." autocomplete="off" />
+                    <button class="clear-btn" id="clearSearchBtn" aria-label="清除搜索">✕</button>
+                </div>
+                <a class="feedback-btn" href="https://docs.qq.com/form/page/DSW92S2J5eVBPSnFD?tdocapp_full_screen=1&templateId=25000&create_type=2&no_promotion=1&is_blank_or_template=blank" target="_blank" rel="noopener noreferrer">
+                    <span class="icon">📝</span> 反馈建议
+                </a>
+            </div>
+        </header>
+
+        <!-- ===== 思维导图 ===== -->
+        <div class="mindmap">
+
+            <!-- 根节点 -->
+            <div class="root-node" id="rootNode" role="button" tabindex="0" aria-expanded="false">
+                <span class="icon">🌳</span>
+                <span class="title">可视化教程</span>
+                <span class="badge" id="countBadge">8</span>
+                <span class="toggle-icon collapsed" id="toggleIcon">▶</span>
+            </div>
+
+            <!-- 子节点容器（默认折叠） -->
+            <div class="children-container hidden" id="childrenContainer">
+                <!-- 由 JavaScript 动态渲染 -->
+            </div>
+
+            <!-- 空状态 -->
+            <div class="empty-state" id="emptyState">
+                <span class="emoji">🔎</span>
+                没有找到匹配的教程，试试其他关键词吧
+            </div>
+        </div>
+
+        <!-- ===== 底部 ===== -->
+        <footer class="footer">
+            <div class="count">
+                共 <strong id="totalCount">8</strong> 个教程 · 点击卡片跳转
+            </div>
+            <div class="links">
+                <span>💡 点击根节点展开 / 收起</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ============================================================
+        //  教程数据
+        // ============================================================
+        const tutorials = [{
+            id: 1,
+            title: '新版本绿洲启元共创如何制作"作者进房提示"（旧）',
+            url: 'https://c.gp.qq.com/camp/share/moment?momentId=44018b5fe771&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
+        }, {
+            id: 2,
+            title: '可视化教程2:"手搓全局聊天频道教程"',
+            url: 'https://c.gp.qq.com/camp/share/moment?momentId=4731d8ba75c1&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
+        }, {
+            id: 3,
+            title: '可视化教程3:超体插件"射击回复"复刻',
+            url: 'https://c.gp.qq.com/camp/share/moment?momentId=687cc3be11c1&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
+        }, {
+            id: 4,
+            title: '可视化教程4:自定义淘汰者名称',
+            url: 'https://c.gp.qq.com/camp/share/moment?momentId=c8fc03eb2661&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
+        }, {
+            id: 5,
+            title: '可视化教程5：自瞄',
+            url: 'https://c.gp.qq.com/camp/share/moment?momentId=9800b9249ae1&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
+        }, {
+            id: 6,
+            title: '可视化教程 6：作者进房提示简易版',
+            url: 'https://c.gp.qq.com/camp/share/moment?momentId=381ea6621b51&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
+        }, {
+            id: 7,
+            title: '可视化教程7：秒补头甲',
+            url: 'https://c.gp.qq.com/camp/share/moment?momentId=48b54addcdd1&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
+        }, {
+            id: 8,
+            title: '可视化教程8：物资拾取上限',
+            url: 'https://c.gp.qq.com/camp/share/moment?momentId=c8dd874cedf1&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
+        }];
+
+        // ============================================================
+        //  状态
+        // ============================================================
+        let isExpanded = false; // 默认折叠
+        let searchQuery = '';
+        let currentAlpha = 0.22;
+
+        // ============================================================
+        //  DOM 引用
+        // ============================================================
+        const container = document.getElementById('childrenContainer');
+        const rootNode = document.getElementById('rootNode');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearchBtn');
+        const emptyState = document.getElementById('emptyState');
+        const totalCount = document.getElementById('totalCount');
+        const countBadge = document.getElementById('countBadge');
+        const glassToggle = document.getElementById('glassToggle');
+        const appContainer = document.getElementById('appContainer');
+        const alphaSlider = document.getElementById('alphaSlider');
+        const alphaDisplay = document.getElementById('alphaDisplay');
+
+        // ============================================================
+        //  渲染
+        // ============================================================
+        function renderTutorials(filter = '') {
+            const q = filter.trim().toLowerCase();
+            const filtered = q ? tutorials.filter(t => t.title.toLowerCase().includes(q)) : tutorials;
+
+            totalCount.textContent = tutorials.length;
+            countBadge.textContent = filtered.length;
+
+            if (filtered.length === 0 && q) {
+                emptyState.classList.add('visible');
+            } else {
+                emptyState.classList.remove('visible');
+            }
+
+            let html = '';
+            filtered.forEach((t) => {
+                const displayIndex = tutorials.indexOf(t) + 1;
+                html += `
+                        <div class="child-node" data-id="${t.id}" data-title="${t.title.replace(/"/g, '&quot;')}" role="button" tabindex="0">
+                            <span class="node-index">${displayIndex}</span>
+                            <span class="node-title">${t.title}</span>
+                            <span class="node-tag">→</span>
+                            <span class="node-arrow">›</span>
+                        </div>
+                    `;
+            });
+
+            container.innerHTML = html;
+
+            container.querySelectorAll('.child-node').forEach(el => {
+                const id = parseInt(el.dataset.id);
+                const tutorial = tutorials.find(t => t.id === id);
+                if (tutorial) {
+                    el.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.open(tutorial.url, '_blank', 'noopener,noreferrer');
+                    });
+                    el.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            window.open(tutorial.url, '_blank', 'noopener,noreferrer');
+                        }
+                    });
+                }
+            });
+
+            // 应用折叠状态
+            if (!isExpanded) {
+                container.classList.add('hidden');
+                toggleIcon.classList.add('collapsed');
+                toggleIcon.textContent = '▶';
+                rootNode.setAttribute('aria-expanded', 'false');
+            } else {
+                container.classList.remove('hidden');
+                toggleIcon.classList.remove('collapsed');
+                toggleIcon.textContent = '▼';
+                rootNode.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        // ============================================================
+        //  展开 / 折叠
+        // ============================================================
+        function toggleExpand() {
+            isExpanded = !isExpanded;
+            if (isExpanded) {
+                container.classList.remove('hidden');
+                container.style.maxHeight = container.scrollHeight + 'px';
+                setTimeout(() => { container.style.maxHeight = '3000px'; }, 10);
+                toggleIcon.textContent = '▼';
+                toggleIcon.classList.remove('collapsed');
+                rootNode.setAttribute('aria-expanded', 'true');
+            } else {
+                container.style.maxHeight = container.scrollHeight + 'px';
+                requestAnimationFrame(() => { container.style.maxHeight = '0px'; });
+                setTimeout(() => {
+                    container.classList.add('hidden');
+                }, 480);
+                toggleIcon.textContent = '▶';
+                toggleIcon.classList.add('collapsed');
+                rootNode.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        // ============================================================
+        //  搜索
+        // ============================================================
+        function handleSearch() {
+            const q = searchInput.value;
+            searchQuery = q;
+            if (q.trim()) {
+                clearBtn.classList.add('visible');
+            } else {
+                clearBtn.classList.remove('visible');
+            }
+            renderTutorials(q);
+            if (!isExpanded && q.trim()) {
+                isExpanded = true;
+                container.classList.remove('hidden');
+                container.style.maxHeight = '3000px';
+                toggleIcon.textContent = '▼';
+                toggleIcon.classList.remove('collapsed');
+                rootNode.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        function clearSearch() {
+            searchInput.value = '';
+            clearBtn.classList.remove('visible');
+            searchQuery = '';
+            renderTutorials('');
+        }
+
+        // ============================================================
+        //  透明度控制
+        // ============================================================
+        function updateAlpha(val) {
+            currentAlpha = parseFloat(val);
+            const pct = Math.round(currentAlpha * 100);
+            alphaDisplay.textContent = pct + '%';
+            document.documentElement.style.setProperty('--glass-alpha', currentAlpha);
+            // 保存偏好
+            try { localStorage.setItem('glassAlpha', currentAlpha); } catch (_) {}
+        }
+
+        // ============================================================
+        //  液态玻璃开关
+        // ============================================================
+        function toggleGlassEffect(enable) {
+            if (enable) {
+                appContainer.classList.add('glass-liquid');
+            } else {
+                appContainer.classList.remove('glass-liquid');
+            }
+            try { localStorage.setItem('glassEffect', enable ? '1' : '0'); } catch (_) {}
+        }
+
+        // ============================================================
+        //  随机背景 (unsplash)
+        // ============================================================
+        function setRandomBackground() {
+            const bgLayer = document.getElementById('bg-layer');
+            const fallbackUrls = [
+                'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&q=80',
+                'https://images.unsplash.com/photo-1470071459604-7b5ec3f2a0c5?w=1920&q=80',
+                'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80',
+                'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80',
+                'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1920&q=80',
+                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80',
+                'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1920&q=80',
+                'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1920&q=80',
+                'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=1920&q=80',
+                'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80'
+            ];
+            const selected = fallbackUrls[Math.floor(Math.random() * fallbackUrls.length)];
+            const img = new Image();
+            img.src = selected;
+            img.onload = () => { bgLayer.style.backgroundImage = `url(${selected})`; };
+            img.onerror = () => {
+                const backup = fallbackUrls[Math.floor(Math.random() * fallbackUrls.length)];
+                bgLayer.style.backgroundImage = `url(${backup})`;
+            };
+        }
+
+        // ============================================================
+        //  初始化
+        // ============================================================
+        function init() {
+            // 背景
+            setRandomBackground();
+
+            // 读取偏好
+            try {
+                const savedAlpha = localStorage.getItem('glassAlpha');
+                if (savedAlpha !== null) {
+                    const a = parseFloat(savedAlpha);
+                    if (!isNaN(a) && a >= 0.04 && a <= 0.85) {
+                        currentAlpha = a;
+                        alphaSlider.value = a;
+                    }
+                }
+                const glassPref = localStorage.getItem('glassEffect');
+                if (glassPref !== null) {
+                    const enabled = glassPref === '1';
+                    glassToggle.checked = enabled;
+                    toggleGlassEffect(enabled);
+                } else {
+                    glassToggle.checked = true;
+                    toggleGlassEffect(true);
+                }
+            } catch (_) {}
+
+            // 应用透明度
+            updateAlpha(alphaSlider.value);
+
+            // 渲染（默认折叠）
+            renderTutorials('');
+
+            // 事件绑定
+            rootNode.addEventListener('click', toggleExpand);
+            rootNode.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleExpand();
+                }
+            });
+
+            searchInput.addEventListener('input', handleSearch);
+            clearBtn.addEventListener('click', clearSearch);
+
+            glassToggle.addEventListener('change', (e) => {
+                toggleGlassEffect(e.target.checked);
+            });
+
+            alphaSlider.addEventListener('input', (e) => {
+                updateAlpha(e.target.value);
+            });
+
+            // 窗口resize优化
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (isExpanded) {
+                        container.style.maxHeight = '3000px';
+                    }
+                }, 200);
+            });
+
+            // 背景轮换
+            let bgInterval;
+            function startBgRotation() {
+                bgInterval = setInterval(setRandomBackground, 5 * 60 * 1000);
+            }
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    clearInterval(bgInterval);
+                } else {
+                    clearInterval(bgInterval);
+                    startBgRotation();
+                }
+            });
+            startBgRotation();
+
+            console.log('🌳 PHYの绿洲共创教程 已加载');
+            console.log(`📚 共 ${tutorials.length} 个教程 · 默认折叠`);
+        }
+
+        // DOM 就绪
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+    <a href="https://icp.gov.moe/?keyword=20250330" target="_blank">萌ICP备20250330号</a>
+</body>
+</html>
