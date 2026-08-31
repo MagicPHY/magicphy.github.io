@@ -653,7 +653,31 @@
             border: 1px solid rgba(255, 255, 255, 0.10);
         }
 
+        /* ===== 分类标题样式 ===== */
+        .category-header {
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding: 12px 0 6px;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.20);
+            margin-bottom: 8px;
+        }
+        .category-header:first-of-type {
+            padding-top: 0;
+        }
+        .category-header .cat-icon {
+            margin-right: 8px;
+        }
+
         .child-node.search-hidden {
+            display: none;
+        }
+        /* 当分类下所有子节点都被隐藏时，整个分类也隐藏 */
+        .category-group.search-hidden {
             display: none;
         }
 
@@ -977,6 +1001,9 @@
                 font-size: 12px;
                 border-radius: 30px;
             }
+            .category-header {
+                font-size: 16px;
+            }
         }
 
         @media (max-width: 420px) {
@@ -1109,6 +1136,10 @@
                 padding: 6px 20px;
                 font-size: 12px;
             }
+            .category-header {
+                font-size: 14px;
+                padding: 8px 0 4px;
+            }
         }
 
         /* ===== 工具 ===== */
@@ -1201,7 +1232,7 @@
             <!-- 根节点 -->
             <div class="root-node" id="rootNode" role="button" tabindex="0" aria-expanded="false">
                 <span class="icon">🌳</span>
-                <span class="title">可视化教程</span>
+                <span class="title">教程列表</span>
                 <span class="badge" id="countBadge">0</span>
                 <span class="toggle-icon collapsed" id="toggleIcon">▶</span>
             </div>
@@ -1250,7 +1281,11 @@
 
         const DATA_URL = 'https://magicphy.github.io/ugcmteach/teacher.txt';
 
-        let tutorialsData = [];
+        // 分组数据：数组元素 { category, items: [{id, title, url}] }
+        let groupedData = [];
+        // 扁平化所有条目（用于搜索和计数）
+        let allItems = [];
+
         let isExpanded = false; // 默认折叠
         let searchQuery = '';
         let currentAlpha = 0.22;
@@ -1278,49 +1313,70 @@
         const alphaDisplay = document.getElementById('alphaDisplay');
 
         // ============================================================
-        //  解析函数
+        //  解析函数（支持栏目分组）
         // ============================================================
         function parseTutorials(text) {
             const lines = text.split('\n');
-            const tutorials = [];
-            let current = null;
+            const groups = [];
+            let currentCategory = '教程'; // 默认栏目
+            let currentItems = [];
+            let currentItem = null;
 
             for (let line of lines) {
                 line = line.trim();
                 if (line === '') continue;
 
+                // 检测栏目行：以中文冒号或英文冒号结尾（但排除“(数字)”格式）
+                if (/：$/.test(line) || /:$/.test(line)) {
+                    // 保存之前栏目
+                    if (currentItems.length > 0) {
+                        groups.push({ category: currentCategory, items: currentItems });
+                        currentItems = [];
+                    }
+                    // 移除冒号作为栏目名
+                    currentCategory = line.replace(/[:：]$/, '').trim();
+                    continue;
+                }
+
                 // 匹配 (数字) 作为条目分隔符
                 const match = line.match(/^\((\d+)\)$/);
                 if (match) {
                     // 保存上一个条目
-                    if (current && current.title && current.url) {
-                        tutorials.push(current);
+                    if (currentItem && currentItem.title && currentItem.url) {
+                        currentItems.push(currentItem);
                     }
-                    current = {
+                    currentItem = {
                         id: parseInt(match[1], 10),
                         title: '',
                         url: ''
                     };
-                } else if (current) {
-                    if (!current.title) {
-                        current.title = line;
-                    } else if (!current.url) {
-                        current.url = line;
+                } else if (currentItem) {
+                    if (!currentItem.title) {
+                        currentItem.title = line;
+                    } else if (!currentItem.url) {
+                        currentItem.url = line;
                     }
                     // 如果 title 和 url 都已填，忽略额外行（容错）
                 }
             }
 
             // 保存最后一个条目
-            if (current && current.title && current.url) {
-                tutorials.push(current);
+            if (currentItem && currentItem.title && currentItem.url) {
+                currentItems.push(currentItem);
+            }
+            // 保存最后一个栏目
+            if (currentItems.length > 0) {
+                groups.push({ category: currentCategory, items: currentItems });
             }
 
-            return tutorials;
+            // 如果没有解析出任何分组，但有一些未分类的条目（比如没有栏目行），则放入默认栏目
+            // 但上面的逻辑已经会创建默认栏目，因为currentCategory初始为"教程"，并且会一直累积。
+            // 如果文件没有任何栏目行，则所有条目都在"教程"分组下。
+            return groups;
         }
 
         // ============================================================
-        //  加载 & 错误处理（细化分类）
+        //  加载 & 错误处理（细化错误信息）
         // ============================================================
         function showLoading(show) {
             if (show) {
@@ -1339,7 +1395,6 @@
             loadingState.style.display = 'none';
             emptyState.classList.remove('visible');
             container.innerHTML = '';
-            // 更新计数为0
             totalCount.textContent = '0';
             countBadge.textContent = '0';
         }
@@ -1374,18 +1429,29 @@
                     throw new Error('EMPTY_DATA');
                 }
 
-                const parsed = parseTutorials(text);
+                const groups = parseTutorials(text);
 
-                if (parsed.length === 0) {
+                // 检查是否有任何条目
+                let totalItems = 0;
+                groups.forEach(g => totalItems += g.items.length);
+                if (totalItems === 0) {
                     throw new Error('PARSE_FAILED');
                 }
 
-                tutorialsData = parsed;
+                groupedData = groups;
+                // 更新扁平列表
+                allItems = [];
+                groups.forEach(g => {
+                    g.items.forEach(item => {
+                        allItems.push({ ...item, category: g.category });
+                    });
+                });
+
                 loadError = null;
                 hideAllStatus();
                 renderTutorials(searchInput.value.trim());
-                totalCount.textContent = tutorialsData.length;
-                countBadge.textContent = tutorialsData.length;
+                totalCount.textContent = allItems.length;
+                countBadge.textContent = allItems.length;
 
             } catch (err) {
                 console.error('加载教程失败:', err);
@@ -1394,21 +1460,26 @@
                 if (msg === 'EMPTY_DATA') {
                     errorMsg = '请求结果为空！';
                 } else if (msg === 'PARSE_FAILED') {
-                    errorMsg = '文件内容不合法！';
+                    errorMsg = '文件内容不合法！请检查格式是否正确（栏目名以冒号结尾，条目以(数字)开头）。';
                 } else if (msg.startsWith('HTTP_ERROR:')) {
                     const status = msg.split(':')[1] || '';
                     errorMsg = `服务器响应错误 (${status})，请检查文件是否存在或网络状况`;
                 } else if (msg.includes('Failed to fetch') || err.name === 'TypeError') {
-                    errorMsg = '服务器连接失败！';
+                    errorMsg = '服务器连接失败！请检查网络或跨域设置。';
                 } else {
-                    errorMsg = msg || '未知错误';
+                    // 其他未知错误，显示具体信息
+                    errorMsg = err.message || '未知错误';
+                    // 尝试提取更详细的信息
+                    if (err.stack) {
+                        errorMsg += ' (详见控制台)';
+                    }
                 }
                 loadError = errorMsg;
                 showError(errorMsg);
-                tutorialsData = [];
+                groupedData = [];
+                allItems = [];
                 totalCount.textContent = '0';
                 countBadge.textContent = '0';
-                // 如果之前有搜索词，搜索会无结果，但不清除搜索框
                 if (searchInput.value.trim()) {
                     renderTutorials(searchInput.value.trim());
                 }
@@ -1418,19 +1489,36 @@
         }
 
         // ============================================================
-        //  渲染
+        //  渲染（支持分组）
         // ============================================================
         function renderTutorials(filter = '') {
             const q = filter.trim().toLowerCase();
-            const filtered = q ? tutorialsData.filter(t => t.title.toLowerCase().includes(q)) : tutorialsData;
 
-            countBadge.textContent = filtered.length;
+            // 过滤条目
+            let filteredGroups = [];
+            if (q) {
+                filteredGroups = groupedData.map(group => {
+                    const filteredItems = group.items.filter(item =>
+                        item.title.toLowerCase().includes(q)
+                    );
+                    return { category: group.category, items: filteredItems };
+                }).filter(group => group.items.length > 0);
+            } else {
+                filteredGroups = groupedData.map(group => ({
+                    category: group.category,
+                    items: [...group.items]
+                }));
+            }
+
+            // 计算总条目数
+            let totalFiltered = 0;
+            filteredGroups.forEach(g => totalFiltered += g.items.length);
+            countBadge.textContent = totalFiltered;
 
             // 如果数据为空且没有搜索词
-            if (tutorialsData.length === 0 && !q) {
+            if (allItems.length === 0 && !q) {
                 if (!isLoading && !errorState.classList.contains('visible')) {
                     emptyState.classList.add('visible');
-                    emptyState.querySelector('.emoji').textContent = '📭';
                     emptyState.innerHTML = `<span class="emoji">📭</span> 暂无教程，请稍后刷新`;
                     container.innerHTML = '';
                 }
@@ -1438,7 +1526,7 @@
             }
 
             // 搜索无结果
-            if (filtered.length === 0 && q) {
+            if (totalFiltered === 0 && q) {
                 emptyState.classList.add('visible');
                 emptyState.innerHTML = `<span class="emoji">🔎</span> 没有找到匹配的教程，试试其他关键词吧`;
                 container.innerHTML = '';
@@ -1452,24 +1540,33 @@
             hideAllStatus();
 
             let html = '';
-            filtered.forEach((t) => {
-                const idx = tutorialsData.indexOf(t) + 1;
-                const safeTitle = t.title.replace(/"/g, '&quot;');
-                html += `
-                        <div class="child-node" data-id="${t.id}" data-title="${safeTitle}" role="button" tabindex="0">
-                            <span class="node-index">${idx}</span>
-                            <span class="node-title">${t.title}</span>
-                            <span class="node-tag">→</span>
-                            <span class="node-arrow">›</span>
-                        </div>
-                    `;
+            filteredGroups.forEach((group, groupIdx) => {
+                // 显示分类标题
+                const icon = groupIdx === 0 ? '📖' : '📂';
+                html += `<div class="category-header"><span class="cat-icon">${icon}</span>${group.category}</div>`;
+
+                group.items.forEach((item, idx) => {
+                    // 使用在分组内的索引作为显示序号
+                    const displayIndex = idx + 1;
+                    const safeTitle = item.title.replace(/"/g, '&quot;');
+                    html += `
+                            <div class="child-node" data-id="${item.id}" data-title="${safeTitle}" role="button" tabindex="0">
+                                <span class="node-index">${displayIndex}</span>
+                                <span class="node-title">${item.title}</span>
+                                <span class="node-tag">→</span>
+                                <span class="node-arrow">›</span>
+                            </div>
+                        `;
+                });
             });
 
             container.innerHTML = html;
 
+            // 绑定点击事件（所有卡片）
             container.querySelectorAll('.child-node').forEach(el => {
                 const id = parseInt(el.dataset.id, 10);
-                const tutorial = tutorialsData.find(t => t.id === id);
+                // 在allItems中查找
+                const tutorial = allItems.find(t => t.id === id);
                 if (tutorial) {
                     el.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -1535,11 +1632,10 @@
             }
 
             if (errorState.classList.contains('visible')) {
-                // 错误状态下不执行搜索，但保留搜索词
                 return;
             }
 
-            if (tutorialsData.length > 0) {
+            if (allItems.length > 0) {
                 renderTutorials(q);
                 if (q.trim() && !isExpanded) {
                     isExpanded = true;
@@ -1564,7 +1660,7 @@
             searchInput.value = '';
             clearBtn.classList.remove('visible');
             searchQuery = '';
-            if (tutorialsData.length > 0) {
+            if (allItems.length > 0) {
                 renderTutorials('');
             } else {
                 emptyState.classList.remove('visible');
@@ -1700,7 +1796,7 @@
                 } else {
                     clearInterval(bgInterval);
                     startBgRotation();
-                    if (tutorialsData.length === 0 && !errorState.classList.contains('visible') && !isLoading) {
+                    if (allItems.length === 0 && !errorState.classList.contains('visible') && !isLoading) {
                         loadTutorials();
                     }
                 }
@@ -1710,7 +1806,7 @@
             await loadTutorials();
 
             console.log('🌳 PHYの绿洲共创教程 已加载 (数据来源: ' + DATA_URL + ')');
-            console.log('📚 共 ' + tutorialsData.length + ' 个教程');
+            console.log('📚 共 ' + allItems.length + ' 个教程');
         }
 
         if (document.readyState === 'loading') {
