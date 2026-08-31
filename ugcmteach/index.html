@@ -1392,16 +1392,16 @@
                 let errorMsg = '';
                 const msg = err.message || '';
                 if (msg === 'EMPTY_DATA') {
-                    errorMsg = '数据文件为空，请检查文件内容';
+                    errorMsg = '请求结果为空！';
                 } else if (msg === 'PARSE_FAILED') {
-                    errorMsg = '文件内容格式不符合要求，请确保每条教程以 (序号) 开头，并包含标题和链接';
+                    errorMsg = '文件内容不合法！';
                 } else if (msg.startsWith('HTTP_ERROR:')) {
                     const status = msg.split(':')[1] || '';
                     errorMsg = `服务器响应错误 (${status})，请检查文件是否存在或网络状况`;
                 } else if (msg.includes('Failed to fetch') || err.name === 'TypeError') {
-                    errorMsg = '网络请求失败，请检查网络连接或服务器是否可访问（可能为跨域或DNS问题）';
+                    errorMsg = '服务器连接失败！';
                 } else {
-                    errorMsg = msg || '未知错误，请重试';
+                    errorMsg = msg || '未知错误';
                 }
                 loadError = errorMsg;
                 showError(errorMsg);
