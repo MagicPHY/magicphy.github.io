@@ -1232,7 +1232,7 @@
             <!-- 根节点 -->
             <div class="root-node" id="rootNode" role="button" tabindex="0" aria-expanded="false">
                 <span class="icon">🌳</span>
-                <span class="title">教程列表</span>
+                <span class="title" id="rootTitle">📚 全部教程</span>
                 <span class="badge" id="countBadge">0</span>
                 <span class="toggle-icon collapsed" id="toggleIcon">▶</span>
             </div>
@@ -1297,6 +1297,7 @@
         // ============================================================
         const container = document.getElementById('childrenContainer');
         const rootNode = document.getElementById('rootNode');
+        const rootTitle = document.getElementById('rootTitle');
         const toggleIcon = document.getElementById('toggleIcon');
         const searchInput = document.getElementById('searchInput');
         const clearBtn = document.getElementById('clearSearchBtn');
@@ -1318,7 +1319,7 @@
         function parseTutorials(text) {
             const lines = text.split('\n');
             const groups = [];
-            let currentCategory = '教程'; // 默认栏目
+            let currentCategory = '默认教程';
             let currentItems = [];
             let currentItem = null;
 
@@ -1326,8 +1327,9 @@
                 line = line.trim();
                 if (line === '') continue;
 
-                // 检测栏目行：以中文冒号或英文冒号结尾（但排除“(数字)”格式）
-                if (/：$/.test(line) || /:$/.test(line)) {
+                // 检测栏目行：以中文冒号或英文冒号结尾，且不包含括号（避免误判标题中的冒号）
+                const isCategoryLine = /[:：]$/.test(line) && !line.includes('(') && !line.includes('）');
+                if (isCategoryLine) {
                     // 保存之前栏目
                     if (currentItems.length > 0) {
                         groups.push({ category: currentCategory, items: currentItems });
@@ -1369,9 +1371,6 @@
                 groups.push({ category: currentCategory, items: currentItems });
             }
 
-            // 如果没有解析出任何分组，但有一些未分类的条目（比如没有栏目行），则放入默认栏目
-            // 但上面的逻辑已经会创建默认栏目，因为currentCategory初始为"教程"，并且会一直累积。
-            // 如果文件没有任何栏目行，则所有条目都在"教程"分组下。
             return groups;
         }
 
@@ -1447,29 +1446,37 @@
                     });
                 });
 
+                // 更新根节点标题为第一个栏目名称
+                if (groups.length > 0 && groups[0].category) {
+                    rootTitle.textContent = '📚 ' + groups[0].category;
+                } else {
+                    rootTitle.textContent = '📚 全部教程';
+                }
+
                 loadError = null;
                 hideAllStatus();
                 renderTutorials(searchInput.value.trim());
                 totalCount.textContent = allItems.length;
                 countBadge.textContent = allItems.length;
 
+                // 调试：在控制台输出分组结构
+                console.log('📦 解析后的分组结构:', JSON.stringify(groups, null, 2));
+
             } catch (err) {
                 console.error('加载教程失败:', err);
                 let errorMsg = '';
                 const msg = err.message || '';
                 if (msg === 'EMPTY_DATA') {
-                    errorMsg = '请求结果为空！';
+                    errorMsg = '请求结果为空！请检查文件内容。';
                 } else if (msg === 'PARSE_FAILED') {
-                    errorMsg = '文件内容不合法！请检查格式是否正确（栏目名以冒号结尾，条目以(数字)开头）。';
+                    errorMsg = '文件内容不合法！请确保格式正确：栏目名以冒号结尾，条目以(数字)开头，并包含标题和链接。';
                 } else if (msg.startsWith('HTTP_ERROR:')) {
                     const status = msg.split(':')[1] || '';
                     errorMsg = `服务器响应错误 (${status})，请检查文件是否存在或网络状况`;
                 } else if (msg.includes('Failed to fetch') || err.name === 'TypeError') {
                     errorMsg = '服务器连接失败！请检查网络或跨域设置。';
                 } else {
-                    // 其他未知错误，显示具体信息
                     errorMsg = err.message || '未知错误';
-                    // 尝试提取更详细的信息
                     if (err.stack) {
                         errorMsg += ' (详见控制台)';
                     }
@@ -1480,6 +1487,7 @@
                 allItems = [];
                 totalCount.textContent = '0';
                 countBadge.textContent = '0';
+                rootTitle.textContent = '📚 全部教程';
                 if (searchInput.value.trim()) {
                     renderTutorials(searchInput.value.trim());
                 }
@@ -1546,7 +1554,6 @@
                 html += `<div class="category-header"><span class="cat-icon">${icon}</span>${group.category}</div>`;
 
                 group.items.forEach((item, idx) => {
-                    // 使用在分组内的索引作为显示序号
                     const displayIndex = idx + 1;
                     const safeTitle = item.title.replace(/"/g, '&quot;');
                     html += `
@@ -1562,10 +1569,9 @@
 
             container.innerHTML = html;
 
-            // 绑定点击事件（所有卡片）
+            // 绑定点击事件
             container.querySelectorAll('.child-node').forEach(el => {
                 const id = parseInt(el.dataset.id, 10);
-                // 在allItems中查找
                 const tutorial = allItems.find(t => t.id === id);
                 if (tutorial) {
                     el.addEventListener('click', (e) => {
