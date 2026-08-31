@@ -1184,7 +1184,7 @@
 
     <script>
         // ============================================================
-        //  数据获取 & 解析
+        //  数据获取 & 解析（基于缩进识别栏目和条目）
         // ============================================================
 
         const DATA_URL = 'https://magicphy.github.io/ugcmteach/teacher.txt';
@@ -1217,7 +1217,7 @@
         const alphaDisplay = document.getElementById('alphaDisplay');
 
         // ============================================================
-        //  解析函数（支持栏目分组）
+        //  解析函数：通过前导空格区分栏目与条目内容
         // ============================================================
         function parseTutorials(text) {
             const lines = text.split('\n');
@@ -1226,22 +1226,38 @@
             let currentItems = [];
             let currentItem = null;
 
-            for (let line of lines) {
-                line = line.trim();
+            for (let rawLine of lines) {
+                // 保留原始行以检测缩进，但去除末尾空格
+                const line = rawLine.trimEnd();
                 if (line === '') continue;
 
-                const isCategoryLine = /[:：]$/.test(line) && !line.includes('(') && !line.includes('）');
-                if (isCategoryLine) {
-                    if (currentItems.length > 0) {
-                        groups.push({ category: currentCategory, items: currentItems });
-                        currentItems = [];
+                // 检测是否为缩进行（以空格开头）
+                const isIndented = /^ /.test(line);
+
+                if (!isIndented) {
+                    // 顶格行：可能是栏目行（以冒号结尾）或空行（已过滤）
+                    if (/[:：]$/.test(line)) {
+                        // 保存之前的栏目
+                        if (currentItems.length > 0) {
+                            groups.push({ category: currentCategory, items: currentItems });
+                            currentItems = [];
+                        }
+                        currentCategory = line.replace(/[:：]$/, '').trim();
+                        continue;
+                    } else {
+                        // 顶格但不是冒号结尾：忽略（可能是文件头或其他）
+                        continue;
                     }
-                    currentCategory = line.replace(/[:：]$/, '').trim();
-                    continue;
                 }
 
-                const match = line.match(/^\((\d+)\)$/);
+                // --- 以下处理缩进行（条目相关） ---
+                // 去掉前导空格，得到内容
+                const content = line.trim();
+
+                // 检查是否为序号行（如 "(1)" 或 "(10)"）
+                const match = content.match(/^\((\d+)\)$/);
                 if (match) {
+                    // 保存上一个条目
                     if (currentItem && currentItem.title && currentItem.url) {
                         currentItems.push(currentItem);
                     }
@@ -1250,18 +1266,32 @@
                         title: '',
                         url: ''
                     };
-                } else if (currentItem) {
-                    if (!currentItem.title) {
-                        currentItem.title = line;
-                    } else if (!currentItem.url) {
-                        currentItem.url = line;
-                    }
+                    continue;
                 }
+
+                // 如果当前没有正在构建的条目，忽略（可能是孤立行）
+                if (!currentItem) continue;
+
+                // 如果是标题（有内容且尚未设置标题）
+                if (!currentItem.title) {
+                    currentItem.title = content;
+                    continue;
+                }
+
+                // 如果已设置标题但尚未设置链接，则视为链接
+                if (!currentItem.url) {
+                    currentItem.url = content;
+                    continue;
+                }
+
+                // 如果标题和链接都已设置，忽略多余行（容错）
             }
 
+            // 保存最后一个条目
             if (currentItem && currentItem.title && currentItem.url) {
                 currentItems.push(currentItem);
             }
+            // 保存最后一个栏目
             if (currentItems.length > 0) {
                 groups.push({ category: currentCategory, items: currentItems });
             }
@@ -1359,7 +1389,7 @@
                 if (msg === 'EMPTY_DATA') {
                     errorMsg = '请求结果为空！请检查文件内容。';
                 } else if (msg === 'PARSE_FAILED') {
-                    errorMsg = '文件内容不合法！请确保格式正确：栏目名以冒号结尾，条目以(数字)开头，并包含标题和链接。';
+                    errorMsg = '文件内容不合法！请确保格式正确：栏目名顶格并以冒号结尾，条目内容以空格缩进。';
                 } else if (msg.startsWith('HTTP_ERROR:')) {
                     const status = msg.split(':')[1] || '';
                     errorMsg = `服务器响应错误 (${status})，请检查文件是否存在或网络状况`;
@@ -1438,7 +1468,6 @@
             let html = '';
             filteredGroups.forEach((group, idx) => {
                 const catKey = group.category;
-                // 确定该栏目是否展开
                 const isExpanded = categoryExpanded[catKey] || false;
                 const icon = idx === 0 ? '📖' : '📂';
                 const toggleSymbol = isExpanded ? '▼' : '▶';
@@ -1521,7 +1550,6 @@
         function toggleCategory(catKey) {
             if (!(catKey in categoryExpanded)) return;
             categoryExpanded[catKey] = !categoryExpanded[catKey];
-            // 重新渲染当前搜索结果
             renderTutorials(searchInput.value.trim());
         }
 
