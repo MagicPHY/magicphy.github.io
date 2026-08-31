@@ -20,7 +20,6 @@
             --text-muted: #3a5a8a;
         }
 
-        /* ===== 全局重置 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -38,7 +37,6 @@
             transition: background 0.6s ease;
         }
 
-        /* ===== 背景层 ===== */
         #bg-layer {
             position: fixed;
             top: 0;
@@ -65,7 +63,6 @@
             z-index: 1;
         }
 
-        /* ===== 主容器 ===== */
         .app-container {
             position: relative;
             z-index: 2;
@@ -108,7 +105,6 @@
             }
         }
 
-        /* ===== 液态玻璃增强（所有UI元素） ===== */
         .app-container.glass-liquid {
             background: rgba(255, 255, 255, calc(var(--glass-alpha) * 0.85));
             backdrop-filter: blur(calc(var(--glass-blur) + 4px));
@@ -173,8 +169,7 @@
             z-index: 1;
         }
 
-        /* ===== 所有UI元素液态玻璃 ===== */
-        .app-container.glass-liquid .root-node,
+        .app-container.glass-liquid .category-card,
         .app-container.glass-liquid .child-node,
         .app-container.glass-liquid .search-wrap,
         .app-container.glass-liquid .about-section .feedback-btn,
@@ -197,13 +192,20 @@
         .app-container.glass-liquid .search-wrap:focus-within {
             background: rgba(255, 255, 255, calc(var(--glass-alpha) * 1.2 + 0.15));
         }
-        .app-container.glass-liquid .root-node {
-            background: linear-gradient(135deg, rgba(60, 130, 255, calc(var(--glass-alpha) * 0.5)), rgba(100, 180, 255, calc(var(--glass-alpha) * 0.25)));
+        .app-container.glass-liquid .category-card {
+            background: rgba(255, 255, 255, calc(var(--glass-alpha) * 0.8));
             backdrop-filter: blur(calc(var(--glass-blur-light) - 2px));
             -webkit-backdrop-filter: blur(calc(var(--glass-blur-light) - 2px));
+            border-radius: 30px;
+            padding: 12px 18px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.30);
+            box-shadow: 0 4px 20px rgba(30, 60, 130, 0.03);
+            transition: all 0.3s ease;
         }
-        .app-container.glass-liquid .root-node:hover {
-            background: linear-gradient(135deg, rgba(60, 130, 255, calc(var(--glass-alpha) * 0.7 + 0.08)), rgba(100, 180, 255, calc(var(--glass-alpha) * 0.4 + 0.05)));
+        .app-container.glass-liquid .category-card:hover {
+            background: rgba(255, 255, 255, calc(var(--glass-alpha) * 1.0 + 0.05));
+            border-color: rgba(255, 255, 255, 0.45);
         }
 
         /* ===== 头部 ===== */
@@ -272,9 +274,6 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        .author-sub {
-            display: none;
-        }
 
         .header-right {
             display: flex;
@@ -285,7 +284,6 @@
             justify-content: flex-end;
         }
 
-        /* ===== 搜索框 ===== */
         .search-wrap {
             display: flex;
             align-items: center;
@@ -346,7 +344,7 @@
             display: block;
         }
 
-        /* ===== 关于容器（独立，位于教程上方） ===== */
+        /* ===== 关于容器 ===== */
         .about-section {
             display: flex;
             flex-wrap: wrap;
@@ -418,7 +416,7 @@
             display: none;
         }
 
-        /* ===== 底部统计与提示（加圆角底板） ===== */
+        /* ===== 底部 ===== */
         .footer {
             margin-top: 24px;
             padding-top: 16px;
@@ -467,105 +465,85 @@
             padding: 4px 0 2px;
         }
 
-        /* ===== 根节点 ===== */
-        .root-node {
+        /* ===== 栏目卡片（独立可折叠） ===== */
+        .category-card {
+            margin-bottom: 18px;
+            border-radius: 30px;
+            padding: 12px 18px 10px;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 4px 20px rgba(30, 60, 130, 0.03);
+            transition: all 0.3s ease;
+        }
+        .category-card:hover {
+            background: rgba(255, 255, 255, 0.50);
+            border-color: rgba(255, 255, 255, 0.45);
+        }
+        .category-card .cat-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 12px;
+            justify-content: space-between;
             cursor: pointer;
             user-select: none;
-            padding: 16px 28px;
-            border-radius: 60px;
-            background: linear-gradient(135deg, rgba(60, 130, 255, 0.10), rgba(100, 180, 255, 0.04));
-            border: 1px solid rgba(255, 255, 255, 0.40);
-            box-shadow: 0 4px 20px rgba(40, 80, 200, 0.03);
-            transition: all 0.3s ease;
-            margin: 0 auto 10px;
-            max-width: 480px;
-            position: relative;
+            padding: 6px 4px;
+            border-radius: 40px;
+            transition: background 0.2s;
         }
-        .root-node:hover {
-            background: linear-gradient(135deg, rgba(60, 130, 255, 0.16), rgba(100, 180, 255, 0.06));
-            transform: scale(1.01);
-            box-shadow: 0 8px 32px rgba(40, 80, 200, 0.06);
+        .category-card .cat-header:hover {
+            background: rgba(255, 255, 255, 0.15);
         }
-        .root-node:active {
-            transform: scale(0.97);
-        }
-        .root-node .icon {
-            font-size: 26px;
-            color: var(--primary-blue);
-            flex-shrink: 0;
-        }
-        .root-node .title {
-            font-size: 22px;
-            font-weight: 700;
+        .category-card .cat-title {
+            font-size: 20px;
+            font-weight: 600;
             color: var(--text-dark);
-            letter-spacing: 0.8px;
-            background: linear-gradient(135deg, #1a5fb4, #4a8af4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .root-node .toggle-icon {
-            font-size: 18px;
-            color: #4a7ab0;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            -webkit-text-fill-color: #4a7ab0;
-            flex-shrink: 0;
+        .category-card .cat-title .cat-icon {
+            font-size: 24px;
         }
-        .root-node .toggle-icon.collapsed {
-            transform: rotate(-90deg);
-        }
-        .root-node .badge {
-            font-size: 12px;
-            background: rgba(70, 130, 255, 0.10);
+        .category-card .cat-badge {
+            font-size: 13px;
+            background: rgba(70, 130, 255, 0.08);
             padding: 2px 14px;
             border-radius: 40px;
             color: var(--primary-blue);
             font-weight: 500;
-            -webkit-text-fill-color: var(--primary-blue);
-            background-clip: unset;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+        }
+        .category-card .cat-toggle {
+            font-size: 20px;
+            color: #4a7ab0;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin-left: 12px;
             flex-shrink: 0;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .category-card .cat-toggle.collapsed {
+            transform: rotate(-90deg);
         }
 
-        /* ===== 子节点容器 ===== */
-        .children-container {
+        .category-card .cat-children {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 14px;
-            padding: 18px 6px 6px;
-            transition: all 0.45s cubic-bezier(0.34, 1.0, 0.64, 1);
+            padding: 14px 4px 4px;
+            transition: all 0.4s cubic-bezier(0.34, 1.0, 0.64, 1);
             opacity: 1;
             max-height: 3000px;
             overflow: hidden;
-            position: relative;
         }
-        .children-container.hidden {
+        .category-card .cat-children.hidden {
             max-height: 0;
             opacity: 0;
             padding-top: 0;
             padding-bottom: 0;
             margin: 0;
             pointer-events: none;
-        }
-        .children-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            width: 2px;
-            height: 18px;
-            background: linear-gradient(to bottom, rgba(70, 130, 255, 0.20), transparent);
-            transform: translateX(-50%);
-            border-radius: 2px;
-            transition: opacity 0.4s ease;
-        }
-        .children-container.hidden::before {
-            opacity: 0;
         }
 
         /* ===== 子节点卡片 ===== */
@@ -582,22 +560,9 @@
             box-shadow: 0 4px 20px rgba(30, 60, 130, 0.03);
             transition: all 0.3s cubic-bezier(0.34, 1.0, 0.64, 1);
             cursor: pointer;
-            position: relative;
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-        .child-node::before {
-            content: '';
-            position: absolute;
-            top: -18px;
-            left: 50%;
-            width: 2px;
-            height: 18px;
-            background: linear-gradient(to bottom, rgba(70, 130, 255, 0.12), rgba(70, 130, 255, 0.03));
-            transform: translateX(-50%);
-            border-radius: 2px;
-            transition: opacity 0.3s ease;
         }
         .child-node:hover {
             background: rgba(255, 255, 255, 0.65);
@@ -653,35 +618,7 @@
             border: 1px solid rgba(255, 255, 255, 0.10);
         }
 
-        /* ===== 分类标题样式 ===== */
-        .category-header {
-            width: 100%;
-            text-align: center;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-dark);
-            padding: 12px 0 6px;
-            letter-spacing: 2px;
-            opacity: 0.8;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.20);
-            margin-bottom: 8px;
-        }
-        .category-header:first-of-type {
-            padding-top: 0;
-        }
-        .category-header .cat-icon {
-            margin-right: 8px;
-        }
-
-        .child-node.search-hidden {
-            display: none;
-        }
-        /* 当分类下所有子节点都被隐藏时，整个分类也隐藏 */
-        .category-group.search-hidden {
-            display: none;
-        }
-
-        /* ===== 空状态 & 加载/错误状态 ===== */
+        /* ===== 空状态 & 加载/错误 ===== */
         .empty-state {
             text-align: center;
             padding: 36px 20px;
@@ -704,7 +641,6 @@
             display: block;
         }
 
-        /* 加载状态 */
         .loading-state {
             text-align: center;
             padding: 36px 20px;
@@ -740,7 +676,6 @@
             color: #4a7ab0;
         }
 
-        /* 错误状态 */
         .error-state {
             text-align: center;
             padding: 36px 20px;
@@ -792,7 +727,7 @@
             transform: scale(0.96);
         }
 
-        /* ===== 液态玻璃开关 & 透明度控制（浮动） ===== */
+        /* ===== 浮动控件 ===== */
         .controls-float {
             position: fixed;
             bottom: 20px;
@@ -871,8 +806,6 @@
             letter-spacing: 0.2px;
             font-size: 12px;
         }
-
-        /* 透明度滑块（浮动版） */
         .controls-float .control-group .range-wrap {
             display: flex;
             align-items: center;
@@ -963,16 +896,6 @@
             .about-section .icp-link {
                 font-size: 12px;
             }
-            .root-node {
-                padding: 14px 20px;
-                max-width: 100%;
-            }
-            .root-node .title {
-                font-size: 19px;
-            }
-            .root-node .icon {
-                font-size: 22px;
-            }
             .child-node {
                 flex: 0 1 100%;
                 max-width: 100%;
@@ -1001,8 +924,11 @@
                 font-size: 12px;
                 border-radius: 30px;
             }
-            .category-header {
-                font-size: 16px;
+            .category-card .cat-title {
+                font-size: 18px;
+            }
+            .category-card .cat-title .cat-icon {
+                font-size: 20px;
             }
         }
 
@@ -1026,20 +952,6 @@
             }
             .about-section .icp-link {
                 font-size: 10px;
-            }
-            .root-node .title {
-                font-size: 16px;
-            }
-            .root-node {
-                padding: 10px 14px;
-                gap: 6px;
-            }
-            .root-node .icon {
-                font-size: 18px;
-            }
-            .root-node .badge {
-                font-size: 10px;
-                padding: 1px 8px;
             }
             .child-node {
                 padding: 10px 12px;
@@ -1136,13 +1048,21 @@
                 padding: 6px 20px;
                 font-size: 12px;
             }
-            .category-header {
-                font-size: 14px;
-                padding: 8px 0 4px;
+            .category-card .cat-title {
+                font-size: 16px;
+            }
+            .category-card .cat-title .cat-icon {
+                font-size: 18px;
+            }
+            .category-card .cat-badge {
+                font-size: 11px;
+                padding: 1px 10px;
+            }
+            .category-card .cat-toggle {
+                font-size: 16px;
             }
         }
 
-        /* ===== 工具 ===== */
         .hidden {
             display: none !important;
         }
@@ -1152,7 +1072,6 @@
             text-overflow: ellipsis;
         }
 
-        /* 背景淡入 */
         #bg-layer {
             opacity: 0;
             animation: bgFadeIn 1s ease forwards 0.1s;
@@ -1172,7 +1091,7 @@
     <!-- ===== 背景层 ===== -->
     <div id="bg-layer"></div>
 
-    <!-- ===== 浮动控制区（液态玻璃开关 + 透明度滑块） ===== -->
+    <!-- ===== 浮动控制区 ===== -->
     <div class="controls-float">
         <div class="control-group">
             <label>
@@ -1215,7 +1134,7 @@
             </div>
         </header>
 
-        <!-- ===== 关于容器（独立，位于教程上方） ===== -->
+        <!-- ===== 关于 ===== -->
         <div class="about-section">
             <a class="feedback-btn" href="https://docs.qq.com/form/page/DSW92S2J5eVBPSnFD?tdocapp_full_screen=1&templateId=25000&create_type=2&no_promotion=1&is_blank_or_template=blank" target="_blank" rel="noopener noreferrer">
                 <span class="icon">📝</span> 反馈建议
@@ -1226,23 +1145,12 @@
             <a href="https://icp.gov.moe/?keyword=20250330" target="_blank" class="icp-link">萌ICP备20250330号</a>
         </div>
 
-        <!-- ===== 思维导图 ===== -->
+        <!-- ===== 教程区域 ===== -->
         <div class="mindmap">
+            <!-- 栏目卡片将动态渲染到此 -->
+            <div id="categoriesContainer"></div>
 
-            <!-- 根节点 -->
-            <div class="root-node" id="rootNode" role="button" tabindex="0" aria-expanded="false">
-                <span class="icon">🌳</span>
-                <span class="title" id="rootTitle">📚 全部教程</span>
-                <span class="badge" id="countBadge">0</span>
-                <span class="toggle-icon collapsed" id="toggleIcon">▶</span>
-            </div>
-
-            <!-- 子节点容器（默认折叠） -->
-            <div class="children-container hidden" id="childrenContainer">
-                <!-- 由 JavaScript 动态渲染 -->
-            </div>
-
-            <!-- 空状态（搜索无结果） -->
+            <!-- 空状态 -->
             <div class="empty-state" id="emptyState">
                 <span class="emoji">🔎</span>
                 没有找到匹配的教程，试试其他关键词吧
@@ -1263,12 +1171,12 @@
             </div>
         </div>
 
-        <!-- ===== 底部统计与提示（带圆角底板） ===== -->
+        <!-- ===== 底部 ===== -->
         <footer class="footer">
             <div class="footer-top">
                 <span class="count">共 <strong id="totalCount">0</strong> 个教程 · 点击卡片跳转</span>
                 <span class="links">
-                    <span>💡 点击根节点展开 / 收起</span>
+                    <span>💡 点击栏目名展开 / 收起</span>
                 </span>
             </div>
         </footer>
@@ -1276,29 +1184,25 @@
 
     <script>
         // ============================================================
-        //  数据获取 & 解析（从远程 teacher.txt）
+        //  数据获取 & 解析
         // ============================================================
 
         const DATA_URL = 'https://magicphy.github.io/ugcmteach/teacher.txt';
 
-        // 分组数据：数组元素 { category, items: [{id, title, url}] }
         let groupedData = [];
-        // 扁平化所有条目（用于搜索和计数）
         let allItems = [];
-
-        let isExpanded = false; // 默认折叠
         let searchQuery = '';
         let currentAlpha = 0.22;
         let isLoading = false;
         let loadError = null;
 
+        // 每个栏目的展开状态
+        let categoryExpanded = {};
+
         // ============================================================
         //  DOM 引用
         // ============================================================
-        const container = document.getElementById('childrenContainer');
-        const rootNode = document.getElementById('rootNode');
-        const rootTitle = document.getElementById('rootTitle');
-        const toggleIcon = document.getElementById('toggleIcon');
+        const container = document.getElementById('categoriesContainer');
         const searchInput = document.getElementById('searchInput');
         const clearBtn = document.getElementById('clearSearchBtn');
         const emptyState = document.getElementById('emptyState');
@@ -1307,7 +1211,6 @@
         const errorDesc = document.getElementById('errorDesc');
         const retryBtn = document.getElementById('retryBtn');
         const totalCount = document.getElementById('totalCount');
-        const countBadge = document.getElementById('countBadge');
         const glassToggle = document.getElementById('glassToggle');
         const appContainer = document.getElementById('appContainer');
         const alphaSlider = document.getElementById('alphaSlider');
@@ -1327,23 +1230,18 @@
                 line = line.trim();
                 if (line === '') continue;
 
-                // 检测栏目行：以中文冒号或英文冒号结尾，且不包含括号（避免误判标题中的冒号）
                 const isCategoryLine = /[:：]$/.test(line) && !line.includes('(') && !line.includes('）');
                 if (isCategoryLine) {
-                    // 保存之前栏目
                     if (currentItems.length > 0) {
                         groups.push({ category: currentCategory, items: currentItems });
                         currentItems = [];
                     }
-                    // 移除冒号作为栏目名
                     currentCategory = line.replace(/[:：]$/, '').trim();
                     continue;
                 }
 
-                // 匹配 (数字) 作为条目分隔符
                 const match = line.match(/^\((\d+)\)$/);
                 if (match) {
-                    // 保存上一个条目
                     if (currentItem && currentItem.title && currentItem.url) {
                         currentItems.push(currentItem);
                     }
@@ -1358,15 +1256,12 @@
                     } else if (!currentItem.url) {
                         currentItem.url = line;
                     }
-                    // 如果 title 和 url 都已填，忽略额外行（容错）
                 }
             }
 
-            // 保存最后一个条目
             if (currentItem && currentItem.title && currentItem.url) {
                 currentItems.push(currentItem);
             }
-            // 保存最后一个栏目
             if (currentItems.length > 0) {
                 groups.push({ category: currentCategory, items: currentItems });
             }
@@ -1375,7 +1270,7 @@
         }
 
         // ============================================================
-        //  加载 & 错误处理（细化错误信息）
+        //  加载 & 错误处理
         // ============================================================
         function showLoading(show) {
             if (show) {
@@ -1395,7 +1290,6 @@
             emptyState.classList.remove('visible');
             container.innerHTML = '';
             totalCount.textContent = '0';
-            countBadge.textContent = '0';
         }
 
         function hideAllStatus() {
@@ -1430,7 +1324,6 @@
 
                 const groups = parseTutorials(text);
 
-                // 检查是否有任何条目
                 let totalItems = 0;
                 groups.forEach(g => totalItems += g.items.length);
                 if (totalItems === 0) {
@@ -1438,7 +1331,6 @@
                 }
 
                 groupedData = groups;
-                // 更新扁平列表
                 allItems = [];
                 groups.forEach(g => {
                     g.items.forEach(item => {
@@ -1446,21 +1338,19 @@
                     });
                 });
 
-                // 更新根节点标题为第一个栏目名称
-                if (groups.length > 0 && groups[0].category) {
-                    rootTitle.textContent = '📚 ' + groups[0].category;
-                } else {
-                    rootTitle.textContent = '📚 全部教程';
-                }
+                // 初始化展开状态（默认全部收起）
+                groups.forEach(g => {
+                    if (!(g.category in categoryExpanded)) {
+                        categoryExpanded[g.category] = false;
+                    }
+                });
 
                 loadError = null;
                 hideAllStatus();
                 renderTutorials(searchInput.value.trim());
                 totalCount.textContent = allItems.length;
-                countBadge.textContent = allItems.length;
 
-                // 调试：在控制台输出分组结构
-                console.log('📦 解析后的分组结构:', JSON.stringify(groups, null, 2));
+                console.log('📦 解析后的分组:', JSON.stringify(groups, null, 2));
 
             } catch (err) {
                 console.error('加载教程失败:', err);
@@ -1486,8 +1376,7 @@
                 groupedData = [];
                 allItems = [];
                 totalCount.textContent = '0';
-                countBadge.textContent = '0';
-                rootTitle.textContent = '📚 全部教程';
+                categoryExpanded = {};
                 if (searchInput.value.trim()) {
                     renderTutorials(searchInput.value.trim());
                 }
@@ -1497,7 +1386,7 @@
         }
 
         // ============================================================
-        //  渲染（支持分组）
+        //  渲染（每个栏目独立折叠）
         // ============================================================
         function renderTutorials(filter = '') {
             const q = filter.trim().toLowerCase();
@@ -1521,9 +1410,8 @@
             // 计算总条目数
             let totalFiltered = 0;
             filteredGroups.forEach(g => totalFiltered += g.items.length);
-            countBadge.textContent = totalFiltered;
 
-            // 如果数据为空且没有搜索词
+            // 如果所有条目为空且没有搜索词
             if (allItems.length === 0 && !q) {
                 if (!isLoading && !errorState.classList.contains('visible')) {
                     emptyState.classList.add('visible');
@@ -1548,13 +1436,29 @@
             hideAllStatus();
 
             let html = '';
-            filteredGroups.forEach((group, groupIdx) => {
-                // 显示分类标题
-                const icon = groupIdx === 0 ? '📖' : '📂';
-                html += `<div class="category-header"><span class="cat-icon">${icon}</span>${group.category}</div>`;
+            filteredGroups.forEach((group, idx) => {
+                const catKey = group.category;
+                // 确定该栏目是否展开
+                const isExpanded = categoryExpanded[catKey] || false;
+                const icon = idx === 0 ? '📖' : '📂';
+                const toggleSymbol = isExpanded ? '▼' : '▶';
+                const childClass = isExpanded ? '' : 'hidden';
 
-                group.items.forEach((item, idx) => {
-                    const displayIndex = idx + 1;
+                html += `
+                        <div class="category-card" data-category="${catKey}">
+                            <div class="cat-header" data-cat-toggle="${catKey}">
+                                <div class="cat-title">
+                                    <span class="cat-icon">${icon}</span>
+                                    <span>${catKey}</span>
+                                    <span class="cat-badge">${group.items.length}</span>
+                                </div>
+                                <span class="cat-toggle ${isExpanded ? '' : 'collapsed'}">${toggleSymbol}</span>
+                            </div>
+                            <div class="cat-children ${childClass}">
+                    `;
+
+                group.items.forEach((item, itemIdx) => {
+                    const displayIndex = itemIdx + 1;
                     const safeTitle = item.title.replace(/"/g, '&quot;');
                     html += `
                             <div class="child-node" data-id="${item.id}" data-title="${safeTitle}" role="button" tabindex="0">
@@ -1565,11 +1469,34 @@
                             </div>
                         `;
                 });
+
+                html += `
+                            </div>
+                        </div>
+                    `;
             });
 
             container.innerHTML = html;
 
-            // 绑定点击事件
+            // 绑定卡片点击事件（展开/收起）
+            container.querySelectorAll('.cat-header').forEach(header => {
+                const catKey = header.dataset.catToggle;
+                header.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleCategory(catKey);
+                });
+                header.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleCategory(catKey);
+                    }
+                });
+                header.setAttribute('role', 'button');
+                header.setAttribute('tabindex', '0');
+                header.setAttribute('aria-expanded', categoryExpanded[catKey] || false);
+            });
+
+            // 绑定子卡片点击跳转
             container.querySelectorAll('.child-node').forEach(el => {
                 const id = parseInt(el.dataset.id, 10);
                 const tutorial = allItems.find(t => t.id === id);
@@ -1586,43 +1513,16 @@
                     });
                 }
             });
-
-            // 应用折叠状态
-            if (!isExpanded) {
-                container.classList.add('hidden');
-                toggleIcon.classList.add('collapsed');
-                toggleIcon.textContent = '▶';
-                rootNode.setAttribute('aria-expanded', 'false');
-            } else {
-                container.classList.remove('hidden');
-                toggleIcon.classList.remove('collapsed');
-                toggleIcon.textContent = '▼';
-                rootNode.setAttribute('aria-expanded', 'true');
-            }
         }
 
         // ============================================================
-        //  展开 / 折叠
+        //  切换栏目展开/收起
         // ============================================================
-        function toggleExpand() {
-            isExpanded = !isExpanded;
-            if (isExpanded) {
-                container.classList.remove('hidden');
-                container.style.maxHeight = container.scrollHeight + 'px';
-                setTimeout(() => { container.style.maxHeight = '3000px'; }, 10);
-                toggleIcon.textContent = '▼';
-                toggleIcon.classList.remove('collapsed');
-                rootNode.setAttribute('aria-expanded', 'true');
-            } else {
-                container.style.maxHeight = container.scrollHeight + 'px';
-                requestAnimationFrame(() => { container.style.maxHeight = '0px'; });
-                setTimeout(() => {
-                    container.classList.add('hidden');
-                }, 480);
-                toggleIcon.textContent = '▶';
-                toggleIcon.classList.add('collapsed');
-                rootNode.setAttribute('aria-expanded', 'false');
-            }
+        function toggleCategory(catKey) {
+            if (!(catKey in categoryExpanded)) return;
+            categoryExpanded[catKey] = !categoryExpanded[catKey];
+            // 重新渲染当前搜索结果
+            renderTutorials(searchInput.value.trim());
         }
 
         // ============================================================
@@ -1643,14 +1543,6 @@
 
             if (allItems.length > 0) {
                 renderTutorials(q);
-                if (q.trim() && !isExpanded) {
-                    isExpanded = true;
-                    container.classList.remove('hidden');
-                    container.style.maxHeight = '3000px';
-                    toggleIcon.textContent = '▼';
-                    toggleIcon.classList.remove('collapsed');
-                    rootNode.setAttribute('aria-expanded', 'true');
-                }
             } else {
                 if (q.trim()) {
                     emptyState.classList.add('visible');
@@ -1682,7 +1574,7 @@
         }
 
         // ============================================================
-        //  透明度控制
+        //  透明度 & 液态玻璃控制
         // ============================================================
         function updateAlpha(val) {
             currentAlpha = parseFloat(val);
@@ -1692,9 +1584,6 @@
             try { localStorage.setItem('glassAlpha', currentAlpha); } catch (_) {}
         }
 
-        // ============================================================
-        //  液态玻璃开关
-        // ============================================================
         function toggleGlassEffect(enable) {
             if (enable) {
                 appContainer.classList.add('glass-liquid');
@@ -1705,7 +1594,7 @@
         }
 
         // ============================================================
-        //  随机背景 (unsplash)
+        //  随机背景
         // ============================================================
         function setRandomBackground() {
             const bgLayer = document.getElementById('bg-layer');
@@ -1759,14 +1648,6 @@
 
             updateAlpha(alphaSlider.value);
 
-            rootNode.addEventListener('click', toggleExpand);
-            rootNode.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleExpand();
-                }
-            });
-
             searchInput.addEventListener('input', handleSearch);
             clearBtn.addEventListener('click', clearSearch);
 
@@ -1780,16 +1661,6 @@
 
             retryBtn.addEventListener('click', () => {
                 loadTutorials();
-            });
-
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    if (isExpanded) {
-                        container.style.maxHeight = '3000px';
-                    }
-                }, 200);
             });
 
             let bgInterval;
