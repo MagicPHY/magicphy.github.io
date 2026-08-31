@@ -414,9 +414,8 @@
             color: #1a5fb4;
             box-shadow: none;
         }
-        /* 删除快手图标，文字改为“访问我的快手” */
         .about-section .social-link .icon {
-            display: none; /* 隐藏图标 */
+            display: none;
         }
 
         /* ===== 底部统计与提示（加圆角底板） ===== */
@@ -658,7 +657,7 @@
             display: none;
         }
 
-        /* ===== 空状态 ===== */
+        /* ===== 空状态 & 加载/错误状态 ===== */
         .empty-state {
             text-align: center;
             padding: 36px 20px;
@@ -679,6 +678,94 @@
             font-size: 44px;
             margin-bottom: 10px;
             display: block;
+        }
+
+        /* 加载状态 */
+        .loading-state {
+            text-align: center;
+            padding: 36px 20px;
+            color: #5a7a9a;
+            font-size: 15px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .loading-state .spinner {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(70, 130, 255, 0.10);
+            border-top: 3px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .loading-state .load-text {
+            font-size: 14px;
+            color: #4a7ab0;
+        }
+
+        /* 错误状态 */
+        .error-state {
+            text-align: center;
+            padding: 36px 20px;
+            width: 100%;
+            background: rgba(255, 240, 240, 0.25);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 100, 100, 0.15);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .error-state.visible {
+            display: flex;
+        }
+        .error-state .emoji {
+            font-size: 44px;
+        }
+        .error-state .err-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #c0392b;
+        }
+        .error-state .err-desc {
+            font-size: 14px;
+            color: #5a7a9a;
+            max-width: 90%;
+        }
+        .error-state .retry-btn {
+            margin-top: 4px;
+            padding: 8px 28px;
+            border: none;
+            border-radius: 40px;
+            background: linear-gradient(135deg, #4a8af4, #2a6fd4);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 16px rgba(42, 111, 212, 0.15);
+        }
+        .error-state .retry-btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 8px 28px rgba(42, 111, 212, 0.20);
+        }
+        .error-state .retry-btn:active {
+            transform: scale(0.96);
         }
 
         /* ===== 液态玻璃开关 & 透明度控制（浮动） ===== */
@@ -998,6 +1085,30 @@
             .empty-state .emoji {
                 font-size: 34px;
             }
+            .loading-state {
+                padding: 24px 14px;
+                font-size: 13px;
+            }
+            .loading-state .spinner {
+                width: 26px;
+                height: 26px;
+            }
+            .error-state {
+                padding: 24px 14px;
+            }
+            .error-state .emoji {
+                font-size: 34px;
+            }
+            .error-state .err-title {
+                font-size: 14px;
+            }
+            .error-state .err-desc {
+                font-size: 12px;
+            }
+            .error-state .retry-btn {
+                padding: 6px 20px;
+                font-size: 12px;
+            }
         }
 
         /* ===== 工具 ===== */
@@ -1091,7 +1202,7 @@
             <div class="root-node" id="rootNode" role="button" tabindex="0" aria-expanded="false">
                 <span class="icon">🌳</span>
                 <span class="title">可视化教程</span>
-                <span class="badge" id="countBadge">8</span>
+                <span class="badge" id="countBadge">0</span>
                 <span class="toggle-icon collapsed" id="toggleIcon">▶</span>
             </div>
 
@@ -1100,17 +1211,31 @@
                 <!-- 由 JavaScript 动态渲染 -->
             </div>
 
-            <!-- 空状态 -->
+            <!-- 空状态（搜索无结果） -->
             <div class="empty-state" id="emptyState">
                 <span class="emoji">🔎</span>
                 没有找到匹配的教程，试试其他关键词吧
+            </div>
+
+            <!-- 加载状态 -->
+            <div class="loading-state" id="loadingState">
+                <div class="spinner"></div>
+                <span class="load-text">📡 正在加载教程数据...</span>
+            </div>
+
+            <!-- 错误状态 -->
+            <div class="error-state" id="errorState">
+                <span class="emoji">⚠️</span>
+                <div class="err-title">加载失败</div>
+                <div class="err-desc" id="errorDesc">数据获取异常，请检查网络后重试</div>
+                <button class="retry-btn" id="retryBtn">🔄 重新加载</button>
             </div>
         </div>
 
         <!-- ===== 底部统计与提示（带圆角底板） ===== -->
         <footer class="footer">
             <div class="footer-top">
-                <span class="count">共 <strong id="totalCount">8</strong> 个教程 · 点击卡片跳转</span>
+                <span class="count">共 <strong id="totalCount">0</strong> 个教程 · 点击卡片跳转</span>
                 <span class="links">
                     <span>💡 点击根节点展开 / 收起</span>
                 </span>
@@ -1120,48 +1245,17 @@
 
     <script>
         // ============================================================
-        //  教程数据
+        //  数据获取 & 解析（从远程 teacher.txt）
         // ============================================================
-        const tutorials = [{
-            id: 1,
-            title: '新版本绿洲启元共创如何制作"作者进房提示"（旧）',
-            url: 'https://c.gp.qq.com/camp/share/moment?momentId=44018b5fe771&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
-        }, {
-            id: 2,
-            title: '可视化教程2:"手搓全局聊天频道教程"',
-            url: 'https://c.gp.qq.com/camp/share/moment?momentId=4731d8ba75c1&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
-        }, {
-            id: 3,
-            title: '可视化教程3:超体插件"射击回复"复刻',
-            url: 'https://c.gp.qq.com/camp/share/moment?momentId=687cc3be11c1&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
-        }, {
-            id: 4,
-            title: '可视化教程4:自定义淘汰者名称',
-            url: 'https://c.gp.qq.com/camp/share/moment?momentId=c8fc03eb2661&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
-        }, {
-            id: 5,
-            title: '可视化教程5：自瞄',
-            url: 'https://c.gp.qq.com/camp/share/moment?momentId=9800b9249ae1&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
-        }, {
-            id: 6,
-            title: '可视化教程 6：作者进房提示简易版',
-            url: 'https://c.gp.qq.com/camp/share/moment?momentId=381ea6621b51&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
-        }, {
-            id: 7,
-            title: '可视化教程7：秒补头甲',
-            url: 'https://c.gp.qq.com/camp/share/moment?momentId=48b54addcdd1&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
-        }, {
-            id: 8,
-            title: '可视化教程8：物资拾取上限',
-            url: 'https://c.gp.qq.com/camp/share/moment?momentId=c8dd874cedf1&cGameId=20004&serverIndex=5&_sharechannel=3&gameId=20004&qq_aio_chat_type=2'
-        }];
 
-        // ============================================================
-        //  状态
-        // ============================================================
+        const DATA_URL = 'https://magicphy.github.io/ugcmteach/teacher.txt';
+
+        let tutorialsData = [];
         let isExpanded = false; // 默认折叠
         let searchQuery = '';
         let currentAlpha = 0.22;
+        let isLoading = false;
+        let loadError = null;
 
         // ============================================================
         //  DOM 引用
@@ -1172,6 +1266,10 @@
         const searchInput = document.getElementById('searchInput');
         const clearBtn = document.getElementById('clearSearchBtn');
         const emptyState = document.getElementById('emptyState');
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+        const errorDesc = document.getElementById('errorDesc');
+        const retryBtn = document.getElementById('retryBtn');
         const totalCount = document.getElementById('totalCount');
         const countBadge = document.getElementById('countBadge');
         const glassToggle = document.getElementById('glassToggle');
@@ -1180,27 +1278,186 @@
         const alphaDisplay = document.getElementById('alphaDisplay');
 
         // ============================================================
+        //  解析函数
+        // ============================================================
+        function parseTutorials(text) {
+            const lines = text.split('\n');
+            const tutorials = [];
+            let current = null;
+
+            for (let line of lines) {
+                line = line.trim();
+                if (line === '') continue;
+
+                // 匹配 (数字) 作为条目分隔符
+                const match = line.match(/^\((\d+)\)$/);
+                if (match) {
+                    // 保存上一个条目
+                    if (current && current.title && current.url) {
+                        tutorials.push(current);
+                    }
+                    current = {
+                        id: parseInt(match[1], 10),
+                        title: '',
+                        url: ''
+                    };
+                } else if (current) {
+                    if (!current.title) {
+                        current.title = line;
+                    } else if (!current.url) {
+                        current.url = line;
+                    }
+                    // 如果 title 和 url 都已填，忽略额外行（容错）
+                }
+            }
+
+            // 保存最后一个条目
+            if (current && current.title && current.url) {
+                tutorials.push(current);
+            }
+
+            return tutorials;
+        }
+
+        // ============================================================
+        //  加载 & 错误处理（细化分类）
+        // ============================================================
+        function showLoading(show) {
+            if (show) {
+                loadingState.style.display = 'flex';
+                errorState.classList.remove('visible');
+                emptyState.classList.remove('visible');
+                container.innerHTML = '';
+            } else {
+                loadingState.style.display = 'none';
+            }
+        }
+
+        function showError(message) {
+            errorDesc.textContent = message || '数据获取异常，请检查网络后重试';
+            errorState.classList.add('visible');
+            loadingState.style.display = 'none';
+            emptyState.classList.remove('visible');
+            container.innerHTML = '';
+            // 更新计数为0
+            totalCount.textContent = '0';
+            countBadge.textContent = '0';
+        }
+
+        function hideAllStatus() {
+            loadingState.style.display = 'none';
+            errorState.classList.remove('visible');
+            emptyState.classList.remove('visible');
+        }
+
+        async function loadTutorials() {
+            if (isLoading) return;
+            isLoading = true;
+            loadError = null;
+
+            showLoading(true);
+            container.innerHTML = '';
+
+            try {
+                const response = await fetch(DATA_URL, {
+                    cache: 'no-cache',
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP_ERROR:${response.status} ${response.statusText}`);
+                }
+
+                const text = await response.text();
+
+                if (!text.trim()) {
+                    throw new Error('EMPTY_DATA');
+                }
+
+                const parsed = parseTutorials(text);
+
+                if (parsed.length === 0) {
+                    throw new Error('PARSE_FAILED');
+                }
+
+                tutorialsData = parsed;
+                loadError = null;
+                hideAllStatus();
+                renderTutorials(searchInput.value.trim());
+                totalCount.textContent = tutorialsData.length;
+                countBadge.textContent = tutorialsData.length;
+
+            } catch (err) {
+                console.error('加载教程失败:', err);
+                let errorMsg = '';
+                const msg = err.message || '';
+                if (msg === 'EMPTY_DATA') {
+                    errorMsg = '数据文件为空，请检查文件内容';
+                } else if (msg === 'PARSE_FAILED') {
+                    errorMsg = '文件内容格式不符合要求，请确保每条教程以 (序号) 开头，并包含标题和链接';
+                } else if (msg.startsWith('HTTP_ERROR:')) {
+                    const status = msg.split(':')[1] || '';
+                    errorMsg = `服务器响应错误 (${status})，请检查文件是否存在或网络状况`;
+                } else if (msg.includes('Failed to fetch') || err.name === 'TypeError') {
+                    errorMsg = '网络请求失败，请检查网络连接或服务器是否可访问（可能为跨域或DNS问题）';
+                } else {
+                    errorMsg = msg || '未知错误，请重试';
+                }
+                loadError = errorMsg;
+                showError(errorMsg);
+                tutorialsData = [];
+                totalCount.textContent = '0';
+                countBadge.textContent = '0';
+                // 如果之前有搜索词，搜索会无结果，但不清除搜索框
+                if (searchInput.value.trim()) {
+                    renderTutorials(searchInput.value.trim());
+                }
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        // ============================================================
         //  渲染
         // ============================================================
         function renderTutorials(filter = '') {
             const q = filter.trim().toLowerCase();
-            const filtered = q ? tutorials.filter(t => t.title.toLowerCase().includes(q)) : tutorials;
+            const filtered = q ? tutorialsData.filter(t => t.title.toLowerCase().includes(q)) : tutorialsData;
 
-            totalCount.textContent = tutorials.length;
             countBadge.textContent = filtered.length;
 
+            // 如果数据为空且没有搜索词
+            if (tutorialsData.length === 0 && !q) {
+                if (!isLoading && !errorState.classList.contains('visible')) {
+                    emptyState.classList.add('visible');
+                    emptyState.querySelector('.emoji').textContent = '📭';
+                    emptyState.innerHTML = `<span class="emoji">📭</span> 暂无教程，请稍后刷新`;
+                    container.innerHTML = '';
+                }
+                return;
+            }
+
+            // 搜索无结果
             if (filtered.length === 0 && q) {
                 emptyState.classList.add('visible');
-            } else {
-                emptyState.classList.remove('visible');
+                emptyState.innerHTML = `<span class="emoji">🔎</span> 没有找到匹配的教程，试试其他关键词吧`;
+                container.innerHTML = '';
+                loadingState.style.display = 'none';
+                errorState.classList.remove('visible');
+                return;
             }
+
+            // 正常渲染
+            emptyState.classList.remove('visible');
+            hideAllStatus();
 
             let html = '';
             filtered.forEach((t) => {
-                const displayIndex = tutorials.indexOf(t) + 1;
+                const idx = tutorialsData.indexOf(t) + 1;
+                const safeTitle = t.title.replace(/"/g, '&quot;');
                 html += `
-                        <div class="child-node" data-id="${t.id}" data-title="${t.title.replace(/"/g, '&quot;')}" role="button" tabindex="0">
-                            <span class="node-index">${displayIndex}</span>
+                        <div class="child-node" data-id="${t.id}" data-title="${safeTitle}" role="button" tabindex="0">
+                            <span class="node-index">${idx}</span>
                             <span class="node-title">${t.title}</span>
                             <span class="node-tag">→</span>
                             <span class="node-arrow">›</span>
@@ -1211,8 +1468,8 @@
             container.innerHTML = html;
 
             container.querySelectorAll('.child-node').forEach(el => {
-                const id = parseInt(el.dataset.id);
-                const tutorial = tutorials.find(t => t.id === id);
+                const id = parseInt(el.dataset.id, 10);
+                const tutorial = tutorialsData.find(t => t.id === id);
                 if (tutorial) {
                     el.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -1276,14 +1533,30 @@
             } else {
                 clearBtn.classList.remove('visible');
             }
-            renderTutorials(q);
-            if (!isExpanded && q.trim()) {
-                isExpanded = true;
-                container.classList.remove('hidden');
-                container.style.maxHeight = '3000px';
-                toggleIcon.textContent = '▼';
-                toggleIcon.classList.remove('collapsed');
-                rootNode.setAttribute('aria-expanded', 'true');
+
+            if (errorState.classList.contains('visible')) {
+                // 错误状态下不执行搜索，但保留搜索词
+                return;
+            }
+
+            if (tutorialsData.length > 0) {
+                renderTutorials(q);
+                if (q.trim() && !isExpanded) {
+                    isExpanded = true;
+                    container.classList.remove('hidden');
+                    container.style.maxHeight = '3000px';
+                    toggleIcon.textContent = '▼';
+                    toggleIcon.classList.remove('collapsed');
+                    rootNode.setAttribute('aria-expanded', 'true');
+                }
+            } else {
+                if (q.trim()) {
+                    emptyState.classList.add('visible');
+                    emptyState.innerHTML = `<span class="emoji">🔎</span> 没有找到匹配的教程，试试其他关键词吧`;
+                    container.innerHTML = '';
+                } else {
+                    emptyState.classList.remove('visible');
+                }
             }
         }
 
@@ -1291,7 +1564,19 @@
             searchInput.value = '';
             clearBtn.classList.remove('visible');
             searchQuery = '';
-            renderTutorials('');
+            if (tutorialsData.length > 0) {
+                renderTutorials('');
+            } else {
+                emptyState.classList.remove('visible');
+                if (errorState.classList.contains('visible')) {
+                    // 保持错误状态
+                } else if (isLoading) {
+                    showLoading(true);
+                } else {
+                    emptyState.classList.add('visible');
+                    emptyState.innerHTML = `<span class="emoji">📭</span> 暂无教程，请稍后刷新`;
+                }
+            }
         }
 
         // ============================================================
@@ -1347,7 +1632,7 @@
         // ============================================================
         //  初始化
         // ============================================================
-        function init() {
+        async function init() {
             setRandomBackground();
 
             try {
@@ -1371,7 +1656,6 @@
             } catch (_) {}
 
             updateAlpha(alphaSlider.value);
-            renderTutorials('');
 
             rootNode.addEventListener('click', toggleExpand);
             rootNode.addEventListener('keydown', (e) => {
@@ -1390,6 +1674,10 @@
 
             alphaSlider.addEventListener('input', (e) => {
                 updateAlpha(e.target.value);
+            });
+
+            retryBtn.addEventListener('click', () => {
+                loadTutorials();
             });
 
             let resizeTimer;
@@ -1412,12 +1700,17 @@
                 } else {
                     clearInterval(bgInterval);
                     startBgRotation();
+                    if (tutorialsData.length === 0 && !errorState.classList.contains('visible') && !isLoading) {
+                        loadTutorials();
+                    }
                 }
             });
             startBgRotation();
 
-            console.log('🌳 PHYの绿洲共创教程 已加载');
-            console.log(`📚 共 ${tutorials.length} 个教程 · 默认折叠`);
+            await loadTutorials();
+
+            console.log('🌳 PHYの绿洲共创教程 已加载 (数据来源: ' + DATA_URL + ')');
+            console.log('📚 共 ' + tutorialsData.length + ' 个教程');
         }
 
         if (document.readyState === 'loading') {
