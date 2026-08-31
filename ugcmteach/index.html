@@ -215,8 +215,8 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px 16px;
-            margin-bottom: 8px;
-            padding-bottom: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.40);
             background: transparent;
             backdrop-filter: none;
@@ -282,18 +282,6 @@
             flex-wrap: wrap;
             flex: 1 1 auto;
             justify-content: flex-end;
-        }
-
-        /* 版本号 */
-        .version-bar {
-            text-align: center;
-            font-size: 14px;
-            color: var(--text-muted);
-            padding: 4px 0 12px;
-            letter-spacing: 1px;
-            opacity: 0.7;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
-            margin-bottom: 16px;
         }
 
         .search-wrap {
@@ -867,6 +855,21 @@
             opacity: 0.8;
         }
 
+        /* ===== 版本号（左下角固定，加粗黑色，响应式） ===== */
+        #versionTag {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-weight: 700;
+            color: #000;
+            font-size: clamp(14px, 1.8vw, 24px);
+            z-index: 1000;
+            pointer-events: none;  /* 让点击穿透，不影响操作 */
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 8px rgba(255,255,255,0.3); /* 略微提升可读性 */
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, sans-serif;
+        }
+
         /* ===== 响应式 ===== */
         @media (max-width: 820px) {
             .app-container {
@@ -942,8 +945,10 @@
             .category-card .cat-title .cat-icon {
                 font-size: 20px;
             }
-            .version-bar {
-                font-size: 13px;
+            #versionTag {
+                font-size: clamp(12px, 2vw, 18px);
+                bottom: 16px;
+                left: 16px;
             }
         }
 
@@ -1076,8 +1081,10 @@
             .category-card .cat-toggle {
                 font-size: 16px;
             }
-            .version-bar {
-                font-size: 12px;
+            #versionTag {
+                font-size: clamp(10px, 2.5vw, 14px);
+                bottom: 12px;
+                left: 12px;
             }
         }
 
@@ -1108,6 +1115,9 @@
 
     <!-- ===== 背景层 ===== -->
     <div id="bg-layer"></div>
+
+    <!-- ===== 版本号（左下角固定） ===== -->
+    <div id="versionTag">V1.1.0</div>
 
     <!-- ===== 浮动控制区 ===== -->
     <div class="controls-float">
@@ -1151,9 +1161,6 @@
                 </div>
             </div>
         </header>
-
-        <!-- ===== 版本号（居中） ===== -->
-        <div class="version-bar">V1.0.0</div>
 
         <!-- ===== 关于 ===== -->
         <div class="about-section">
