@@ -33,7 +33,7 @@
      留空测试
      https://magicphy.github.io
      (12)
-     留空测试，后续补充
+     留空测试
      https://magicphy.github.io
 玩法逻辑教程：
      (1)
@@ -46,5 +46,9 @@
      留空测试
      https://magicphy.github.io
      (4)
+     留空测试
+     https://magicphy.github.io
+Text:
+     (1)
      留空测试
      https://magicphy.github.io
