@@ -215,8 +215,8 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px 16px;
-            margin-bottom: 16px;
-            padding-bottom: 16px;
+            margin-bottom: 8px;
+            padding-bottom: 12px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.40);
             background: transparent;
             backdrop-filter: none;
@@ -282,6 +282,18 @@
             flex-wrap: wrap;
             flex: 1 1 auto;
             justify-content: flex-end;
+        }
+
+        /* 版本号 */
+        .version-bar {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            padding: 4px 0 12px;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            margin-bottom: 16px;
         }
 
         .search-wrap {
@@ -930,6 +942,9 @@
             .category-card .cat-title .cat-icon {
                 font-size: 20px;
             }
+            .version-bar {
+                font-size: 13px;
+            }
         }
 
         @media (max-width: 420px) {
@@ -1061,6 +1076,9 @@
             .category-card .cat-toggle {
                 font-size: 16px;
             }
+            .version-bar {
+                font-size: 12px;
+            }
         }
 
         .hidden {
@@ -1133,6 +1151,9 @@
                 </div>
             </div>
         </header>
+
+        <!-- ===== 版本号（居中） ===== -->
+        <div class="version-bar">V1.0.0</div>
 
         <!-- ===== 关于 ===== -->
         <div class="about-section">
@@ -1218,6 +1239,7 @@
 
         // ============================================================
         //  解析函数：通过前导空格区分栏目与条目内容
+        //  修复：在切换栏目时，先保存当前正在构建的条目
         // ============================================================
         function parseTutorials(text) {
             const lines = text.split('\n');
@@ -1226,17 +1248,25 @@
             let currentItems = [];
             let currentItem = null;
 
+            // 辅助函数：保存当前条目到列表
+            function saveCurrentItem() {
+                if (currentItem && currentItem.title && currentItem.url) {
+                    currentItems.push(currentItem);
+                    currentItem = null;
+                }
+            }
+
             for (let rawLine of lines) {
-                // 保留原始行以检测缩进，但去除末尾空格
                 const line = rawLine.trimEnd();
                 if (line === '') continue;
 
-                // 检测是否为缩进行（以空格开头）
                 const isIndented = /^ /.test(line);
 
                 if (!isIndented) {
-                    // 顶格行：可能是栏目行（以冒号结尾）或空行（已过滤）
+                    // 顶格行：可能是栏目行（以冒号结尾）
                     if (/[:：]$/.test(line)) {
+                        // 先保存当前正在构建的条目
+                        saveCurrentItem();
                         // 保存之前的栏目
                         if (currentItems.length > 0) {
                             groups.push({ category: currentCategory, items: currentItems });
@@ -1245,22 +1275,19 @@
                         currentCategory = line.replace(/[:：]$/, '').trim();
                         continue;
                     } else {
-                        // 顶格但不是冒号结尾：忽略（可能是文件头或其他）
+                        // 顶格但不是冒号结尾：忽略
                         continue;
                     }
                 }
 
-                // --- 以下处理缩进行（条目相关） ---
-                // 去掉前导空格，得到内容
+                // --- 缩进行：条目相关内容 ---
                 const content = line.trim();
 
-                // 检查是否为序号行（如 "(1)" 或 "(10)"）
+                // 检查是否为序号行
                 const match = content.match(/^\((\d+)\)$/);
                 if (match) {
-                    // 保存上一个条目
-                    if (currentItem && currentItem.title && currentItem.url) {
-                        currentItems.push(currentItem);
-                    }
+                    // 保存前一个条目
+                    saveCurrentItem();
                     currentItem = {
                         id: parseInt(match[1], 10),
                         title: '',
@@ -1269,10 +1296,10 @@
                     continue;
                 }
 
-                // 如果当前没有正在构建的条目，忽略（可能是孤立行）
+                // 如果当前没有正在构建的条目，忽略
                 if (!currentItem) continue;
 
-                // 如果是标题（有内容且尚未设置标题）
+                // 如果是标题（尚未设置标题）
                 if (!currentItem.title) {
                     currentItem.title = content;
                     continue;
@@ -1287,11 +1314,8 @@
                 // 如果标题和链接都已设置，忽略多余行（容错）
             }
 
-            // 保存最后一个条目
-            if (currentItem && currentItem.title && currentItem.url) {
-                currentItems.push(currentItem);
-            }
-            // 保存最后一个栏目
+            // 文件结束：保存最后一个条目和最后一个栏目
+            saveCurrentItem();
             if (currentItems.length > 0) {
                 groups.push({ category: currentCategory, items: currentItems });
             }
